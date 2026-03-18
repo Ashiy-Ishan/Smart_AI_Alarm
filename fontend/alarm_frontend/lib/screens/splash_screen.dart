@@ -38,8 +38,9 @@ class SplashScreen extends StatelessWidget {
                 onPressed: () {
                   //Navigator.push(
                   //context,
-                  // MaterialPageRoute(
-                  //  builder: (_) => const AuthScreen(),
+                   //MaterialPageRoute(
+                    //builder: (_) => const AuthScreen(),
+                   //initialPage: AuthPageModel.login(),
                   //),
                   //);
                 },
