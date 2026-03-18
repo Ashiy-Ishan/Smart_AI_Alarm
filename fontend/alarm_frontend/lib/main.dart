@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.lexendDecaTextTheme(),
       ),
-      home: const SplashScreen(),
+      home: SplashScreen(),
     );
   }
 }

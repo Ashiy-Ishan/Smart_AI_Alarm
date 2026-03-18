@@ -1,5 +1,7 @@
 import 'package:alarm_frontend/components/app_colors.dart';
 import 'package:alarm_frontend/components/primary_button.dart';
+import 'package:alarm_frontend/models/auth_page_model.dart';
+import 'package:alarm_frontend/screens/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -36,13 +38,13 @@ class SplashScreen extends StatelessWidget {
               PrimaryButton(
                 text: 'Get Started',
                 onPressed: () {
-                  //Navigator.push(
-                  //context,
-                   //MaterialPageRoute(
-                    //builder: (_) => const AuthScreen(),
-                   //initialPage: AuthPageModel.login(),
-                  //),
-                  //);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AuthScreen(initialPage: AuthPageModel.login()),
+                    ),
+                  );
                 },
               ),
 
