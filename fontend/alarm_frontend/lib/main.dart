@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/screens/verify_account_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.lexendDecaTextTheme(),
       ),
-      home: SplashScreen(),
+      home: VerifyAccountScreen(),
     );
   }
 }

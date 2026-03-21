@@ -51,7 +51,8 @@ class VerifyAccountScreen extends StatelessWidget {
               Text(
                 'Resend timer 20 secs',
                 style: AppTextStyles.subHeading.copyWith(
-                  color: AppColors.textSecondary.withOpacity(0.7),
+                  fontSize: 14,
+                  color: Color(0x3DD9B56D),
                 ),
               ),
 
@@ -90,19 +91,13 @@ class _CodeBox extends StatelessWidget {
     return Container(
       width: 56,
       height: 56,
-      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.8),
+          color: const Color(0xCCD9B56D),
           width: 1.4,
         ),
-      ),
-      child: Container(
-        width: 20,
-        height: 2,
-        color: AppColors.textSecondary.withOpacity(0.7),
       ),
     );
   }
