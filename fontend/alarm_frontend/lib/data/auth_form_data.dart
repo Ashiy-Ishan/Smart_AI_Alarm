@@ -2,6 +2,10 @@ import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:flutter/material.dart';
 
 class AuthFormData {
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> resetFormKey = GlobalKey<FormState>();
+
   final TextEditingController loginEmailController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
 
@@ -18,27 +22,21 @@ class AuthFormData {
   bool signupConfirmObscure = true;
   bool agreeToTerms = false;
 
-  AuthUserModel get loginUser {
-    return AuthUserModel(
-      email: loginEmailController.text.trim(),
-      password: loginPasswordController.text.trim(),
-    );
-  }
+  AuthUserModel get loginUser => AuthUserModel(
+        email: loginEmailController.text.trim(),
+        password: loginPasswordController.text,
+      );
 
-  AuthUserModel get signupUser {
-    return AuthUserModel(
-      fullName: signupNameController.text.trim(),
-      email: signupEmailController.text.trim(),
-      password: signupPasswordController.text.trim(),
-      confirmPassword: signupConfirmPasswordController.text.trim(),
-    );
-  }
+  AuthUserModel get signupUser => AuthUserModel(
+        fullName: signupNameController.text.trim(),
+        email: signupEmailController.text.trim(),
+        password: signupPasswordController.text,
+        confirmPassword: signupConfirmPasswordController.text,
+      );
 
-  AuthUserModel get resetUser {
-    return AuthUserModel(
-      email: resetEmailController.text.trim(),
-    );
-  }
+  AuthUserModel get resetUser => AuthUserModel(
+        email: resetEmailController.text.trim(),
+      );
 
   void dispose() {
     loginEmailController.dispose();
