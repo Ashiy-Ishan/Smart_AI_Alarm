@@ -1,19 +1,18 @@
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class GlowBackground extends StatelessWidget {
   final double size;
   final double blurRadius;
   final double spreadRadius;
-  final double opacity;
   final Alignment alignment;
+  final Color glowColor;
 
   const GlowBackground({
     super.key,
     this.size = 240,
     this.blurRadius = 120,
     this.spreadRadius = 20,
-    this.opacity = 0.22,
+    this.glowColor = const Color(0x3DD9B56D),
     this.alignment = Alignment.center,
   });
 
@@ -29,7 +28,7 @@ class GlowBackground extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(opacity),
+                color: glowColor,
                 blurRadius: blurRadius,
                 spreadRadius: spreadRadius,
               ),
