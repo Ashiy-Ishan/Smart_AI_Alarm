@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:alarm_frontend/components/primary_button.dart';
+import 'package:alarm_frontend/screens/account_verified_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
-class VerifyAccountScreen extends StatelessWidget {
+class VerifyAccountScreen extends StatefulWidget {
   final VoidCallback? onContinue;
   final VoidCallback? onResend;
 
@@ -12,6 +15,120 @@ class VerifyAccountScreen extends StatelessWidget {
     this.onContinue,
     this.onResend,
   });
+
+  @override
+  State<VerifyAccountScreen> createState() => _VerifyAccountScreenState();
+}
+
+class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
+  final _controllers = List.generate(4, (_) => TextEditingController());
+  final _focusNodes = List.generate(4, (_) => FocusNode());
+
+  bool _hasNavigated = false;
+  int _secondsLeft = 20;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startResendTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
+    for (final node in _focusNodes) {
+      node.dispose();
+    }
+
+    super.dispose();
+  }
+
+  bool get _isCodeComplete =>
+      _controllers.every((controller) => controller.text.trim().isNotEmpty);
+
+  void _startResendTimer() {
+    _timer?.cancel();
+
+    setState(() {
+      _secondsLeft = 20;
+    });
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      if (_secondsLeft > 0) {
+        setState(() {
+          _secondsLeft--;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void _goToVerifiedScreen() {
+    if (_hasNavigated) return;
+    _hasNavigated = true;
+
+    if (widget.onContinue != null) {
+      widget.onContinue!();
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AccountVerifiedScreen(),
+      ),
+    );
+  }
+
+  void _onCodeChanged(int index, String value) {
+    if (value.length > 1) {
+      _controllers[index].text = value[value.length - 1];
+      _controllers[index].selection = const TextSelection.collapsed(offset: 1);
+    }
+
+    if (value.isNotEmpty && index < _focusNodes.length - 1) {
+      FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+    }
+
+    if (value.isEmpty && index > 0) {
+      FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
+    }
+
+    if (_isCodeComplete) {
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (mounted) {
+          _goToVerifiedScreen();
+        }
+      });
+    }
+  }
+
+  void _handleResend() {
+    if (_secondsLeft != 0) return;
+
+    if (widget.onResend != null) {
+      widget.onResend!();
+    }
+
+    _startResendTimer();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Verification code resent'),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +147,17 @@ class VerifyAccountScreen extends StatelessWidget {
                 style: AppTextStyles.heading.copyWith(fontSize: 34),
               ),
               const SizedBox(height: 28),
-
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _CodeBox(),
-                  _CodeBox(),
-                  _CodeBox(),
-                  _CodeBox(),
-                ],
+                children: List.generate(
+                  4,
+                  (index) => _CodeBox(
+                    controller: _controllers[index],
+                    focusNode: _focusNodes[index],
+                    onChanged: (value) => _onCodeChanged(index, value),
+                  ),
+                ),
               ),
-
               const SizedBox(height: 28),
               Text(
                 'A verification code has been\nsent to your email.',
@@ -49,29 +166,35 @@ class VerifyAccountScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Resend timer 20 secs',
+                'Resend timer $_secondsLeft secs',
                 style: AppTextStyles.subHeading.copyWith(
                   fontSize: 14,
-                  color: Color(0x3DD9B56D),
+                  color: const Color(0x66D9B56D),
                 ),
               ),
-
               const Spacer(),
-
               PrimaryButton(
                 text: 'Verify',
-                onPressed: onContinue ??
-                    () {
-                      Navigator.pushNamed(context, '/account-verified');
-                    },
+                onPressed: _isCodeComplete
+                    ? _goToVerifiedScreen
+                    : () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fill all code boxes'),
+                          ),
+                        );
+                      },
               ),
               const SizedBox(height: 16),
-
               GestureDetector(
-                onTap: onResend,
+                onTap: _secondsLeft == 0 ? _handleResend : null,
                 child: Text(
                   'Resend Code',
-                  style: AppTextStyles.link,
+                  style: AppTextStyles.link.copyWith(
+                    color: _secondsLeft == 0
+                        ? AppColors.primary
+                        : const Color(0x80D9B56D),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -84,19 +207,52 @@ class VerifyAccountScreen extends StatelessWidget {
 }
 
 class _CodeBox extends StatelessWidget {
-  const _CodeBox();
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final ValueChanged<String> onChanged;
+
+  const _CodeBox({
+    required this.controller,
+    required this.focusNode,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 56,
       height: 56,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xCCD9B56D),
-          width: 1.4,
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        onChanged: onChanged,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        style: AppTextStyles.heading.copyWith(
+          fontSize: 22,
+          color: AppColors.primary,
+        ),
+        cursorColor: AppColors.primary,
+        decoration: InputDecoration(
+          counterText: '',
+          filled: true,
+          fillColor: Colors.transparent,
+          contentPadding: EdgeInsets.zero,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(
+              color: Color(0xCCD9B56D),
+              width: 1.4,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(
+              color: AppColors.primary,
+              width: 1.8,
+            ),
+          ),
         ),
       ),
     );
