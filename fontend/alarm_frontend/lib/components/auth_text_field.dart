@@ -1,5 +1,5 @@
-import 'package:alarm_frontend/components/app_colors.dart';
-import 'package:alarm_frontend/components/app_text_styles.dart';
+import 'package:alarm_frontend/utils/app_colors.dart';
+import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AuthTextField extends StatelessWidget {

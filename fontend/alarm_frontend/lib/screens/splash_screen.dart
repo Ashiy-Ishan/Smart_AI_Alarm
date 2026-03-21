@@ -1,4 +1,4 @@
-import 'package:alarm_frontend/components/app_colors.dart';
+import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/components/primary_button.dart';
 import 'package:alarm_frontend/models/auth_page_model.dart';
 import 'package:alarm_frontend/screens/auth_screen.dart';
