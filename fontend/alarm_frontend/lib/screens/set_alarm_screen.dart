@@ -1,0 +1,155 @@
+import 'package:alarm_frontend/components/glow_bg.dart';
+import 'package:alarm_frontend/components/primary_button.dart';
+import 'package:alarm_frontend/utils/app_colors.dart';
+import 'package:alarm_frontend/utils/app_text_styles.dart';
+import 'package:flutter/material.dart';
+
+class StopAlarmScreen extends StatelessWidget {
+  final String timeText;
+  final String dateText;
+  final VoidCallback? onSnooze;
+  final VoidCallback? onStop;
+
+  const StopAlarmScreen({
+    super.key,
+    this.timeText = '06:18',
+    this.dateText = 'Nov 12 Monday',
+    this.onSnooze,
+    this.onStop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Stack(
+        children: [
+          const GlowBackground(
+            size: 300,
+            blurRadius: 130,
+            spreadRadius: 18,
+            alignment: Alignment.center,
+            glowColor: Color(0x36D9B56D),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+              child: Column(
+                children: [
+                  const SizedBox(height: 18),
+
+                  Text(
+                    'Alarm',
+                    style: AppTextStyles.subHeading.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0x8FB8B8B8),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  Text(
+                    timeText,
+                    style: AppTextStyles.heading.copyWith(
+                      fontSize: 84,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                      height: 1,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Text(
+                    dateText,
+                    style: AppTextStyles.heading.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+
+                  const SizedBox(height: 80),
+
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const GlowBackground(
+                        size: 180,
+                        blurRadius: 95,
+                        spreadRadius: 12,
+                        alignment: Alignment.center,
+                        glowColor: Color(0x52D9B56D),
+                      ),
+                      Container(
+                        width: 170,
+                        height: 170,
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.alarm,
+                          size: 110,
+                          color: AppColors.primary,
+                          shadows: [
+                            Shadow(color: Color(0x59D9B56D), blurRadius: 24),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 150),
+
+                  PrimaryButton(
+                    text: 'Snooze',
+                    onPressed:
+                        onSnooze ??
+                        () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Alarm snoozed')),
+                          );
+                        },
+                  ),
+
+                  const SizedBox(height: 55),
+
+                  SizedBox(
+                    width: 190,
+                    height: 60,
+                    child: OutlinedButton(
+                      onPressed:
+                          onStop ??
+                          () {
+                            Navigator.pop(context);
+                          },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: const Color(0xFF23262F),
+                        side: const BorderSide(
+                          color: AppColors.primary,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      child: Text(
+                        'Stop',
+                        style: AppTextStyles.button.copyWith(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 26),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
