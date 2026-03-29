@@ -4,6 +4,7 @@ import 'package:alarm_frontend/components/social_button.dart';
 import 'package:alarm_frontend/data/auth_form_data.dart';
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/auth_page_model.dart';
+import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:alarm_frontend/screens/verify_account_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
@@ -13,10 +14,7 @@ import 'package:flutter/material.dart';
 class AuthScreen extends StatefulWidget {
   final AuthPageModel initialPage;
 
-  const AuthScreen({
-    super.key,
-    required this.initialPage,
-  });
+  const AuthScreen({super.key, required this.initialPage});
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -76,6 +74,13 @@ class _AuthScreenState extends State<AuthScreen> {
 
     debugPrint('Login Email: ${user.email}');
     debugPrint('Login Password: ${user.password}');
+
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const MainScreen()),
+    );
   }
 
   Future<void> handleSignup() async {
@@ -114,9 +119,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const VerifyAccountScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const VerifyAccountScreen()),
     );
   }
 
@@ -175,12 +178,7 @@ class _AuthScreenState extends State<AuthScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 110),
-          Center(
-            child: Text(
-              currentPage.title,
-              style: AppTextStyles.heading,
-            ),
-          ),
+          Center(child: Text(currentPage.title, style: AppTextStyles.heading)),
           const SizedBox(height: 55),
           AuthTextField(
             controller: formData.loginEmailController,
@@ -218,10 +216,7 @@ class _AuthScreenState extends State<AuthScreen> {
               onTap: () => switchPage(AuthPageModel.resetPassword()),
               child: const Text(
                 'Forgot Password ?',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 15,
-                ),
+                style: TextStyle(color: AppColors.textPrimary, fontSize: 15),
               ),
             ),
           ),
@@ -233,10 +228,7 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
           const SizedBox(height: 34),
           const Center(
-            child: Text(
-              'Or log in with',
-              style: AppTextStyles.subHeading,
-            ),
+            child: Text('Or log in with', style: AppTextStyles.subHeading),
           ),
           const SizedBox(height: 22),
           SocialButton(
@@ -252,17 +244,11 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 const Text(
                   "Don't have an account ? ",
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.signup()),
-                  child: const Text(
-                    'Sign Up',
-                    style: AppTextStyles.link,
-                  ),
+                  child: const Text('Sign Up', style: AppTextStyles.link),
                 ),
               ],
             ),
@@ -280,12 +266,7 @@ class _AuthScreenState extends State<AuthScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 85),
-          Center(
-            child: Text(
-              currentPage.title,
-              style: AppTextStyles.heading,
-            ),
-          ),
+          Center(child: Text(currentPage.title, style: AppTextStyles.heading)),
           const SizedBox(height: 45),
           AuthTextField(
             controller: formData.signupNameController,
@@ -370,15 +351,9 @@ class _AuthScreenState extends State<AuthScreen> {
               const SizedBox(width: 12),
               const Text(
                 'I agree to ',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
               ),
-              const Text(
-                'terms',
-                style: AppTextStyles.link,
-              ),
+              const Text('terms', style: AppTextStyles.link),
             ],
           ),
           const SizedBox(height: 28),
@@ -394,17 +369,11 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 const Text(
                   'Already have an account? ',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.login()),
-                  child: const Text(
-                    'Log in',
-                    style: AppTextStyles.link,
-                  ),
+                  child: const Text('Log in', style: AppTextStyles.link),
                 ),
               ],
             ),
@@ -422,12 +391,7 @@ class _AuthScreenState extends State<AuthScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 140),
-          Center(
-            child: Text(
-              currentPage.title,
-              style: AppTextStyles.heading,
-            ),
-          ),
+          Center(child: Text(currentPage.title, style: AppTextStyles.heading)),
           const SizedBox(height: 16),
           Center(
             child: Text(
@@ -454,10 +418,7 @@ class _AuthScreenState extends State<AuthScreen> {
           Center(
             child: GestureDetector(
               onTap: () => switchPage(AuthPageModel.login()),
-              child: const Text(
-                'Back to Login',
-                style: AppTextStyles.link,
-              ),
+              child: const Text('Back to Login', style: AppTextStyles.link),
             ),
           ),
         ],
