@@ -14,7 +14,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
       body: Center(
         child: Text(
           "Today's Summary",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,fontStyle: FontStyle.italic ),
         ),
       ),
     );
