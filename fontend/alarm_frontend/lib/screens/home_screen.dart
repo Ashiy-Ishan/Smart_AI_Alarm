@@ -49,10 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       height: 270,
-                      decoration: BoxDecoration(
-                        color: AppColors.card,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      decoration: BoxDecoration(color: AppColors.background),
                     ),
 
                     /// Lottie Animation

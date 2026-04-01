@@ -1,3 +1,5 @@
+import 'package:alarm_frontend/components/event_card.dart';
+import 'package:alarm_frontend/models/event_model.dart';
 import 'package:alarm_frontend/screens/home_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,16 @@ class TodaySummaryScreen extends StatefulWidget {
 }
 
 class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
+  final List<EventModel> events = const [
+    EventModel(
+      time: "9:30 AM",
+      title: "Product Sync",
+      extra: "115m left",
+      highlight: true,
+    ),
+    EventModel(time: "2:00 PM", title: "Client Call", rightTime: "2:00 PM"),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,8 +42,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                           Navigator.pushReplacement(
                             context,
                             PageRouteBuilder(
-                              pageBuilder: (_, _, _) =>
-                                  const HomeScreen(),
+                              pageBuilder: (_, _, _) => const HomeScreen(),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero,
                             ),
@@ -56,7 +67,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
                   const Divider(color: AppColors.border),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 40),
 
                   const Text(
                     "Today’s Events",
@@ -69,19 +80,13 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
                   const SizedBox(height: 15),
 
-                  _eventCard(
-                    time: "9:30 AM",
-                    title: "Product Sync",
-                    extra: "115m left",
-                    highlight: true,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  _eventCard(
-                    time: "2:00 PM",
-                    title: "Client Call",
-                    rightTime: "2:00 PM",
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      return EventCard(event: events[index]);
+                    },
                   ),
 
                   const SizedBox(height: 20),
@@ -210,78 +215,4 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
       ),
     );
   }
-}
-
-Widget _eventCard({
-  required String time,
-  required String title,
-  String? extra,
-  String? rightTime,
-  bool highlight = false,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: AppColors.card,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.border),
-    ),
-    child: Row(
-      children: [
-        /// Left Highlight Bar
-        Container(
-          width: 5,
-          height: 50,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-
-        const SizedBox(width: 10),
-
-        /// Content
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "$time • $title",
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              if (extra != null)
-                Container(
-                  margin: const EdgeInsets.only(top: 8),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    extra,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-
-        if (rightTime != null)
-          Text(
-            rightTime,
-            style: const TextStyle(color: AppColors.textSecondary),
-          ),
-      ],
-    ),
-  );
 }
