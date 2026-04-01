@@ -1,6 +1,5 @@
 import 'package:alarm_frontend/components/event_card.dart';
 import 'package:alarm_frontend/models/event_model.dart';
-import 'package:alarm_frontend/screens/home_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -39,14 +38,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (_, _, _) => const HomeScreen(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
+                          Navigator.of(context).pop();
                         },
                         icon: const Icon(
                           Icons.arrow_back,

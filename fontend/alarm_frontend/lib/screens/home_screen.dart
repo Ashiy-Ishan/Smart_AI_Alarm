@@ -223,16 +223,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 20),
 
-                /// Today Summary Navigation
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const TodaySummaryScreen(),
-                      ),
-                    );
-                  },
+    /// Today Summary Navigation
+    InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const TodaySummaryScreen()),
+        );
+      },
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(

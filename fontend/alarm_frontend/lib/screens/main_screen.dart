@@ -1,4 +1,3 @@
-import 'package:alarm_frontend/screens/today_summary_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/bottom_nav_bar.dart';
 import 'home_screen.dart';
@@ -17,6 +16,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   final List<Widget> screens = const [
     HomeScreen(),
     ScheduleScreen(),
@@ -31,10 +32,19 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void openScreen(Widget screen) {
+    navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => screen));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: currentIndex, children: screens),
+      body: Navigator(
+        key: navigatorKey,
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(builder: (_) => screens[currentIndex]);
+        },
+      ),
 
       bottomNavigationBar: BottomNavBar(
         currentIndex: currentIndex,
