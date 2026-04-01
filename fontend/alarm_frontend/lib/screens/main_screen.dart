@@ -10,11 +10,13 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainScreen> createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final List<Widget> screens = const [
     HomeScreen(),
@@ -30,10 +32,25 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void openScreen(Widget screen) {
+    navigatorKey.currentState?.push(
+      PageRouteBuilder(
+        pageBuilder: (_, _, _) => screen,
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: currentIndex, children: screens),
+      body: Navigator(
+        key: navigatorKey,
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(builder: (_) => screens[currentIndex]);
+        },
+      ),
 
       bottomNavigationBar: BottomNavBar(
         currentIndex: currentIndex,

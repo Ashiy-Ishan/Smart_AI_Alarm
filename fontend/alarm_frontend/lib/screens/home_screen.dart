@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:alarm_frontend/screens/today_summary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -48,11 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Stack(
                   children: [
                     Container(
-                      height: 230,
-                      decoration: BoxDecoration(
-                        color: AppColors.card,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      height: 270,
+                      decoration: BoxDecoration(color: AppColors.background),
                     ),
 
                     /// Lottie Animation
@@ -229,12 +227,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 /// Today Summary Navigation
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const TodaySummaryScreen(),
-                      ),
-                    );
+                    final mainScreenState = context
+                        .findAncestorStateOfType<MainScreenState>();
+                    mainScreenState?.openScreen(const TodaySummaryScreen());
                   },
                   child: Container(
                     padding: const EdgeInsets.all(16),
