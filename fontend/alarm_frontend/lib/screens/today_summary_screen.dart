@@ -1,5 +1,7 @@
+import 'package:alarm_frontend/components/bottom_nav_bar.dart';
 import 'package:alarm_frontend/components/event_card.dart';
 import 'package:alarm_frontend/models/event_model.dart';
+import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,8 @@ class TodaySummaryScreen extends StatefulWidget {
 }
 
 class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
+  int currentIndex = 0;
+
   final List<EventModel> events = const [
     EventModel(
       time: "9:30 AM",
@@ -20,6 +24,17 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
     ),
     EventModel(time: "2:00 PM", title: "Client Call", rightTime: "2:00 PM"),
   ];
+
+  void onTabTapped(int index) {
+  Navigator.pushReplacement(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (_,_,_) => MainScreen(initialIndex: index),
+      transitionDuration: Duration.zero, 
+      reverseTransitionDuration: Duration.zero,
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +219,10 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: currentIndex,
+        onTap: onTabTapped,
       ),
     );
   }

@@ -7,14 +7,21 @@ import 'insight_screen.dart';
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  const MainScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainScreen> createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
+  late int currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.initialIndex;
+  }
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -32,25 +39,10 @@ class MainScreenState extends State<MainScreen> {
     });
   }
 
-  void openScreen(Widget screen) {
-    navigatorKey.currentState?.push(
-      PageRouteBuilder(
-        pageBuilder: (_, _, _) => screen,
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Navigator(
-        key: navigatorKey,
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(builder: (_) => screens[currentIndex]);
-        },
-      ),
+      body: screens[currentIndex],
 
       bottomNavigationBar: BottomNavBar(
         currentIndex: currentIndex,
