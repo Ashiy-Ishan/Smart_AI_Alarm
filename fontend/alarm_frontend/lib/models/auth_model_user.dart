@@ -3,7 +3,7 @@ class AuthUserModel {
   final String email;
   final String password;
   final String confirmPassword;
-  final String? profileImage;
+  final String profileImage;
 
   const AuthUserModel({
     this.fullName = '',
