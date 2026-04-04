@@ -26,20 +26,34 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   ];
 
   void onTabTapped(int index) {
-  Navigator.pushReplacement(
-    context,
-    PageRouteBuilder(
-      pageBuilder: (_,_,_) => MainScreen(initialIndex: index),
-      transitionDuration: Duration.zero, 
-      reverseTransitionDuration: Duration.zero,
-    ),
-  );
-}
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, _, _) => MainScreen(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        title: const Text(
+          "Today’s Summary",
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -49,29 +63,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        "Today’s Summary",
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
                   const Divider(color: AppColors.border),
 
                   const SizedBox(height: 40),
