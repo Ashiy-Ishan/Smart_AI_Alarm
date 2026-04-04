@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:flutter/material.dart';
 import '../components/bottom_nav_bar.dart';
 import 'home_screen.dart';
@@ -7,46 +8,43 @@ import 'insight_screen.dart';
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  final int initialIndex;
-  const MainScreen({super.key, this.initialIndex = 0});
+  
+  const MainScreen({super.key});
+  static final GlobalKey<MainScreenState> globalKey =
+      GlobalKey<MainScreenState>();
 
   @override
   State<MainScreen> createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
-  late int currentIndex;
+  late int currentIndex=0;
 
-  @override
-  void initState() {
-    super.initState();
-    currentIndex = widget.initialIndex;
+  void changeTab(int index) {
+    setState(() {
+      currentIndex = index;
+    });
   }
-
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final List<Widget> screens = const [
     HomeScreen(),
     ScheduleScreen(),
     HubScreen(),
     InsightScreen(),
-    ProfileScreen(),
+    ProfileScreen(user: AuthUserModel()),
   ];
-
-  void onTabTapped(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[currentIndex],
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens,
+      ),
 
       bottomNavigationBar: BottomNavBar(
         currentIndex: currentIndex,
-        onTap: onTabTapped,
+        onTap: changeTab,
       ),
     );
   }
