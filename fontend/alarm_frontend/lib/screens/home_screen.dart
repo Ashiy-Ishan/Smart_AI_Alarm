@@ -1,4 +1,3 @@
-import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:alarm_frontend/screens/today_summary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -227,9 +226,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 /// Today Summary Navigation
                 InkWell(
                   onTap: () {
-                    final mainScreenState = context
-                        .findAncestorStateOfType<MainScreenState>();
-                    mainScreenState?.openScreen(const TodaySummaryScreen());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const TodaySummaryScreen(),
+                      ),
+                    );
                   },
                   child: Container(
                     padding: const EdgeInsets.all(16),

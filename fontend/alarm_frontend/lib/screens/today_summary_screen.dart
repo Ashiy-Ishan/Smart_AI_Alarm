@@ -1,5 +1,7 @@
+import 'package:alarm_frontend/components/bottom_nav_bar.dart';
 import 'package:alarm_frontend/components/event_card.dart';
 import 'package:alarm_frontend/models/event_model.dart';
+import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,8 @@ class TodaySummaryScreen extends StatefulWidget {
 }
 
 class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
+  int currentIndex = 0;
+
   final List<EventModel> events = const [
     EventModel(
       time: "9:30 AM",
@@ -21,10 +25,35 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
     EventModel(time: "2:00 PM", title: "Client Call", rightTime: "2:00 PM"),
   ];
 
+  void onTabTapped(int index) {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, _, _) => MainScreen(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        title: const Text(
+          "Today’s Summary",
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -34,29 +63,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        "Today’s Summary",
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
                   const Divider(color: AppColors.border),
 
                   const SizedBox(height: 40),
@@ -204,6 +210,10 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: currentIndex,
+        onTap: onTabTapped,
       ),
     );
   }

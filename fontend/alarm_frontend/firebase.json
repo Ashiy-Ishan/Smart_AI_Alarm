@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"ai-alarm-system","appId":"1:541409753782:android:a76adcd00f478112514417","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"ai-alarm-system","configurations":{"android":"1:541409753782:android:a76adcd00f478112514417","ios":"1:541409753782:ios:f1fee832ac3f08f4514417"}}}}}}
