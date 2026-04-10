@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:flutter/material.dart';
 import '../components/bottom_nav_bar.dart';
 import 'home_screen.dart';
@@ -7,54 +8,43 @@ import 'insight_screen.dart';
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  
   const MainScreen({super.key});
+  static final GlobalKey<MainScreenState> globalKey =
+      GlobalKey<MainScreenState>();
 
   @override
   State<MainScreen> createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
+  late int currentIndex=0;
 
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  void changeTab(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
 
   final List<Widget> screens = const [
     HomeScreen(),
     ScheduleScreen(),
     HubScreen(),
     InsightScreen(),
-    ProfileScreen(),
+    ProfileScreen(user: AuthUserModel()),
   ];
-
-  void onTabTapped(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
-
-  void openScreen(Widget screen) {
-    navigatorKey.currentState?.push(
-      PageRouteBuilder(
-        pageBuilder: (_, _, _) => screen,
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Navigator(
-        key: navigatorKey,
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(builder: (_) => screens[currentIndex]);
-        },
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens,
       ),
 
       bottomNavigationBar: BottomNavBar(
         currentIndex: currentIndex,
-        onTap: onTabTapped,
+        onTap: changeTab,
       ),
     );
   }
