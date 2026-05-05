@@ -8,7 +8,6 @@ import 'insight_screen.dart';
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  
   const MainScreen({super.key});
   static final GlobalKey<MainScreenState> globalKey =
       GlobalKey<MainScreenState>();
@@ -18,7 +17,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  late int currentIndex=0;
+  late int currentIndex = 0;
 
   void changeTab(int index) {
     setState(() {
@@ -37,10 +36,7 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: currentIndex, children: screens),
 
       bottomNavigationBar: BottomNavBar(
         currentIndex: currentIndex,
