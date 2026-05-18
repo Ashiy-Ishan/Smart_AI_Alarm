@@ -1,6 +1,8 @@
+import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/screens/today_summary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import '../utils/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,11 +17,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final String fullName = userProvider.user?.fullName ?? "";
+    final String firstName = fullName.isNotEmpty ? fullName.split(' ').first : "Alex";
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -28,15 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Good Morning,\nAlex",
-                      style: TextStyle(
+                    Text(
+                      "Good Morning,\n$firstName",
+                      style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Icon(
+                    const Icon(
                       Icons.notifications_none,
                       color: AppColors.primary,
                       size: 40,
@@ -90,12 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     /// Greeting Overlay (LEFT)
-                    const Positioned(
+                    Positioned(
                       bottom: 12,
                       left: 12,
                       child: Text(
-                        "Greeting,\nmorning, Alex",
-                        style: TextStyle(
+                        "Greeting,\nmorning, $firstName",
+                        style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
                         ),
