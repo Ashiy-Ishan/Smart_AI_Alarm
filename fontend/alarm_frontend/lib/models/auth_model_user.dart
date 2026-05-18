@@ -13,6 +13,26 @@ class AuthUserModel {
     this.profileImage= '',
   });
 
+  factory AuthUserModel.fromJson(Map<String, dynamic> json) {
+    return AuthUserModel(
+      fullName: json['fullName'],
+      email: json['email'],
+      password: json['password'],
+      confirmPassword: json['confirmPassword'],
+      profileImage: json['profileImage'],
+    );
+  }
+
+    Map<String, dynamic> toMap() {
+    return {
+      'fullName': fullName,
+      'email': email,
+      'password': password,
+      'confirmPassword': confirmPassword,
+      'profileImage': profileImage,
+    };
+  }
+
   AuthUserModel copyWith({
     String? fullName,
     String? email,

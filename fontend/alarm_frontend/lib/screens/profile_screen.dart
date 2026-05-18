@@ -1,5 +1,6 @@
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/section_card.dart';
+import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/screens/calendar_screen.dart';
 import 'package:alarm_frontend/screens/clear_history_screen.dart';
 import 'package:alarm_frontend/screens/data_encryption_screen.dart';
@@ -7,7 +8,9 @@ import 'package:alarm_frontend/screens/delete_account_screen.dart';
 import 'package:alarm_frontend/screens/feedback_screen.dart';
 import 'package:alarm_frontend/screens/gmail_screen.dart';
 import 'package:alarm_frontend/screens/message_screen.dart';
+import 'package:alarm_frontend/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../utils/app_colors.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -117,6 +120,69 @@ class ProfileScreen extends StatelessWidget {
                       "Feedback",
                       Icons.warning_amber,
                       const FeedbackScreen(),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.logout, color: Colors.redAccent),
+                      title: const Text(
+                        "Log Out",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.redAccent,
+                      ),
+                      onTap: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: AppColors.card,
+                            title: const Text(
+                              "Log Out",
+                              style: TextStyle(color: AppColors.textPrimary),
+                            ),
+                            content: const Text(
+                              "Are you sure you want to log out?",
+                              style: TextStyle(color: AppColors.textSecondary),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text(
+                                  "Cancel",
+                                  style: TextStyle(color: AppColors.textSecondary),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text(
+                                  "Log Out",
+                                  style: TextStyle(color: Colors.redAccent),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          if (context.mounted) {
+                            await Provider.of<UserProvider>(context, listen: false)
+                                .signOut(context);
+                            if (!context.mounted) return;
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SplashScreen(),
+                              ),
+                              (route) => false,
+                            );
+                          }
+                        }
+                      },
                     ),
                   ],
                 ),

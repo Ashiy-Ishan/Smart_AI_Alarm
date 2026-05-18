@@ -4,12 +4,14 @@ import 'package:alarm_frontend/components/social_button.dart';
 import 'package:alarm_frontend/data/auth_form_data.dart';
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/auth_page_model.dart';
+import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:alarm_frontend/screens/verify_account_screen.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/utils/validators.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {
   final AuthPageModel initialPage;
@@ -69,18 +71,26 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => isLoading = false);
+    try {
+      await Provider.of<UserProvider>(context, listen: false).signInWithEmailAndPassword(
+        email: user.email,
+        password: user.password,
+        context: context,
+      );
 
-    debugPrint('Login Email: ${user.email}');
-    debugPrint('Login Password: ${user.password}');
+      if (!mounted) return;
 
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const MainScreen()),
-    );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MainScreen()),
+      );
+    } catch (e) {
+      // Errors are handled and shown via SnackBar in UserProvider
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   Future<void> handleSignup() async {
@@ -108,19 +118,27 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => isLoading = false);
+    try {
+      await Provider.of<UserProvider>(context, listen: false).signUpWithEmailAndPassword(
+        email: user.email,
+        password: user.password,
+        fullName: user.fullName,
+        context: context,
+      );
 
-    debugPrint('Signup Name: ${user.fullName}');
-    debugPrint('Signup Email: ${user.email}');
-    debugPrint('Signup Password: ${user.password}');
+      if (!mounted) return;
 
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const VerifyAccountScreen()),
-    );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const VerifyAccountScreen()),
+      );
+    } catch (e) {
+      // Errors are handled and shown via SnackBar in UserProvider
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   Future<void> handleResetPassword() async {
@@ -131,11 +149,18 @@ class _AuthScreenState extends State<AuthScreen> {
     final AuthUserModel user = formData.resetUser;
 
     setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => isLoading = false);
-
-    debugPrint('Reset Email: ${user.email}');
-    showMessage('Password reset link sent');
+    try {
+      await Provider.of<UserProvider>(context, listen: false).sendPasswordResetEmail(
+        email: user.email,
+        context: context,
+      );
+    } catch (e) {
+      // Errors are handled and shown via SnackBar in UserProvider
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   @override
@@ -234,7 +259,10 @@ class _AuthScreenState extends State<AuthScreen> {
           SocialButton(
             text: 'Google',
             onPressed: () {
-              debugPrint('Google login');
+              Provider.of<UserProvider>(
+                context,
+                listen: false,
+              ).signInWithGoogle(context);
             },
           ),
           const SizedBox(height: 24),
