@@ -173,8 +173,10 @@ class ProfileScreen extends StatelessWidget {
                             await Provider.of<UserProvider>(context, listen: false)
                                 .signOut(context);
                             if (!context.mounted) return;
-                            Navigator.pushAndRemoveUntil(
-                              context,
+                            // rootNavigator: true targets the MaterialApp-level navigator,
+                            // fully removing MainScreen (and its nav bar) from the tree.
+                            Navigator.of(context, rootNavigator: true)
+                                .pushAndRemoveUntil(
                               MaterialPageRoute(
                                 builder: (context) => const SplashScreen(),
                               ),
