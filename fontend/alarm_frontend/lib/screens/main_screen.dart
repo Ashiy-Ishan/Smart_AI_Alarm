@@ -21,10 +21,37 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
+  /// One dedicated NavigatorKey per tab so each tab keeps its own back-stack.
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(), // Home
+    GlobalKey<NavigatorState>(), // Schedule
+    GlobalKey<NavigatorState>(), // Hub
+    GlobalKey<NavigatorState>(), // Insight
+    GlobalKey<NavigatorState>(), // Profile
+  ];
+
   void changeTab(int index) {
-    setState(() {
-      currentIndex = index;
-    });
+    if (currentIndex == index) {
+      // Tapping the active tab pops back to its root screen
+      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+    } else {
+      setState(() => currentIndex = index);
+    }
+  }
+
+  /// Wraps each tab's root screen in its own Navigator.
+  /// Using Offstage keeps all navigators alive so state is preserved.
+  Widget _buildTabNavigator(int index, Widget rootScreen) {
+    return Offstage(
+      offstage: currentIndex != index,
+      child: Navigator(
+        key: _navigatorKeys[index],
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: settings,
+          builder: (_) => rootScreen,
+        ),
+      ),
+    );
   }
 
   @override
@@ -32,22 +59,31 @@ class MainScreenState extends State<MainScreen> {
     final userProvider = Provider.of<UserProvider>(context);
     final user = userProvider.user ?? const AuthUserModel();
 
-    final List<Widget> screens = [
-      const HomeScreen(),
-      const ScheduleScreen(),
-      const HubScreen(),
-      const InsightScreen(),
-      ProfileScreen(user: user),
-    ];
-
-    return Scaffold(
-      body: IndexedStack(index: currentIndex, children: screens),
-
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: changeTab,
+    return PopScope(
+      // Let the tab's own navigator handle back presses first
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        final nav = _navigatorKeys[currentIndex].currentState;
+        if (nav != null && nav.canPop()) {
+          nav.pop();
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            _buildTabNavigator(0, const HomeScreen()),
+            _buildTabNavigator(1, const ScheduleScreen()),
+            _buildTabNavigator(2, const HubScreen()),
+            _buildTabNavigator(3, const InsightScreen()),
+            _buildTabNavigator(4, ProfileScreen(user: user)),
+          ],
+        ),
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: currentIndex,
+          onTap: changeTab,
+        ),
       ),
     );
   }
 }
-
