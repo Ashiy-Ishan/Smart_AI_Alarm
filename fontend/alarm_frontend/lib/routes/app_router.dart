@@ -112,8 +112,8 @@ class AppRouter {
   /// Fade transition — used for root-level screens (splash, main).
   static PageRouteBuilder<void> _fade(Widget page) {
     return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, animation, __, child) =>
+      pageBuilder: (_, _, _) => page,
+      transitionsBuilder: (_, animation, _, child) =>
           FadeTransition(opacity: animation, child: child),
       transitionDuration: const Duration(milliseconds: 250),
     );
@@ -122,8 +122,8 @@ class AppRouter {
   /// Slide-up transition — used for sub-screens and auth steps.
   static PageRouteBuilder<void> _slide(Widget page) {
     return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, animation, __, child) {
+      pageBuilder: (_, _, _) => page,
+      transitionsBuilder: (_, animation, _, child) {
         final tween = Tween(
           begin: const Offset(1.0, 0.0),
           end: Offset.zero,
