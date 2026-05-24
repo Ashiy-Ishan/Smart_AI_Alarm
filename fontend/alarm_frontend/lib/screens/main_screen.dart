@@ -1,5 +1,6 @@
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
+import 'package:alarm_frontend/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/bottom_nav_bar.dart';
@@ -48,10 +49,17 @@ class MainScreenState extends State<MainScreen> {
       offstage: currentIndex != index,
       child: Navigator(
         key: _navigatorKeys[index],
-        onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: settings,
-          builder: (_) => rootScreen,
-        ),
+        // The first route in each tab is always the tab's root screen.
+        // Any named push inside a tab is handled by AppRouter.
+        onGenerateRoute: (settings) {
+          if (settings.name == Navigator.defaultRouteName) {
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (_) => rootScreen,
+            );
+          }
+          return AppRouter.onGenerateRoute(settings);
+        },
       ),
     );
   }
