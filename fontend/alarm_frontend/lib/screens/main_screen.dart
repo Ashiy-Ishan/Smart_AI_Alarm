@@ -35,6 +35,8 @@ class MainScreenState extends State<MainScreen> {
       // Tapping the active tab pops back to its root screen
       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
     } else {
+      // Reset the tab we're leaving so returning to it always shows its root
+      _navigatorKeys[currentIndex].currentState?.popUntil((route) => route.isFirst);
       setState(() => currentIndex = index);
     }
   }
