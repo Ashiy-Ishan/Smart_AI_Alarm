@@ -1,5 +1,5 @@
 import 'package:alarm_frontend/providers/user_provider.dart';
-import 'package:alarm_frontend/screens/today_summary_screen.dart';
+import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -232,12 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 /// Today Summary Navigation
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const TodaySummaryScreen(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, AppRoutes.todaySummary);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(16),

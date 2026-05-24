@@ -1,6 +1,6 @@
 import 'package:alarm_frontend/controller/auth_controller.dart';
 import 'package:alarm_frontend/models/auth_model_user.dart';
-import 'package:alarm_frontend/screens/main_screen.dart';
+import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -41,10 +41,8 @@ class UserProvider extends ChangeNotifier {
       );
       notifyListeners();
       if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-        );
+        Navigator.of(context, rootNavigator: true)
+            .pushReplacementNamed(AppRoutes.main);
       }
     }
   }

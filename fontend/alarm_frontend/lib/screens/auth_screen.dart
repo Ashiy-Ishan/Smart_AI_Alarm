@@ -5,8 +5,7 @@ import 'package:alarm_frontend/data/auth_form_data.dart';
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/auth_page_model.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
-import 'package:alarm_frontend/screens/main_screen.dart';
-import 'package:alarm_frontend/screens/verify_account_screen.dart';
+import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/utils/validators.dart';
@@ -80,10 +79,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const MainScreen()),
-      );
+      Navigator.of(context, rootNavigator: true)
+          .pushReplacementNamed(AppRoutes.main);
     } catch (e) {
       // Errors are handled and shown via SnackBar in UserProvider
     } finally {
@@ -128,10 +125,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const VerifyAccountScreen()),
-      );
+      Navigator.of(context, rootNavigator: true)
+          .pushReplacementNamed(AppRoutes.verifyAccount);
     } catch (e) {
       // Errors are handled and shown via SnackBar in UserProvider
     } finally {
