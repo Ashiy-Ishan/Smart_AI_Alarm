@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:alarm_frontend/components/primary_button.dart';
-import 'package:alarm_frontend/screens/account_verified_screen.dart';
+import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -83,12 +83,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const AccountVerifiedScreen(),
-      ),
-    );
+    Navigator.pushNamed(context, AppRoutes.accountVerified);
   }
 
   void _onCodeChanged(int index, String value) {

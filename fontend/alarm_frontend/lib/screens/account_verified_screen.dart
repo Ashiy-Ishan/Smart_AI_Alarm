@@ -1,6 +1,6 @@
 import 'package:alarm_frontend/components/glow_bg.dart';
 import 'package:alarm_frontend/components/primary_button.dart';
-import 'package:alarm_frontend/screens/main_screen.dart';
+import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -81,10 +81,8 @@ class AccountVerifiedScreen extends StatelessWidget {
                     onPressed:
                         onContinue ??
                         () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => MainScreen()),
-                          );
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed(AppRoutes.main);
                         },
                   ),
                   const SizedBox(height: 20),
