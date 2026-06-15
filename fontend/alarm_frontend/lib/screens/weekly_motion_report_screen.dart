@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-class WeeklyMmotionReportScreen extends StatefulWidget {
-  const WeeklyMmotionReportScreen({super.key});
+class WeeklyMotionReportScreen extends StatefulWidget {
+  const WeeklyMotionReportScreen({super.key});
 
   @override
-  State<WeeklyMmotionReportScreen> createState() => _WeeklyMmotionReportScreenState();
+  State<WeeklyMotionReportScreen> createState() =>
+      _WeeklyMotionReportScreenState();
 }
 
-class _WeeklyMmotionReportScreenState extends State<WeeklyMmotionReportScreen> {
+class _WeeklyMotionReportScreenState extends State<WeeklyMotionReportScreen> {
   @override
   Widget build(BuildContext context) {
     return const Placeholder();

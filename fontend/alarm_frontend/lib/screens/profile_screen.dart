@@ -1,13 +1,9 @@
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/section_card.dart';
-import 'package:alarm_frontend/screens/calendar_screen.dart';
-import 'package:alarm_frontend/screens/clear_history_screen.dart';
-import 'package:alarm_frontend/screens/data_encryption_screen.dart';
-import 'package:alarm_frontend/screens/delete_account_screen.dart';
-import 'package:alarm_frontend/screens/feedback_screen.dart';
-import 'package:alarm_frontend/screens/gmail_screen.dart';
-import 'package:alarm_frontend/screens/message_screen.dart';
+import 'package:alarm_frontend/providers/user_provider.dart';
+import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../utils/app_colors.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -66,19 +62,9 @@ class ProfileScreen extends StatelessWidget {
                 SectionCard(
                   title: "Account Linking",
                   children: [
-                    _tile(
-                      context,
-                      "Calendar",
-                      Icons.calendar_today,
-                      const CalendarScreen(),
-                    ),
-                    _tile(context, "Gmail", Icons.mail, const GmailScreen()),
-                    _tile(
-                      context,
-                      "Message",
-                      Icons.message,
-                      const MessageScreen(),
-                    ),
+                    _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar),
+                    _tile(context, "Gmail", Icons.mail, AppRoutes.gmail),
+                    _tile(context, "Message", Icons.message, AppRoutes.message),
                   ],
                 ),
 
@@ -87,24 +73,9 @@ class ProfileScreen extends StatelessWidget {
                 SectionCard(
                   title: "Data Privacy",
                   children: [
-                    _tile(
-                      context,
-                      "Data Encryption",
-                      Icons.lock,
-                      const DataEncryptionScreen(),
-                    ),
-                    _tile(
-                      context,
-                      "Clear History",
-                      Icons.history,
-                      const ClearHistoryScreen(),
-                    ),
-                    _tile(
-                      context,
-                      "Delete Account",
-                      Icons.delete,
-                      const DeleteAccountScreen(),
-                    ),
+                    _tile(context, "Data Encryption", Icons.lock, AppRoutes.dataEncryption),
+                    _tile(context, "Clear History", Icons.history, AppRoutes.clearHistory),
+                    _tile(context, "Delete Account", Icons.delete, AppRoutes.deleteAccount),
                   ],
                 ),
 
@@ -112,11 +83,67 @@ class ProfileScreen extends StatelessWidget {
 
                 SectionCard(
                   children: [
-                    _tile(
-                      context,
-                      "Feedback",
-                      Icons.warning_amber,
-                      const FeedbackScreen(),
+                    _tile(context, "Feedback", Icons.warning_amber, AppRoutes.feedback),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.logout, color: Colors.redAccent),
+                      title: const Text(
+                        "Log Out",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.redAccent,
+                      ),
+                      onTap: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: AppColors.card,
+                            title: const Text(
+                              "Log Out",
+                              style: TextStyle(color: AppColors.textPrimary),
+                            ),
+                            content: const Text(
+                              "Are you sure you want to log out?",
+                              style: TextStyle(color: AppColors.textSecondary),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text(
+                                  "Cancel",
+                                  style: TextStyle(color: AppColors.textSecondary),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text(
+                                  "Log Out",
+                                  style: TextStyle(color: Colors.redAccent),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          if (context.mounted) {
+                            await Provider.of<UserProvider>(context, listen: false)
+                                .signOut(context);
+                            if (!context.mounted) return;
+                            // rootNavigator: true targets the MaterialApp-level navigator,
+                            // fully removing MainScreen (and its nav bar) from the tree.
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamedAndRemoveUntil(
+                                    AppRoutes.splash, (route) => false);
+                          }
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -133,7 +160,7 @@ Widget _tile(
   BuildContext context,
   String title,
   IconData icon,
-  Widget? screen,
+  String? route,
 ) {
   return ListTile(
     contentPadding: EdgeInsets.zero,
@@ -147,15 +174,8 @@ Widget _tile(
       size: 16,
       color: AppColors.textSecondary,
     ),
-    onTap: screen == null
+    onTap: route == null
         ? null
-        : () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) =>  screen,
-              ),
-            );
-          },
+        : () => Navigator.pushNamed(context, route),
   );
 }
