@@ -75,4 +75,3 @@ final userCredential= await FirebaseAuth.instance.signInWithCredential(credentia
     }
   }
 }
-
