@@ -1,0 +1,21 @@
+{
+  "functions": [
+    {
+      "source": ".",
+      "codebase": "default",
+      "ignore": [
+        ".venv",
+        ".git",
+        "__pycache__",
+        "*.pyc",
+        "*.pyo",
+        ".env",
+        "models_store"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}
