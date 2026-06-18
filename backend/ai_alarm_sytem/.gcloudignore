@@ -1,0 +1,13 @@
+.gcloudignore
+.git
+.gitignore
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+models_store/
+firebase.json
+firestore.rules
+firestore.indexes.json
+.firebaserc
