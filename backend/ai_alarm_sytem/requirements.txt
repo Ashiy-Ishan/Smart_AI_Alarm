@@ -1,0 +1,12 @@
+firebase-functions
+firebase-admin
+flask
+pymongo
+python-dotenv
+pydantic
+pydantic-settings
+pandas
+numpy
+lightgbm
+scikit-learn
+requests
