@@ -149,6 +149,10 @@ class _AuthScreenState extends State<AuthScreen> {
         email: user.email,
         context: context,
       );
+      
+      if (mounted) {
+        switchPage(AuthPageModel.login());
+      }
     } catch (e) {
       // Errors are handled and shown via SnackBar in UserProvider
     } finally {

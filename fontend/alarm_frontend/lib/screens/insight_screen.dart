@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../utils/app_colors.dart';
+import 'package:alarm_frontend/utils/app_colors.dart';
+import 'package:alarm_frontend/components/sleep_analytics_card.dart';
+import 'package:alarm_frontend/components/habit_learning_card.dart';
+import 'package:alarm_frontend/components/accuracy_score_card.dart';
 
 class InsightScreen extends StatelessWidget {
   const InsightScreen({super.key});
@@ -8,10 +11,49 @@ class InsightScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: const Center(
-        child: Text(
-          "Insight Screen",
-          style: TextStyle(color: AppColors.textPrimary),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: const [
+            SizedBox(height: 16),
+
+            // Header Section
+            Text(
+              'Insights',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 34,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.2,
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              'Last 7 days',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+
+            SizedBox(height: 24),
+
+            // Sleep Analytics Card
+            SleepAnalyticsCard(),
+
+            SizedBox(height: 16),
+
+            // Habit Learning Card
+            HabitLearningCard(),
+
+            SizedBox(height: 16),
+
+            // Accuracy Score Card
+            AccuracyScoreCard(),
+
+            SizedBox(height: 24),
+          ],
         ),
       ),
     );

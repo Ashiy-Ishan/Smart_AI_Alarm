@@ -1,3 +1,4 @@
+// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -28,7 +29,7 @@ class OptionToggleRow extends StatelessWidget {
           child: Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.black,
+            activeThumbColor: Colors.black,
             activeTrackColor: AppColors.primary,
             inactiveThumbColor: AppColors.textSecondary,
             inactiveTrackColor: AppColors.border,
