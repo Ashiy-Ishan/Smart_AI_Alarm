@@ -1,216 +1,120 @@
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
-import 'package:alarm_frontend/utils/app_text_styles.dart';
-import 'package:alarm_frontend/components/hub_env_card.dart';
-import 'package:alarm_frontend/components/hub_motion_row.dart';
-import 'package:alarm_frontend/components/hub_device_control_card.dart';
-import 'package:alarm_frontend/components/hub_status_card.dart';
-import 'package:alarm_frontend/screens/motion_log_screen.dart';
+import 'package:alarm_frontend/components/accuracy_ring_gauge.dart';
+import 'package:alarm_frontend/components/accuracy_metrics_card.dart';
+import 'package:alarm_frontend/components/weekly_trend_card.dart';
+import 'package:alarm_frontend/components/ai_insight_card.dart';
+import 'package:alarm_frontend/models/accuracy_metric_model.dart';
 
-class HubScreen extends StatefulWidget {
-  const HubScreen({super.key});
+class AccuracyScoreScreen extends StatefulWidget {
+  const AccuracyScoreScreen({super.key});
 
   @override
-  State<HubScreen> createState() => _HubScreenState();
+  State<AccuracyScoreScreen> createState() => _AccuracyScoreScreenState();
 }
 
-class _HubScreenState extends State<HubScreen> {
-  bool _smartLight = true;
-  double _lightDim = 0.6;
-  double _soundLevel = 0.4;
-
-  // Helper method renamed to follow lowerCamelCase Dart conventions
-  static int _realVolumePercent(double value) {
-    return (value * 100).round();
-  }
+class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
+  final List<AccuracyMetricModel> _metrics = const [
+    AccuracyMetricModel(
+      icon: Icons.wb_cloudy_outlined,
+      label: 'Reminder Accuracy',
+      value: '95%',
+    ),
+    AccuracyMetricModel(
+      icon: Icons.bedtime_outlined,
+      label: 'Sleep Prediction',
+      value: '89%',
+    ),
+    AccuracyMetricModel(
+      icon: Icons.directions_walk_rounded,
+      label: 'Motion Detection',
+      value: '91%',
+    ),
+    AccuracyMetricModel(
+      icon: Icons.calendar_month_outlined,
+      label: 'schedule Suggestions',
+      value: '93%',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: ListView(
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          children: [
-            const SizedBox(height: 16),
-
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('Bedside Hub', style: AppTextStyles.heading),
-                    SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Text(
-                          'Connected: ',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          'WiFi',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const Icon(Icons.wifi, color: AppColors.primary, size: 26),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Environment section
-            const Text(
-              'Environment',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Using Expanded to prevent horizontal layout overflow
-            Row(
-              children: const [
-                Expanded(
-                  child: HubEnvCard(
-                    icon: Icons.thermostat_outlined,
-                    value: '68°C',
-                    label: 'Temp',
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: HubEnvCard(
-                    icon: Icons.water_drop_outlined,
-                    value: '48%',
-                    label: 'Humidity',
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: HubEnvCard(
-                    icon: Icons.wb_sunny_outlined,
-                    value: '12Lux',
-                    label: 'Light',
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // Motion Log — tappable, navigates to MotionLogScreen
-            GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const MotionLogScreen(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Custom top back arrow row
+              Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                  onPressed: () => Navigator.of(context).pop(),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
               ),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.border),
+
+              const SizedBox(height: 16),
+
+              // Title Header
+              const Text(
+                'Accuracy Score',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Motion Log',
-                          style: TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Icon(
-                          Icons.chevron_right,
-                          color: AppColors.textSecondary,
-                          size: 20,
-                        ),
-                      ],
+                    const SizedBox(height: 24),
+
+                    // Ring Gauge Circular Progress (92%)
+                    const Center(
+                      child: AccuracyRingGauge(
+                        accuracy: 0.92,
+                        label: 'Overall Accuracy',
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    const HubMotionRow(time: '07:04 PM', event: 'Move'),
-                    const SizedBox(height: 8),
-                    const HubMotionRow(time: '10:44 PM', event: 'Wake'),
+
+                    const SizedBox(height: 28),
+
+                    // Key Metrics Table Card
+                    AccuracyMetricsCard(items: _metrics),
+
+                    const SizedBox(height: 14),
+
+                    // Weekly Trend Pill
+                    const WeeklyTrendCard(
+                      label: 'Weekly Trend :',
+                      trend: 'Up',
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // AI Insight Paragraph
+                    const AiInsightCard(
+                      title: 'AI Insight:',
+                      content:
+                      'Weekday predictions are highly accurate, but weekend patterns are less consistent.',
+                    ),
+
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
-            ),
 
-            const SizedBox(height: 20),
+              // Bottom Action Buttons
 
-            // Hardware Controls
-            const Text(
-              'Hardware Controls',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Smart Light card
-            HubDeviceControlCard(
-              icon: Icons.lightbulb_outline,
-              title: 'Smart Light',
-              subtitle: 'Dim',
-              value: _lightDim,
-              onChanged: (v) => setState(() => _lightDim = v),
-              trailing: Transform.scale(
-                scale: 0.85,
-                child: Switch(
-                  value: _smartLight,
-                  onChanged: (v) => setState(() => _smartLight = v),
-                  activeColor: Colors.black,
-                  activeTrackColor: AppColors.primary,
-                  inactiveThumbColor: AppColors.textSecondary,
-                  inactiveTrackColor: AppColors.border,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Sound Level card
-            HubDeviceControlCard(
-              icon: Icons.volume_up_outlined,
-              title: 'Sound Level',
-              subtitle: 'Vol ${_realVolumePercent(_soundLevel)}%',
-              value: _soundLevel,
-              onChanged: (v) => setState(() => _soundLevel = v),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Hub Online Status
-            const HubStatusCard(
-              isOnline: true,
-              statusText: 'Hub online Status',
-            ),
-
-            const SizedBox(height: 24),
-          ],
+            ],
+          ),
         ),
       ),
     );

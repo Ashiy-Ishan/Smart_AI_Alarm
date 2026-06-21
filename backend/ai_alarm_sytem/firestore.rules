@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All reads and writes go through the Admin SDK (server-side only).
+    // The Flutter client will use Firebase Auth tokens — update these rules
+    // once Firebase Auth is wired in to allow authenticated user reads.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
