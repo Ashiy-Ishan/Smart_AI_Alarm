@@ -4,44 +4,14 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
-    }
+    if (kIsWeb) return web;
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -49,20 +19,33 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBQlTD6zBHUBr2_aUHf4yoWkMAubsjxbak',
+    appId: '1:667577209576:web:c09b88e6b15a013c0fef5d',
+    messagingSenderId: '667577209576',
+    projectId: 'smart-ai-alarm-2f71d',
+    authDomain: 'smart-ai-alarm-2f71d.firebaseapp.com',
+    databaseURL: 'https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'smart-ai-alarm-2f71d.firebasestorage.app',
+    measurementId: 'G-BZ9ZBNPWYX',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD_WGKziURG618kBYffpBLzjjTIMAK-BZk',
-    appId: '1:541409753782:android:a76adcd00f478112514417',
-    messagingSenderId: '541409753782',
-    projectId: 'ai-alarm-system',
-    storageBucket: 'ai-alarm-system.firebasestorage.app',
+    apiKey: 'AIzaSyBQlTD6zBHUBr2_aUHf4yoWkMAubsjxbak',
+    appId: '1:667577209576:android:361c532c68988bf90fef5d',
+    messagingSenderId: '667577209576',
+    projectId: 'smart-ai-alarm-2f71d',
+    databaseURL: 'https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'smart-ai-alarm-2f71d.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCT53B5oFu4-4p40KYaXzlyQQOt74rJj5E',
-    appId: '1:541409753782:ios:f1fee832ac3f08f4514417',
-    messagingSenderId: '541409753782',
-    projectId: 'ai-alarm-system',
-    storageBucket: 'ai-alarm-system.firebasestorage.app',
-    iosBundleId: 'com.example.alarmFrontend',
+    apiKey: 'AIzaSyBQlTD6zBHUBr2_aUHf4yoWkMAubsjxbak',
+    appId: '1:667577209576:ios:REPLACE_WITH_YOUR_IOS_APP_ID',
+    messagingSenderId: '667577209576',
+    projectId: 'smart-ai-alarm-2f71d',
+    databaseURL: 'https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'smart-ai-alarm-2f71d.firebasestorage.app',
+    iosBundleId: 'com.smartalarm',
   );
 }

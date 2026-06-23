@@ -1,5 +1,3 @@
-package com.example.alarm_frontend
-
+package com.smartalarm
 import io.flutter.embedding.android.FlutterActivity
-
 class MainActivity : FlutterActivity()
