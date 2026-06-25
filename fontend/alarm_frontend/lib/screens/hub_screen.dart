@@ -20,6 +20,7 @@ class HubScreen extends StatefulWidget {
 class _HubScreenState extends State<HubScreen> {
   final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
   String? _macAddress;
+  String? _hiddenUid;
   bool _isInitialized = false;
 
   @override
@@ -28,8 +29,8 @@ class _HubScreenState extends State<HubScreen> {
     _findUserDevice();
   }
 
-  // Consistent UID generation based on Gmail
-  String _generateConsistentUid(String email) {
+  // Same consistent UID logic
+  String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
     String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
@@ -44,9 +45,9 @@ class _HubScreenState extends State<HubScreen> {
         return;
       }
 
-      final uid = _generateConsistentUid(email);
-      // Look up which device this user owns
-      final snapshot = await _rtdb.ref().child('Users').child(uid).child('OwnedDevices').get();
+      _hiddenUid = _getHiddenUid(email);
+      // Listen to the nested path: Users -> [UID] -> Devices
+      final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').get();
 
       if (snapshot.exists && mounted) {
         final devices = snapshot.value as Map<dynamic, dynamic>;
@@ -89,7 +90,7 @@ class _HubScreenState extends State<HubScreen> {
           TextButton(
             onPressed: () async {
               await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
-              _findUserDevice(); // Re-check after setup
+              _findUserDevice();
             },
             child: const Text("Setup Bedside Hub", style: TextStyle(color: AppColors.primary, decoration: TextDecoration.underline)),
           ),
@@ -99,14 +100,14 @@ class _HubScreenState extends State<HubScreen> {
   }
 
   Widget _buildLiveDashboard() {
+    // Nested Path listener
     return StreamBuilder(
-      stream: _rtdb.ref().child('Devices').child(_macAddress!).onValue,
+      stream: _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
         if (snapshot.hasError) return const Center(child: Text("Sync Error", style: TextStyle(color: Colors.red)));
         
         final data = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
 
-        // RTDB Mapping
         final double temp = (data['Temperature'] ?? 0.0).toDouble();
         final double humidity = (data['Humidity'] ?? 0.0).toDouble();
         final String lightStatus = data['LightStatus'] ?? 'UNKNOWN';
@@ -114,14 +115,11 @@ class _HubScreenState extends State<HubScreen> {
         final bool motion = (data['MotionDetected'] ?? 0) == 1;
         final String userStatus = data['UserStatus'] ?? 'idle';
         final String alarmTime = data['AlarmTime'] ?? '--:--';
-        final int soundLevel = data['SoundLevel'] ?? 0;
 
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 16),
-
-            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -130,7 +128,7 @@ class _HubScreenState extends State<HubScreen> {
                   children: [
                     const Text('Bedside Hub', style: AppTextStyles.heading),
                     const SizedBox(height: 2),
-                    Text('ID: $_macAddress', style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+                    Text('MAC: $_macAddress', style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
                   ],
                 ),
                 IconButton(
@@ -139,10 +137,7 @@ class _HubScreenState extends State<HubScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 24),
-
-            // Environment
             const Text('Environment', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             Row(
@@ -154,10 +149,7 @@ class _HubScreenState extends State<HubScreen> {
                 HubEnvCard(icon: Icons.wb_sunny_outlined, value: lightStatus, label: 'Light'),
               ],
             ),
-
             const SizedBox(height: 20),
-
-            // Live Activity & Motion Log Navigation
             GestureDetector(
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MotionLogScreen())),
               child: Container(
@@ -183,14 +175,9 @@ class _HubScreenState extends State<HubScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
-            // Hardware Controls
             const Text('Controls', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
-
-            // Relay Toggle
             HubDeviceControlCard(
               icon: Icons.power_settings_new,
               title: 'Relay Control',
@@ -206,26 +193,7 @@ class _HubScreenState extends State<HubScreen> {
                 ),
               ),
             ),
-
-            const SizedBox(height: 12),
-
-            // Sound Level (ReadOnly view based on RTDB)
-            HubDeviceControlCard(
-              icon: Icons.volume_up_outlined,
-              title: 'Hub Volume',
-              subtitle: 'Current Level: $soundLevel',
-              value: soundLevel / 10.0, // Assuming 0-10 range
-              onChanged: (v) => _updateDevice('SoundLevel', (v * 10).round()),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Hub Status
-            const HubStatusCard(isOnline: true, statusText: 'Hub Synchronized'),
-
             const SizedBox(height: 32),
-
-            // Unbind Button
             OutlinedButton.icon(
               onPressed: () => _confirmRemoveDevice(context),
               icon: const Icon(Icons.delete_forever, color: Colors.redAccent, size: 18),
@@ -244,8 +212,8 @@ class _HubScreenState extends State<HubScreen> {
   }
 
   void _updateDevice(String key, dynamic value) {
-    if (_macAddress != null) {
-      _rtdb.ref().child('Devices').child(_macAddress!).update({key: value});
+    if (_macAddress != null && _hiddenUid != null) {
+      _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).update({key: value});
     }
   }
 
@@ -273,10 +241,10 @@ class _HubScreenState extends State<HubScreen> {
   void _removeDevice() async {
     final email = FirebaseAuth.instance.currentUser?.email ?? "";
     if (email.isEmpty || _macAddress == null) return;
-    final uid = _generateConsistentUid(email);
+    final uid = _getHiddenUid(email);
     try {
-      await _rtdb.ref().child('Devices').child(_macAddress!).remove();
-      await _rtdb.ref().child('Users').child(uid).child('OwnedDevices').child(_macAddress!).remove();
+      // Wipes the nested device node completely
+      await _rtdb.ref().child('Users').child(uid).child('Devices').child(_macAddress!).remove();
       if (mounted) setState(() => _macAddress = null);
     } catch (e) {}
   }
