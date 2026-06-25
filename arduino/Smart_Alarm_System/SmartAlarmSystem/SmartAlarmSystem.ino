@@ -9,6 +9,8 @@
 #include "DeviceMemory.h"   
 #include "BluetoothSetup.h" 
 #include <DHT.h>
+#include "time.h"
+
 
 // GLOBAL VARIABLES
 
@@ -53,12 +55,17 @@ unsigned long lastMultiPressTime = 0;
 
 float smoothedLightValue = 0.0; 
 
-// Relay Variables
-bool isRelayEnabled = true;     
+// Relay & Alarm Variables
+bool isAlarmEnabled = true;     
+bool isRelayEnabled = false;     
 bool isRelayActuallyOn = false; 
-bool isManualLampOn = false; 
 unsigned long lampTurnedOnTime = 0;
 bool isLampOnByAlarm = false;
+
+int lastKnownSoundLevel = -1; 
+int lastKnownTone = -1;
+bool isCloudPreviewing = false;
+unsigned long cloudPreviewEndTime = 0;
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -70,7 +77,6 @@ void setup() {
   pinMode(PIR_PIN, INPUT); 
   pinMode(RELAY_PIN, OUTPUT); 
   
-  // Ensure Active-High relay starts completely OFF
   digitalWrite(RELAY_PIN, LOW); 
   isRelayActuallyOn = false;
   
@@ -112,7 +118,6 @@ void loop() {
     strftime(dateStr, sizeof(dateStr), "%d/%m/%Y", &timeinfo);
   }
   
-  // 1. SENSOR READINGS
   motionDetected = digitalRead(PIR_PIN);
 
   int rawLight = analogRead(LDR_PIN);
@@ -132,20 +137,30 @@ void loop() {
     if (!isnan(dynamicHumid)) humidity = dynamicHumid;
   }
 
-  // 2. CLOUD SYNCING
   if (!isMenuMode) {
     syncWithFirebase(currentMillis);
     syncWithAtlas(currentMillis);
   }
 
-  // 3. 15-MINUTE AUTOMATIC LAMP SHUTOFF
+  if (!isMenuMode && currentAlarmState == IDLE) { 
+    if (lastKnownSoundLevel == -1) {
+       lastKnownSoundLevel = soundLevel;
+       lastKnownTone = selectedTone;
+    } 
+    else if (soundLevel != lastKnownSoundLevel || selectedTone != lastKnownTone) {
+       lastKnownSoundLevel = soundLevel;
+       lastKnownTone = selectedTone;
+       isCloudPreviewing = true;
+       cloudPreviewEndTime = currentMillis + 3000; 
+    }
+  }
+
   if (isLampOnByAlarm) {
     if (currentMillis - lampTurnedOnTime >= 900000) {
       isLampOnByAlarm = false; 
     }
   }
 
-  // 4. BUTTON & MULTI-CLICK LOGIC
   int btnState = digitalRead(BUTTON_PIN);
   if (btnState == LOW) { 
     if (!btnIsPressed) {
@@ -170,7 +185,7 @@ void loop() {
         currentAlarmState = IDLE;
         
         isLampOnByAlarm = false;
-        isManualLampOn = false;
+        isRelayEnabled = false; 
         
         isPreviewing = true;
         previewEndTime = currentMillis + 4000; 
@@ -217,6 +232,8 @@ void loop() {
                 isStopped = true; 
                 if (currentAlarmState != IDLE) playTonePattern(0, 0, 0, true); 
                 if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
+                
+                isCloudPreviewing = false;
               }
             }
           }
@@ -225,7 +242,6 @@ void loop() {
     }
   }
 
-  // 5. RESET CANCELLATION TIMER
   if (isResetPending) {
     if (currentMillis - resetPendingStartTime >= 10000) {
       isResetPending = false; 
@@ -234,7 +250,6 @@ void loop() {
     }
   }
 
-  // 6. ALARM TIMING LOGIC
   if (isMenuMode) {
     if (currentMillis < previewEndTime) {
        playTonePattern(selectedTone, currentMillis, soundLevel, false); 
@@ -243,15 +258,24 @@ void loop() {
        isPreviewing = false;
     }
   } 
+  else if (isCloudPreviewing) {
+    if (currentMillis < cloudPreviewEndTime) {
+       playTonePattern(selectedTone, currentMillis, soundLevel, false); 
+    } else {
+       playTonePattern(0, 0, 0, true); 
+       isCloudPreviewing = false;
+    }
+  }
   else {
-    if (String(currentTimeStr) == alarmTime) {
+    // 🌟 NEW ALARM ENABLED CHECK 🌟
+    if (String(currentTimeStr) == alarmTime && isAlarmEnabled) {
       if (isStopped) {
         if (currentAlarmState != IDLE) {
           currentAlarmState = IDLE;
           playTonePattern(0, 0, 0, true); 
           
           isLampOnByAlarm = false;
-          isManualLampOn = false;
+          isRelayEnabled = false;
         }
         if (motionDetected == HIGH && !wokeUpFlagPushed) wokeUpFlagPushed = true; 
       } 
@@ -260,10 +284,9 @@ void loop() {
           currentAlarmState = RINGING;
           stateTimer = currentMillis;
           
-          if (isRelayEnabled) {
-            isLampOnByAlarm = true; 
-            lampTurnedOnTime = currentMillis;
-          }
+          // Alarm automatically turns on the lamp for 15 mins to help you wake up
+          isLampOnByAlarm = true; 
+          lampTurnedOnTime = currentMillis;
         }
 
         if (currentAlarmState == RINGING) {
@@ -294,21 +317,22 @@ void loop() {
     }
   }
 
-  // 7. UNIFIED RELAY CONTROLLER 
+
+  // UNIFIED RELAY CONTROLLER 
+
   bool targetRelayState = false;
 
   if (isLampOnByAlarm) targetRelayState = true;
-  if (isManualLampOn) targetRelayState = true;
+  if (isRelayEnabled) targetRelayState = true; // Use the direct Firebase switch
 
   if (targetRelayState) {
-    digitalWrite(RELAY_PIN, HIGH); // Send HIGH to turn ON (Active-High)
+    digitalWrite(RELAY_PIN, HIGH); // Active-High ON
     isRelayActuallyOn = true;
   } else {
-    digitalWrite(RELAY_PIN, LOW); // Send LOW to turn OFF
+    digitalWrite(RELAY_PIN, LOW); // OFF
     isRelayActuallyOn = false;
   }
 
-  // 8. UPDATE SCREEN
   renderMainScreen();
   delay(10); 
 }

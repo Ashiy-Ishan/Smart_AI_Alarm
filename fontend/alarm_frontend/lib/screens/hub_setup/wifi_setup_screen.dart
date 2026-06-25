@@ -41,7 +41,6 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     }
   }
 
-  // Hidden UID generation logic (Invisible to user)
   String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
@@ -65,12 +64,7 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Connect to Hub', style: TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            const Text('Enter your Wi-Fi details below to link your bedside hub.', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-            
             const SizedBox(height: 40),
-            
-            // WiFi Name (SSID)
             const Text("Wi-Fi Name", style: TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600)),
             TextField(
               controller: _ssidController,
@@ -85,10 +79,7 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
                 ),
               ),
             ),
-            
             const SizedBox(height: 32),
-            
-            // WiFi Password
             const Text("Password", style: TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600)),
             TextField(
               controller: _passwordController,
@@ -100,9 +91,7 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.border)),
               ),
             ),
-            
             const Spacer(),
-            
             PrimaryButton(
               text: 'Send to Device',
               isLoading: _isLoading,
@@ -132,30 +121,25 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
 
     try {
       final bleService = custom.BluetoothService();
-      
-      // 1. Send formatted string in background: SSID,Password,UID
-      // The user never sees the UID being sent.
       await bleService.sendProvisioningData(ssid, password, hiddenUid);
 
-      // 2. Initialize the NESTED structure in Realtime Database:
-      // Users -> [UID] -> Devices -> [MAC] -> [Fields]
       final rtdb = FirebaseDatabase.instance.ref();
       await rtdb.child('Users').child(hiddenUid).child('Devices').child(macAddress).set({
         "AlarmTime": "07:00",
+        "AlarmEnabled": true, // New: master switch for alarm
         "Humidity": 0.0,
         "LightStatus": "INIT",
         "MotionDetected": 0,
+        "RelayEnabled": true, // New: enables hardware relay
         "RelayStatus": "OFF",
         "Temperature": 0.0,
-        "UserStatus": "idle"
+        "UserStatus": "idle",
+        "SoundLevel": 5,
+        "SelectedTone": 0
       });
 
       if (mounted) {
-        // Success: Redirect back to Hub Screen
         Navigator.of(context).popUntil((route) => route.isFirst);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Device Linked Successfully!')),
-        );
       }
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Setup Failed: $e')));

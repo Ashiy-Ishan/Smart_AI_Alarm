@@ -11,8 +11,6 @@
 
 #include <addons/TokenHelper.h>
 #include <addons/RTDBHelper.h>
-
-// NEW: Required to read the chip's internal MAC addresses directly
 #include "esp_mac.h" 
 
 FirebaseData fbdo;
@@ -27,9 +25,6 @@ bool isFirebaseInitialized = false;
 
 String devicePath = ""; 
 
-// ========================================================
-// NEW FUNCTION: Get Bluetooth MAC (Even when BLE is off)
-// ========================================================
 String getBluetoothMAC() {
   uint8_t mac[6];
   esp_read_mac(mac, ESP_MAC_BT);
@@ -55,14 +50,11 @@ void setupNetworkAndTime() {
 
   if (WiFi.status() == WL_CONNECTED) {
     drawBootScreen("Connected!");
-    
-    // UPDATED: Now uses the Bluetooth MAC address to match the mobile app!
     if (userUID != "") {
       devicePath = "Users/" + userUID + "/Devices/" + getBluetoothMAC();
     } else {
       devicePath = "Unclaimed_Devices/" + getBluetoothMAC();
     }
-    
   } else {
     drawBootScreen("Offline Mode!");
   }
@@ -106,10 +98,10 @@ void syncWithFirebase(unsigned long currentMillis) {
           if (fbdo.dataType() == "null") {
             FirebaseJson defaultAppKeys;
             defaultAppKeys.set("AlarmTime", "07:00");     
+            defaultAppKeys.set("AlarmEnabled", true); // NEW MASTER ALARM SWITCH    
             defaultAppKeys.set("SoundLevel", 5);          
             defaultAppKeys.set("SelectedTone", 0);        
-            defaultAppKeys.set("RelayEnabled", true);     
-            defaultAppKeys.set("ManualLamp", false);      
+            defaultAppKeys.set("RelayEnabled", false); // NOW THE MANUAL SWITCH   
             defaultAppKeys.set("MobileStop", false);      
             
             Firebase.RTDB.updateNode(&fbdo, devicePath, &defaultAppKeys);
@@ -131,8 +123,17 @@ void syncWithFirebase(unsigned long currentMillis) {
 
       Firebase.RTDB.updateNode(&fbdo, devicePath, &json);
 
+      // --- FETCH APP SETTINGS ---
       if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmTime")) alarmTime = fbdo.stringData();
       
+      // Fetch Master Alarm Switch
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/AlarmEnabled")) {
+        if (fbdo.dataType() == "string") {
+          String val = fbdo.stringData(); val.toLowerCase();
+          isAlarmEnabled = (val == "true" || val == "1" || val == "on");
+        } else isAlarmEnabled = fbdo.boolData();
+      }
+
       if (Firebase.RTDB.get(&fbdo, devicePath + "/SoundLevel")) {
         soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
@@ -141,6 +142,8 @@ void syncWithFirebase(unsigned long currentMillis) {
         selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
 
+      // Fetch Manual Relay Switch
+      bool previousRelayState = isRelayEnabled;
       if (Firebase.RTDB.get(&fbdo, devicePath + "/RelayEnabled")) {
         if (fbdo.dataType() == "string") {
           String val = fbdo.stringData(); val.toLowerCase();
@@ -148,16 +151,8 @@ void syncWithFirebase(unsigned long currentMillis) {
         } else isRelayEnabled = fbdo.boolData();
       }
 
-      bool previousManualState = isManualLampOn;
-
-      if (Firebase.RTDB.get(&fbdo, devicePath + "/ManualLamp")) {
-        if (fbdo.dataType() == "string") {
-          String val = fbdo.stringData(); val.toLowerCase();
-          isManualLampOn = (val == "true" || val == "1" || val == "on");
-        } else isManualLampOn = fbdo.boolData();
-      }
-
-      if (previousManualState == true && isManualLampOn == false) {
+      // If manual app switch is turned off, kill the 15-minute timer too
+      if (previousRelayState == true && isRelayEnabled == false) {
         isLampOnByAlarm = false;
       }
 
@@ -167,9 +162,9 @@ void syncWithFirebase(unsigned long currentMillis) {
           playTonePattern(0, 0, 0, true); 
           
           isLampOnByAlarm = false; 
-          isManualLampOn = false; 
+          isRelayEnabled = false; 
           
-          Firebase.RTDB.setBool(&fbdo, devicePath + "/ManualLamp", false);
+          Firebase.RTDB.setBool(&fbdo, devicePath + "/RelayEnabled", false);
           
           currentAlarmState = IDLE; 
           Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false); 
@@ -189,7 +184,6 @@ void syncWithAtlas(unsigned long currentMillis) {
       http.setTimeout(2500); 
       http.addHeader("Content-Type", "application/json");
       
-      // Now uploads the Bluetooth MAC to MongoDB Atlas as well!
       String jsonPayload = "{\"device_id\":\"" + getBluetoothMAC() + "\",\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
       
       int httpResponseCode = http.POST(jsonPayload);

@@ -29,7 +29,6 @@ class _HubScreenState extends State<HubScreen> {
     _findUserDevice();
   }
 
-  // Same consistent UID logic
   String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
@@ -44,11 +43,8 @@ class _HubScreenState extends State<HubScreen> {
         if (mounted) setState(() => _isInitialized = true);
         return;
       }
-
       _hiddenUid = _getHiddenUid(email);
-      // Listen to the nested path: Users -> [UID] -> Devices
       final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').get();
-
       if (snapshot.exists && mounted) {
         final devices = snapshot.value as Map<dynamic, dynamic>;
         if (devices.isNotEmpty) {
@@ -69,7 +65,6 @@ class _HubScreenState extends State<HubScreen> {
         body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -100,21 +95,19 @@ class _HubScreenState extends State<HubScreen> {
   }
 
   Widget _buildLiveDashboard() {
-    // Nested Path listener
     return StreamBuilder(
       stream: _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
         if (snapshot.hasError) return const Center(child: Text("Sync Error", style: TextStyle(color: Colors.red)));
-        
         final data = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
 
         final double temp = (data['Temperature'] ?? 0.0).toDouble();
         final double humidity = (data['Humidity'] ?? 0.0).toDouble();
         final String lightStatus = data['LightStatus'] ?? 'UNKNOWN';
-        final bool relayOn = data['RelayStatus'] == 'ON';
+        final bool relayEnabled = data['RelayEnabled'] ?? false;
         final bool motion = (data['MotionDetected'] ?? 0) == 1;
         final String userStatus = data['UserStatus'] ?? 'idle';
-        final String alarmTime = data['AlarmTime'] ?? '--:--';
+        final int soundLevel = data['SoundLevel'] ?? 5;
 
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -150,6 +143,7 @@ class _HubScreenState extends State<HubScreen> {
               ],
             ),
             const SizedBox(height: 20),
+            
             GestureDetector(
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MotionLogScreen())),
               child: Container(
@@ -170,28 +164,39 @@ class _HubScreenState extends State<HubScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    HubMotionRow(time: 'Alarm Set: $alarmTime', event: motion ? 'MOTION DETECTED' : 'Status: Still'),
+                    HubMotionRow(time: 'Motion Status', event: motion ? 'MOTION DETECTED' : 'Status: Still'),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            const Text('Controls', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+            const Text('Hardware Configuration', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
+            
+            // Relay Enabled Control
             HubDeviceControlCard(
-              icon: Icons.power_settings_new,
-              title: 'Relay Control',
-              subtitle: relayOn ? 'Status: ON' : 'Status: OFF',
-              value: relayOn ? 1.0 : 0.0,
-              onChanged: (v) => _updateDevice('RelayStatus', v > 0.5 ? 'ON' : 'OFF'),
+              icon: Icons.power,
+              title: 'Master Relay',
+              subtitle: relayEnabled ? 'System Enabled' : 'System Disabled',
+              value: relayEnabled ? 1.0 : 0.0,
+              onChanged: (v) => _updateDevice('RelayEnabled', v > 0.5),
               trailing: Transform.scale(
                 scale: 0.85,
                 child: Switch(
-                  value: relayOn,
-                  onChanged: (v) => _updateDevice('RelayStatus', v ? 'ON' : 'OFF'),
+                  value: relayEnabled,
+                  onChanged: (v) => _updateDevice('RelayEnabled', v),
                   activeTrackColor: AppColors.primary,
                 ),
               ),
+            ),
+
+            const SizedBox(height: 12),
+            HubDeviceControlCard(
+              icon: Icons.volume_up_outlined,
+              title: 'Hub Volume',
+              subtitle: 'Level: $soundLevel',
+              value: soundLevel / 10.0,
+              onChanged: (v) => _updateDevice('SoundLevel', (v * 10).round()),
             ),
             const SizedBox(height: 32),
             OutlinedButton.icon(
@@ -243,7 +248,6 @@ class _HubScreenState extends State<HubScreen> {
     if (email.isEmpty || _macAddress == null) return;
     final uid = _getHiddenUid(email);
     try {
-      // Wipes the nested device node completely
       await _rtdb.ref().child('Users').child(uid).child('Devices').child(_macAddress!).remove();
       if (mounted) setState(() => _macAddress = null);
     } catch (e) {}

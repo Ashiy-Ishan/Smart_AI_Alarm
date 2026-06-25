@@ -33,9 +33,11 @@ extern bool isBleSetupMode;
 extern bool isResetPending;
 extern unsigned long resetPendingStartTime;
 
-// --- LOGIC: Relay & Lamp Switches ---
+//  Multi-User Account
+extern String userUID; 
+
+// --- LOGIC: App Switches 
+extern bool isAlarmEnabled;     
 extern bool isRelayEnabled;     
 extern bool isRelayActuallyOn;  
-extern bool isManualLampOn;  
 extern bool isLampOnByAlarm;
-extern String userUID;
