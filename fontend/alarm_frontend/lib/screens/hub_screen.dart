@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
@@ -6,6 +8,7 @@ import 'package:alarm_frontend/components/hub_motion_row.dart';
 import 'package:alarm_frontend/components/hub_device_control_card.dart';
 import 'package:alarm_frontend/components/hub_status_card.dart';
 import 'package:alarm_frontend/screens/motion_log_screen.dart';
+import 'package:alarm_frontend/screens/hub_setup/bluetooth_scan_screen.dart';
 
 class HubScreen extends StatefulWidget {
   const HubScreen({super.key});
@@ -15,16 +18,105 @@ class HubScreen extends StatefulWidget {
 }
 
 class _HubScreenState extends State<HubScreen> {
-  bool _smartLight = true;
-  double _lightDim = 0.6;
-  double _soundLevel = 0.4;
+  final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
+  String? _macAddress;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _findUserDevice();
+  }
+
+  // Consistent UID generation based on Gmail
+  String _generateConsistentUid(String email) {
+    String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String hash = email.hashCode.abs().toString();
+    String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
+    return "user_${prefix}_$suffix";
+  }
+
+  Future<void> _findUserDevice() async {
+    try {
+      final email = FirebaseAuth.instance.currentUser?.email ?? "";
+      if (email.isEmpty) {
+        if (mounted) setState(() => _isInitialized = true);
+        return;
+      }
+
+      final uid = _generateConsistentUid(email);
+      // Look up which device this user owns
+      final snapshot = await _rtdb.ref().child('Users').child(uid).child('OwnedDevices').get();
+
+      if (snapshot.exists && mounted) {
+        final devices = snapshot.value as Map<dynamic, dynamic>;
+        if (devices.isNotEmpty) {
+          _macAddress = devices.keys.first.toString();
+        }
+      }
+      if (mounted) setState(() => _isInitialized = true);
+    } catch (e) {
+      if (mounted) setState(() => _isInitialized = true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: ListView(
+        child: _macAddress == null ? _buildNoDeviceUI() : _buildLiveDashboard(),
+      ),
+    );
+  }
+
+  Widget _buildNoDeviceUI() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.bluetooth_disabled, size: 64, color: AppColors.textSecondary),
+          const SizedBox(height: 16),
+          const Text("No Hub Connected", style: TextStyle(color: AppColors.textPrimary, fontSize: 18)),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: () async {
+              await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
+              _findUserDevice(); // Re-check after setup
+            },
+            child: const Text("Setup Bedside Hub", style: TextStyle(color: AppColors.primary, decoration: TextDecoration.underline)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLiveDashboard() {
+    return StreamBuilder(
+      stream: _rtdb.ref().child('Devices').child(_macAddress!).onValue,
+      builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+        if (snapshot.hasError) return const Center(child: Text("Sync Error", style: TextStyle(color: Colors.red)));
+        
+        final data = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
+
+        // RTDB Mapping
+        final double temp = (data['Temperature'] ?? 0.0).toDouble();
+        final double humidity = (data['Humidity'] ?? 0.0).toDouble();
+        final String lightStatus = data['LightStatus'] ?? 'UNKNOWN';
+        final bool relayOn = data['RelayStatus'] == 'ON';
+        final bool motion = (data['MotionDetected'] ?? 0) == 1;
+        final String userStatus = data['UserStatus'] ?? 'idle';
+        final String alarmTime = data['AlarmTime'] ?? '--:--';
+        final int soundLevel = data['SoundLevel'] ?? 0;
+
+        return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 16),
@@ -35,79 +127,39 @@ class _HubScreenState extends State<HubScreen> {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('Bedside Hub', style: AppTextStyles.heading),
-                    SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Text(
-                          'Connected: ',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          'WiFi',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
+                  children: [
+                    const Text('Bedside Hub', style: AppTextStyles.heading),
+                    const SizedBox(height: 2),
+                    Text('ID: $_macAddress', style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
                   ],
                 ),
-                const Icon(Icons.wifi, color: AppColors.primary, size: 26),
+                IconButton(
+                  icon: const Icon(Icons.refresh, color: AppColors.primary, size: 20),
+                  onPressed: _findUserDevice,
+                ),
               ],
             ),
 
             const SizedBox(height: 24),
 
-            // Environment section
-            const Text(
-              'Environment',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            // Environment
+            const Text('Environment', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
-
             Row(
-              children: const [
-                HubEnvCard(
-                  icon: Icons.thermostat_outlined,
-                  value: '68°C',
-                  label: 'Temp',
-                ),
-                SizedBox(width: 10),
-                HubEnvCard(
-                  icon: Icons.water_drop_outlined,
-                  value: '48%',
-                  label: 'Humidity',
-                ),
-                SizedBox(width: 10),
-                HubEnvCard(
-                  icon: Icons.wb_sunny_outlined,
-                  value: '12Lux',
-                  label: 'Light',
-                ),
+              children: [
+                HubEnvCard(icon: Icons.thermostat_outlined, value: '${temp.toStringAsFixed(1)}°C', label: 'Temp'),
+                const SizedBox(width: 10),
+                HubEnvCard(icon: Icons.water_drop_outlined, value: '${humidity.toStringAsFixed(1)}%', label: 'Humidity'),
+                const SizedBox(width: 10),
+                HubEnvCard(icon: Icons.wb_sunny_outlined, value: lightStatus, label: 'Light'),
               ],
             ),
 
             const SizedBox(height: 20),
 
-            // Motion Log — tappable, navigates to MotionLogScreen
+            // Live Activity & Motion Log Navigation
             GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const MotionLogScreen(),
-                ),
-              ),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MotionLogScreen())),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -120,26 +172,13 @@ class _HubScreenState extends State<HubScreen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Motion Log',
-                          style: TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Icon(
-                          Icons.chevron_right,
-                          color: AppColors.textSecondary,
-                          size: 20,
-                        ),
+                      children: [
+                        const Text('Live Activity', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+                        Text(userStatus.toUpperCase(), style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    const HubMotionRow(time: '07:04 PM', event: 'Move'),
-                    const SizedBox(height: 8),
-                    const HubMotionRow(time: '10:44 PM', event: 'Wake'),
+                    HubMotionRow(time: 'Alarm Set: $alarmTime', event: motion ? 'MOTION DETECTED' : 'Status: Still'),
                   ],
                 ),
               ),
@@ -148,64 +187,97 @@ class _HubScreenState extends State<HubScreen> {
             const SizedBox(height: 20),
 
             // Hardware Controls
-            const Text(
-              'Hardware Controls',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            const Text('Controls', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
 
-            // Smart Light card
+            // Relay Toggle
             HubDeviceControlCard(
-              icon: Icons.lightbulb_outline,
-              title: 'Smart Light',
-              subtitle: 'Dim',
-              value: _lightDim,
-              onChanged: (v) => setState(() => _lightDim = v),
+              icon: Icons.power_settings_new,
+              title: 'Relay Control',
+              subtitle: relayOn ? 'Status: ON' : 'Status: OFF',
+              value: relayOn ? 1.0 : 0.0,
+              onChanged: (v) => _updateDevice('RelayStatus', v > 0.5 ? 'ON' : 'OFF'),
               trailing: Transform.scale(
                 scale: 0.85,
                 child: Switch(
-                  value: _smartLight,
-                  onChanged: (v) => setState(() => _smartLight = v),
-                  activeThumbColor: Colors.black,
+                  value: relayOn,
+                  onChanged: (v) => _updateDevice('RelayStatus', v ? 'ON' : 'OFF'),
                   activeTrackColor: AppColors.primary,
-                  inactiveThumbColor: AppColors.textSecondary,
-                  inactiveTrackColor: AppColors.border,
                 ),
               ),
             ),
 
             const SizedBox(height: 12),
 
-            // Sound Level card
+            // Sound Level (ReadOnly view based on RTDB)
             HubDeviceControlCard(
               icon: Icons.volume_up_outlined,
-              title: 'Sound Level',
-              subtitle: 'Vol ${(RealVolumePercent(_soundLevel))}%',
-              value: _soundLevel,
-              onChanged: (v) => setState(() => _soundLevel = v),
+              title: 'Hub Volume',
+              subtitle: 'Current Level: $soundLevel',
+              value: soundLevel / 10.0, // Assuming 0-10 range
+              onChanged: (v) => _updateDevice('SoundLevel', (v * 10).round()),
             ),
 
             const SizedBox(height: 16),
 
-            // Hub Online Status
-            const HubStatusCard(
-              isOnline: true,
-              statusText: 'Hub online Status',
-            ),
+            // Hub Status
+            const HubStatusCard(isOnline: true, statusText: 'Hub Synchronized'),
 
+            const SizedBox(height: 32),
+
+            // Unbind Button
+            OutlinedButton.icon(
+              onPressed: () => _confirmRemoveDevice(context),
+              icon: const Icon(Icons.delete_forever, color: Colors.redAccent, size: 18),
+              label: const Text("UNBIND DEVICE", style: TextStyle(color: Colors.redAccent, fontSize: 12)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.redAccent),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
             const SizedBox(height: 24),
           ],
-        ),
+        );
+      },
+    );
+  }
+
+  void _updateDevice(String key, dynamic value) {
+    if (_macAddress != null) {
+      _rtdb.ref().child('Devices').child(_macAddress!).update({key: value});
+    }
+  }
+
+  void _confirmRemoveDevice(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: const Text("Unbind Device?", style: TextStyle(color: AppColors.textPrimary)),
+        content: const Text("This will disconnect the device and wipe statistics.", style: TextStyle(color: AppColors.textSecondary)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _removeDevice();
+            },
+            child: const Text("Remove", style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
       ),
     );
   }
 
-  // Helper method to display human-readable volume percentage
-  static int RealVolumePercent(double value) {
-    return (value * 100).round();
+  void _removeDevice() async {
+    final email = FirebaseAuth.instance.currentUser?.email ?? "";
+    if (email.isEmpty || _macAddress == null) return;
+    final uid = _generateConsistentUid(email);
+    try {
+      await _rtdb.ref().child('Devices').child(_macAddress!).remove();
+      await _rtdb.ref().child('Users').child(uid).child('OwnedDevices').child(_macAddress!).remove();
+      if (mounted) setState(() => _macAddress = null);
+    } catch (e) {}
   }
 }

@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location to show the current weather and temperature in your area.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location to show the current weather and temperature in your area.</string>
 </dict>
 </plist>

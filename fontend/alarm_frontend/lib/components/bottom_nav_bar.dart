@@ -22,7 +22,7 @@ class BottomNavBar extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(color: const Color(0xFF1A1D24)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -31,7 +31,7 @@ class BottomNavBar extends StatelessWidget {
             onTap: () => onTap(index),
             child: Icon(
               items[index],
-              size: 26,
+              size: 25,
               color: currentIndex == index
                   ? AppColors.primary
                   : AppColors.textSecondary,
