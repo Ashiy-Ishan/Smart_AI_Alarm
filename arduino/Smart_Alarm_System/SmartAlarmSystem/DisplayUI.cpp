@@ -17,9 +17,9 @@ void setupDisplay() {
 
 void drawBootScreen(String message) {
   display.clearDisplay();
-  display.drawCircle(64, 24, 16, WHITE);                  
-  display.fillCircle(64, 24, 2, WHITE);                  
-  display.drawLine(64, 24, 64, 14, WHITE);          
+  display.drawCircle(64, 24, 16, WHITE);         
+  display.fillCircle(64, 24, 2, WHITE);         
+  display.drawLine(64, 24, 64, 14, WHITE);      
   display.drawLine(64, 24, 72, 30, WHITE);       
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -48,8 +48,25 @@ void renderMainScreen() {
   display.clearDisplay();
   display.setTextColor(WHITE);
 
-  // 1. THE RESET WARNING SCREEN
-  if (isResetPending) {
+  if (isCloudResetPending) {
+    display.drawRect(0, 0, 128, 64, WHITE);
+    display.setTextSize(2);
+    display.setCursor(15, 5);
+    display.print("APP RESET");
+    
+    display.setTextSize(1);
+    display.setCursor(10, 25);
+    display.print("Press Btn to Cancel");
+    
+    int timeLeft = 10 - ((millis() - cloudResetStartTime) / 1000);
+    if (timeLeft < 0) timeLeft = 0; 
+    
+    display.setCursor(20, 45);
+    display.print("Wiping in: ");
+    display.print(timeLeft);
+    display.print("s");
+  }
+  else if (isResetPending) {
     display.drawRect(0, 0, 128, 64, WHITE);
     display.setTextSize(2);
     display.setCursor(30, 5);
@@ -67,8 +84,6 @@ void renderMainScreen() {
     display.print(timeLeft);
     display.print("s");
   } 
-  
-  // 2. THE SOUND SELECTION MENU
   else if (isMenuMode) {
     display.setTextSize(1);
     display.setCursor(15, 5);
@@ -86,8 +101,6 @@ void renderMainScreen() {
     display.setCursor(20, 50);
     display.print("Hold 5s to Save");
   } 
-  
-  // 3. THE NORMAL CLOCK DASHBOARD
   else {
     if (currentAlarmState == RINGING) {
       display.setTextSize(2);
@@ -117,7 +130,6 @@ void renderMainScreen() {
       display.setCursor(0, 42);
       display.print("Light: "); display.print(lightStatus);
       
-      // Hardware Override Relay Status
       display.setCursor(0, 52);
       display.print("Lamp : "); 
       display.print(isRelayActuallyOn ? "ON" : "OFF");

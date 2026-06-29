@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
@@ -15,7 +16,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
   final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
   final WeatherService _weatherService = WeatherService();
 
@@ -23,12 +24,22 @@ class _HomeScreenState extends State<HomeScreen> {
   String weatherMain = "Loading...";
   String? _macAddress;
   String? _hiddenUid;
+  StreamSubscription? _deviceSubscription;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     _loadWeather();
-    _findUserDevice();
+    _setupDeviceListener();
+  }
+
+  @override
+  void dispose() {
+    _deviceSubscription?.cancel();
+    super.dispose();
   }
 
   // Consistent UID generation logic
@@ -39,21 +50,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return "user_${prefix}_$suffix";
   }
 
-  Future<void> _findUserDevice() async {
+  // New: Real-time listener for the user's device link
+  void _setupDeviceListener() {
     final email = FirebaseAuth.instance.currentUser?.email ?? "";
     if (email.isEmpty) return;
 
     _hiddenUid = _getHiddenUid(email);
-    final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').get();
-
-    if (snapshot.exists && mounted) {
-      final devices = snapshot.value as Map<dynamic, dynamic>;
-      if (devices.isNotEmpty) {
+    
+    // Listen to the User's Devices node directly
+    _deviceSubscription = _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').onValue.listen((event) {
+      if (event.snapshot.exists && mounted) {
+        final devices = event.snapshot.value as Map<dynamic, dynamic>;
+        if (devices.isNotEmpty) {
+          setState(() {
+            _macAddress = devices.keys.first.toString();
+          });
+        }
+      } else if (mounted) {
         setState(() {
-          _macAddress = devices.keys.first.toString();
+          _macAddress = null;
         });
       }
-    }
+    });
   }
 
   Future<void> _loadWeather() async {
@@ -82,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final userProvider = Provider.of<UserProvider>(context);
     final String fullName = userProvider.user?.fullName ?? "";
     final String firstName = fullName.isNotEmpty ? fullName.split(' ').first : "User";
@@ -90,12 +109,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 20, 
+            right: 20, 
+            top: MediaQuery.of(context).padding.top + 10,
+            bottom: MediaQuery.of(context).padding.bottom + 80,
+          ),
+          child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
@@ -143,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 

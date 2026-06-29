@@ -33,11 +33,16 @@ extern bool isBleSetupMode;
 extern bool isResetPending;
 extern unsigned long resetPendingStartTime;
 
-//  Multi-User Account
 extern String userUID; 
 
-// --- LOGIC: App Switches 
 extern bool isAlarmEnabled;     
 extern bool isRelayEnabled;     
 extern bool isRelayActuallyOn;  
-extern bool isLampOnByAlarm;
+extern bool isLampOnByAlarm;  
+
+extern bool isCloudResetPending;
+extern unsigned long cloudResetStartTime;
+extern bool pushResetCancelToCloud;
+
+// --- LOGIC: 10s Offline Hardware Reset ---
+extern bool hardwareResetTriggered;

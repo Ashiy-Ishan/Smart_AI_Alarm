@@ -22,22 +22,27 @@ class BottomNavBar extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      decoration: BoxDecoration(color: const Color(0xFF1A1D24)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (index) {
-          return GestureDetector(
-            onTap: () => onTap(index),
-            child: Icon(
-              items[index],
-              size: 25,
-              color: currentIndex == index
-                  ? AppColors.primary
-                  : AppColors.textSecondary,
-            ),
-          );
-        }),
+      decoration: const BoxDecoration(color: Color(0xFF1A1D24)),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 24), // Increased bottom padding for 3-button nav
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(items.length, (index) {
+              return GestureDetector(
+                onTap: () => onTap(index),
+                child: Icon(
+                  items[index],
+                  size: 26,
+                  color: currentIndex == index
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
+                ),
+              );
+            }),
+          ),
+        ),
       ),
     );
   }

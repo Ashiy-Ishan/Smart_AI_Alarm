@@ -98,11 +98,13 @@ void syncWithFirebase(unsigned long currentMillis) {
           if (fbdo.dataType() == "null") {
             FirebaseJson defaultAppKeys;
             defaultAppKeys.set("AlarmTime", "07:00");     
-            defaultAppKeys.set("AlarmEnabled", true); // NEW MASTER ALARM SWITCH    
+            defaultAppKeys.set("AlarmEnabled", true);   
             defaultAppKeys.set("SoundLevel", 5);          
             defaultAppKeys.set("SelectedTone", 0);        
-            defaultAppKeys.set("RelayEnabled", false); // NOW THE MANUAL SWITCH   
-            defaultAppKeys.set("MobileStop", false);      
+            defaultAppKeys.set("RelayEnabled", false);    
+            defaultAppKeys.set("MobileStop", false);   
+            defaultAppKeys.set("FactoryReset", false); 
+            defaultAppKeys.set("AlarmStatus", 0); // NEW: Add default state
             
             Firebase.RTDB.updateNode(&fbdo, devicePath, &defaultAppKeys);
           }
@@ -117,16 +119,18 @@ void syncWithFirebase(unsigned long currentMillis) {
       json.set("MotionDetected", motionDetected);
       json.set("RelayStatus", isRelayActuallyOn ? "ON" : "OFF");
 
+      // NEW: Send 1 if ringing, 0 if not ringing
+      json.set("AlarmStatus", (currentAlarmState == RINGING) ? 1 : 0);
+
+      // Old text-based status kept for backup
       if (currentAlarmState == RINGING) json.set("UserStatus", "ringing");
       else if (currentAlarmState == RESTING) json.set("UserStatus", "snooze");
       else if (currentAlarmState == IDLE && !wokeUpFlagPushed) json.set("UserStatus", "idle");
 
       Firebase.RTDB.updateNode(&fbdo, devicePath, &json);
 
-      // --- FETCH APP SETTINGS ---
       if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmTime")) alarmTime = fbdo.stringData();
       
-      // Fetch Master Alarm Switch
       if (Firebase.RTDB.get(&fbdo, devicePath + "/AlarmEnabled")) {
         if (fbdo.dataType() == "string") {
           String val = fbdo.stringData(); val.toLowerCase();
@@ -142,7 +146,6 @@ void syncWithFirebase(unsigned long currentMillis) {
         selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
 
-      // Fetch Manual Relay Switch
       bool previousRelayState = isRelayEnabled;
       if (Firebase.RTDB.get(&fbdo, devicePath + "/RelayEnabled")) {
         if (fbdo.dataType() == "string") {
@@ -151,7 +154,6 @@ void syncWithFirebase(unsigned long currentMillis) {
         } else isRelayEnabled = fbdo.boolData();
       }
 
-      // If manual app switch is turned off, kill the 15-minute timer too
       if (previousRelayState == true && isRelayEnabled == false) {
         isLampOnByAlarm = false;
       }
@@ -170,6 +172,18 @@ void syncWithFirebase(unsigned long currentMillis) {
           Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false); 
           Firebase.RTDB.setString(&fbdo, devicePath + "/UserStatus", "stopped_by_mobile");
         }
+      }
+
+      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
+        if (fbdo.boolData() == true && !isCloudResetPending && !pushResetCancelToCloud) {
+            isCloudResetPending = true;
+            cloudResetStartTime = millis();
+        }
+      }
+
+      if (pushResetCancelToCloud) {
+          Firebase.RTDB.setBool(&fbdo, devicePath + "/FactoryReset", false);
+          pushResetCancelToCloud = false;
       }
     }
   }

@@ -55,16 +55,17 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
         title: const Text('Connect Bedside Hub'),
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
+        elevation: 0,
       ),
       body: Column(
         children: [
-          if (_isScanning) const LinearProgressIndicator(color: AppColors.primary),
+          if (_isScanning) const LinearProgressIndicator(color: AppColors.primary, minHeight: 2),
           Expanded(
             child: StreamBuilder<List<ble.ScanResult>>(
               stream: ble.FlutterBluePlus.scanResults,
               initialData: const [],
               builder: (c, snapshot) {
-                // Combine results from both names for more robust detection
+                // Filter for "Alarm" devices
                 final alarmDevices = snapshot.data!
                     .where((r) {
                       final name = r.device.platformName.toLowerCase();
@@ -74,42 +75,78 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
                     .toList();
 
                 if (alarmDevices.isEmpty && !_isScanning) {
-                  return const Center(
-                    child: Text(
-                      "No Alarm Devices Found.\nEnsure your device is in pairing mode.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.textSecondary),
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.search_off, size: 64, color: AppColors.textSecondary),
+                          SizedBox(height: 16),
+                          Text(
+                            "No Alarm Devices Found",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "Ensure your Bedside Hub is powered on and in pairing mode.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                if (alarmDevices.isEmpty && _isScanning) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        CircularProgressIndicator(color: AppColors.primary),
+                        SizedBox(height: 24),
+                        Text("Searching for Hub...", style: TextStyle(color: AppColors.textSecondary)),
+                      ],
                     ),
                   );
                 }
 
                 return ListView(
+                  padding: const EdgeInsets.all(16),
                   children: alarmDevices
-                      .map((r) => ListTile(
-                            leading: const CircleAvatar(
-                              backgroundColor: AppColors.card,
-                              child: Icon(Icons.alarm, color: AppColors.primary),
+                      .map((r) => Card(
+                            color: AppColors.card,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: ListTile(
+                              leading: const CircleAvatar(
+                                backgroundColor: Colors.black26,
+                                child: Icon(Icons.alarm, color: AppColors.primary),
+                              ),
+                              title: Text(
+                                r.device.platformName.isNotEmpty ? r.device.platformName : "Smart Alarm Hub",
+                                style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                r.device.remoteId.toString(),
+                                style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                              ),
+                              trailing: const Icon(Icons.chevron_right, color: AppColors.primary),
+                              onTap: () async {
+                                bool connected = await _bleService.connectToDevice(r.device);
+                                if (connected && mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => WifiSetupScreen(device: r.device),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
-                            title: Text(
-                              r.device.platformName.isNotEmpty ? r.device.platformName : "Smart Alarm Hub",
-                              style: const TextStyle(color: AppColors.textPrimary),
-                            ),
-                            subtitle: Text(
-                              r.device.remoteId.toString(),
-                              style: const TextStyle(color: AppColors.textSecondary, fontSize: 10),
-                            ),
-                            trailing: const Icon(Icons.bluetooth_connected, color: AppColors.primary),
-                            onTap: () async {
-                              bool connected = await _bleService.connectToDevice(r.device);
-                              if (connected && mounted) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => WifiSetupScreen(device: r.device),
-                                  ),
-                                );
-                              }
-                            },
                           ))
                       .toList(),
                 );
@@ -121,7 +158,7 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _isScanning ? null : _startScan,
         backgroundColor: AppColors.primary,
-        child: Icon(_isScanning ? Icons.stop : Icons.search),
+        child: Icon(_isScanning ? Icons.stop : Icons.refresh, color: Colors.black),
       ),
     );
   }

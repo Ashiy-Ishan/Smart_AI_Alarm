@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +18,27 @@ class HubScreen extends StatefulWidget {
   State<HubScreen> createState() => _HubScreenState();
 }
 
-class _HubScreenState extends State<HubScreen> {
+class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixin {
   final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
   String? _macAddress;
   String? _hiddenUid;
   bool _isInitialized = false;
+  Timer? _resetTimer;
+  int _countdown = 15;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     _findUserDevice();
+  }
+
+  @override
+  void dispose() {
+    _resetTimer?.cancel();
+    super.dispose();
   }
 
   String _getHiddenUid(String email) {
@@ -59,6 +71,7 @@ class _HubScreenState extends State<HubScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (!_isInitialized) {
       return const Scaffold(
         backgroundColor: AppColors.background,
@@ -67,34 +80,73 @@ class _HubScreenState extends State<HubScreen> {
     }
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: _macAddress == null ? _buildNoDeviceUI() : _buildLiveDashboard(),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 16, 
+                  right: 16, 
+                  top: MediaQuery.of(context).padding.top + 16,
+                  bottom: MediaQuery.of(context).padding.bottom + 100,
+                ),
+                child: _macAddress == null ? _buildNoDeviceUI() : _buildLiveDashboardContent(),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildNoDeviceUI() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.bluetooth_disabled, size: 64, color: AppColors.textSecondary),
-          const SizedBox(height: 16),
-          const Text("No Hub Connected", style: TextStyle(color: AppColors.textPrimary, fontSize: 18)),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: () async {
-              await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
-              _findUserDevice();
-            },
-            child: const Text("Setup Bedside Hub", style: TextStyle(color: AppColors.primary, decoration: TextDecoration.underline)),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Icon(Icons.bluetooth_disabled, size: 80, color: AppColors.textSecondary),
+        const SizedBox(height: 24),
+        const Text(
+          "No Hub Connected",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          "Link your Bedside Hub to see live\nenvironment and activity stats.",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+        ),
+        const SizedBox(height: 32),
+        TextButton(
+          onPressed: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
+            _findUserDevice();
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.primary),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Text(
+              "Setup Bedside Hub",
+              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildLiveDashboard() {
+  Widget _buildLiveDashboardContent() {
     return StreamBuilder(
       stream: _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
@@ -109,8 +161,8 @@ class _HubScreenState extends State<HubScreen> {
         final String userStatus = data['UserStatus'] ?? 'idle';
         final int soundLevel = data['SoundLevel'] ?? 5;
 
-        return ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
             Row(
@@ -135,11 +187,11 @@ class _HubScreenState extends State<HubScreen> {
             const SizedBox(height: 12),
             Row(
               children: [
-                HubEnvCard(icon: Icons.thermostat_outlined, value: '${temp.toStringAsFixed(1)}°C', label: 'Temp'),
+                Expanded(child: HubEnvCard(icon: Icons.thermostat_outlined, value: '${temp.toStringAsFixed(1)}°C', label: 'Temp')),
                 const SizedBox(width: 10),
-                HubEnvCard(icon: Icons.water_drop_outlined, value: '${humidity.toStringAsFixed(1)}%', label: 'Humidity'),
+                Expanded(child: HubEnvCard(icon: Icons.water_drop_outlined, value: '${humidity.toStringAsFixed(1)}%', label: 'Humidity')),
                 const SizedBox(width: 10),
-                HubEnvCard(icon: Icons.wb_sunny_outlined, value: lightStatus, label: 'Light'),
+                Expanded(child: HubEnvCard(icon: Icons.wb_sunny_outlined, value: lightStatus, label: 'Light')),
               ],
             ),
             const SizedBox(height: 20),
@@ -173,7 +225,6 @@ class _HubScreenState extends State<HubScreen> {
             const Text('Hardware Configuration', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             
-            // Relay Enabled Control
             HubDeviceControlCard(
               icon: Icons.power,
               title: 'Master Relay',
@@ -199,17 +250,19 @@ class _HubScreenState extends State<HubScreen> {
               onChanged: (v) => _updateDevice('SoundLevel', (v * 10).round()),
             ),
             const SizedBox(height: 32),
-            OutlinedButton.icon(
-              onPressed: () => _confirmRemoveDevice(context),
-              icon: const Icon(Icons.delete_forever, color: Colors.redAccent, size: 18),
-              label: const Text("UNBIND DEVICE", style: TextStyle(color: Colors.redAccent, fontSize: 12)),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.redAccent),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => _showFactoryResetWarning(context),
+                icon: const Icon(Icons.settings_backup_restore, color: Colors.orangeAccent, size: 18),
+                label: const Text("FACTORY RESET & UNBIND", style: TextStyle(color: Colors.orangeAccent, fontSize: 12)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.orangeAccent),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
               ),
             ),
-            const SizedBox(height: 24),
           ],
         );
       },
@@ -222,34 +275,90 @@ class _HubScreenState extends State<HubScreen> {
     }
   }
 
-  void _confirmRemoveDevice(BuildContext context) {
+  void _showFactoryResetWarning(BuildContext context) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.card,
-        title: const Text("Unbind Device?", style: TextStyle(color: AppColors.textPrimary)),
-        content: const Text("This will disconnect the device and wipe statistics.", style: TextStyle(color: AppColors.textSecondary)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              _removeDevice();
-            },
-            child: const Text("Remove", style: TextStyle(color: Colors.redAccent)),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            backgroundColor: AppColors.card,
+            title: const Text("Factory Reset Warning", style: TextStyle(color: Colors.orangeAccent)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "This will wipe all hardware settings and delete your data from the cloud.",
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "Resetting in: $_countdown seconds",
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _cancelReset();
+                  Navigator.pop(ctx);
+                },
+                child: const Text("CANCEL", style: TextStyle(color: AppColors.primary)),
+              ),
+            ],
+          );
+        },
       ),
     );
+
+    _startResetCountdown(context);
   }
 
-  void _removeDevice() async {
-    final email = FirebaseAuth.instance.currentUser?.email ?? "";
-    if (email.isEmpty || _macAddress == null) return;
-    final uid = _getHiddenUid(email);
-    try {
-      await _rtdb.ref().child('Users').child(uid).child('Devices').child(_macAddress!).remove();
-      if (mounted) setState(() => _macAddress = null);
-    } catch (e) {}
+  void _startResetCountdown(BuildContext context) {
+    _countdown = 15;
+    _updateDevice('FactoryReset', true);
+
+    _resetTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_countdown > 0) {
+        if (mounted) {
+          setState(() => _countdown--);
+        }
+      } else {
+        timer.cancel();
+        _verifyAndExecuteReset(context);
+      }
+    });
+  }
+
+  void _cancelReset() {
+    _resetTimer?.cancel();
+    _updateDevice('FactoryReset', false);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Reset Canceled")),
+      );
+    }
+  }
+
+  void _verifyAndExecuteReset(BuildContext context) async {
+    if (_macAddress == null || _hiddenUid == null) return;
+
+    final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).child('FactoryReset').get();
+    
+    if (snapshot.exists && snapshot.value == true) {
+      try {
+        await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).remove();
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop(); // Close dialog
+          setState(() => _macAddress = null);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Device factory reset and unlinked successfully.")),
+          );
+        }
+      } catch (e) {
+        print("Reset Error: $e");
+      }
+    }
   }
 }

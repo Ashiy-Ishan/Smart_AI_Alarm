@@ -11,9 +11,6 @@
 #include <DHT.h>
 #include "time.h"
 
-
-// GLOBAL VARIABLES
-
 AlarmState currentAlarmState = IDLE;
 float temperature = 0.0;
 float humidity = 0.0;
@@ -53,9 +50,14 @@ int resetConfirmPresses = 0;
 int multiPressCount = 0;
 unsigned long lastMultiPressTime = 0;
 
+bool isCloudResetPending = false;
+unsigned long cloudResetStartTime = 0;
+bool pushResetCancelToCloud = false;
+
+bool hardwareResetTriggered = false; // NEW 10s RESET FLAG
+
 float smoothedLightValue = 0.0; 
 
-// Relay & Alarm Variables
 bool isAlarmEnabled = true;     
 bool isRelayEnabled = false;     
 bool isRelayActuallyOn = false; 
@@ -161,17 +163,31 @@ void loop() {
     }
   }
 
+  // ==========================================
+  // BUTTON MULTI-CLICK & HOLD LOGIC
+  // ==========================================
   int btnState = digitalRead(BUTTON_PIN);
   if (btnState == LOW) { 
     if (!btnIsPressed) {
       btnIsPressed = true;
       btnPressTime = currentMillis; 
       longPressTriggered = false;
+      hardwareResetTriggered = false; // Reset the 10s flag on new press
     }
 
     unsigned long holdTime = currentMillis - btnPressTime;
 
-    if (holdTime >= 5000 && !longPressTriggered && !isResetPending) {
+    // 1. OFFLINE HARDWARE RESET (Hold 10 seconds)
+    if (holdTime >= 10000 && !hardwareResetTriggered && !isResetPending) {
+      hardwareResetTriggered = true;
+      playTonePattern(0, 0, 0, true); 
+      drawBootScreen("HARDWARE RESET...");
+      factoryReset();
+      delay(2000);
+      ESP.restart(); 
+    }
+    // 2. MENU MODE (Hold 5 seconds)
+    else if (holdTime >= 5000 && !longPressTriggered && !hardwareResetTriggered && !isResetPending) {
       longPressTriggered = true;
       playTonePattern(0, 0, 0, true); 
 
@@ -197,7 +213,7 @@ void loop() {
       btnIsPressed = false;
       unsigned long pressDuration = currentMillis - btnPressTime;
       
-      if (!longPressTriggered && pressDuration > 50) {
+      if (!longPressTriggered && !hardwareResetTriggered && pressDuration > 50) {
         if (currentMillis - lastMultiPressTime > 1000) multiPressCount = 0;
         multiPressCount++;
         lastMultiPressTime = currentMillis;
@@ -221,18 +237,24 @@ void loop() {
             playTonePattern(0, 0, 0, true); 
           } 
           else if (multiPressCount == 1) { 
-            if (isMenuMode) {
+            
+            if (isCloudResetPending) {
+              isCloudResetPending = false;
+              pushResetCancelToCloud = true;
+              tone(SPEAKER_PIN, 1500, 200); 
+            }
+            else if (isMenuMode) {
               selectedTone++;
               if (selectedTone > 1) selectedTone = 0; 
               isPreviewing = true;
               previewEndTime = currentMillis + 4000; 
             } 
             else {
+              // THIS IS WHERE A 1-CLICK STOPS THE ALARM!
               if (!isStopped) {
                 isStopped = true; 
                 if (currentAlarmState != IDLE) playTonePattern(0, 0, 0, true); 
                 if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
-                
                 isCloudPreviewing = false;
               }
             }
@@ -247,6 +269,16 @@ void loop() {
       isResetPending = false; 
       resetConfirmPresses = 0;
       multiPressCount = 0;
+    }
+  }
+
+  if (isCloudResetPending) {
+    if (currentMillis - cloudResetStartTime >= 10000) {
+      playTonePattern(0, 0, 0, true); 
+      drawBootScreen("WIPING DEVICE...");
+      factoryReset();
+      delay(2000);
+      ESP.restart(); 
     }
   }
 
@@ -267,7 +299,6 @@ void loop() {
     }
   }
   else {
-    // 🌟 NEW ALARM ENABLED CHECK 🌟
     if (String(currentTimeStr) == alarmTime && isAlarmEnabled) {
       if (isStopped) {
         if (currentAlarmState != IDLE) {
@@ -284,7 +315,6 @@ void loop() {
           currentAlarmState = RINGING;
           stateTimer = currentMillis;
           
-          // Alarm automatically turns on the lamp for 15 mins to help you wake up
           isLampOnByAlarm = true; 
           lampTurnedOnTime = currentMillis;
         }
@@ -317,19 +347,16 @@ void loop() {
     }
   }
 
-
-  // UNIFIED RELAY CONTROLLER 
-
   bool targetRelayState = false;
 
   if (isLampOnByAlarm) targetRelayState = true;
-  if (isRelayEnabled) targetRelayState = true; // Use the direct Firebase switch
+  if (isRelayEnabled) targetRelayState = true; 
 
   if (targetRelayState) {
-    digitalWrite(RELAY_PIN, HIGH); // Active-High ON
+    digitalWrite(RELAY_PIN, HIGH); 
     isRelayActuallyOn = true;
   } else {
-    digitalWrite(RELAY_PIN, LOW); // OFF
+    digitalWrite(RELAY_PIN, LOW); 
     isRelayActuallyOn = false;
   }
 
