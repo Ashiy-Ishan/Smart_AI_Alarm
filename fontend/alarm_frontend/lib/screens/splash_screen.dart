@@ -21,12 +21,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _checkAuthStatus() async {
-    // Wait a brief moment for Firebase to initialize the user state
-    await Future.delayed(const Duration(seconds: 2));
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    // Wait until UserProvider is initialized or max 3 seconds
+    int attempts = 0;
+    while (!userProvider.isInitialized && attempts < 30) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      attempts++;
+    }
+
+    // Give another 1s for splash to look nice
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
-
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     if (userProvider.isAuthenticated) {
       // User is already logged in, go straight to main screen

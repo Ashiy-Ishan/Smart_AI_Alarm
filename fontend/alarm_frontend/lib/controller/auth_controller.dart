@@ -6,17 +6,22 @@ class AuthController {
   static Future<User?> signInWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn.instance;
+      
+      // Initialize for v7.0.0+ (using default scopes for sign-in)
       await googleSignIn.initialize();
+      
+      // Use authenticate() instead of signIn()
       final googleUser = await googleSignIn.authenticate();
+      if (googleUser == null) return null;
 
-      final googleAuth = googleUser.authentication;
+      final googleAuth = await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
-       idToken: googleAuth.idToken,
-       
+        idToken: googleAuth.idToken,
+        // accessToken is no longer needed for basic Firebase Auth in v7.0.0+
       );
 
-final userCredential= await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       return userCredential.user;
       
     } catch (e) {
@@ -75,4 +80,3 @@ final userCredential= await FirebaseAuth.instance.signInWithCredential(credentia
     }
   }
 }
-

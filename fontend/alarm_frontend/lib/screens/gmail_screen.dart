@@ -1,11 +1,11 @@
+import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/sync_status_card.dart';
-import 'package:alarm_frontend/components/custom_switch_row.dart';
-import 'package:alarm_frontend/components/settings_nav_row.dart';
-import 'main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:googleapis/gmail/v1.dart';
 
 class GmailScreen extends StatefulWidget {
   const GmailScreen({super.key});
@@ -15,26 +15,31 @@ class GmailScreen extends StatefulWidget {
 }
 
 class _GmailScreenState extends State<GmailScreen> {
-  bool _priorityFilter = true;
-  bool _inboxAlerts = true;
-  bool _sentMail = true;
+  final GoogleSyncService _syncService = GoogleSyncService();
+  List<Message> _emails = [];
+  bool _isLoading = true;
 
-  void _goToProfile() {
-    MainScreen.globalKey.currentState?.changeTab(4);
-    Navigator.of(context).pop();
+  @override
+  void initState() {
+    super.initState();
+    _fetchEmails();
   }
 
-  Widget _divider() {
-    return const Divider(
-      height: 1,
-      color: AppColors.border,
-      indent: 16,
-      endIndent: 16,
-    );
+  Future<void> _fetchEmails() async {
+    setState(() => _isLoading = true);
+    final emails = await _syncService.fetchLatestEmails();
+    if (mounted) {
+      setState(() {
+        _emails = emails;
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final userEmail = FirebaseAuth.instance.currentUser?.email ?? 'Unknown User';
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -44,123 +49,79 @@ class _GmailScreenState extends State<GmailScreen> {
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: _goToProfile,
+            onPressed: () => Navigator.of(context).pop(),
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('Gmail', style: AppTextStyles.heading),
-              const Text('alexr@gmail.com', style: AppTextStyles.subHeading),
+              Text(userEmail, style: AppTextStyles.subHeading),
             ],
           ),
         ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            // Sync status card
-            const SyncStatusCard(
-              statusText: 'Synced just now',
-            ),
-
-            const SizedBox(height: 20),
-
-            // Notification Settings section
-            const Text(
-              'Notification Settings',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Column(
+        body: RefreshIndicator(
+          onRefresh: _fetchEmails,
+          color: AppColors.primary,
+          child: _isLoading 
+            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            : ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 children: [
-                  CustomSwitchRow(
-                    label: 'Priority Filter',
-                    badge: '9 unread',
-                    value: _priorityFilter,
-                    onChanged: (v) => setState(() => _priorityFilter = v),
+                  SyncStatusCard(
+                    statusText: 'Synced ${_emails.length} unread emails',
                   ),
-                  _divider(),
-                  CustomSwitchRow(
-                    label: 'Inbox Alerts',
-                    value: _inboxAlerts,
-                    onChanged: (v) => setState(() => _inboxAlerts = v),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Recent Unread Messages',
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  _divider(),
-                  CustomSwitchRow(
-                    label: 'Sent Mail',
-                    value: _sentMail,
-                    onChanged: (v) => setState(() => _sentMail = v),
-                  ),
-                  _divider(),
-                  const SettingsNavRow(
-                    label: 'Spam',
-                    badge: '9',
-                  ),
-                  _divider(),
-                  const SettingsNavRow(
-                    label: 'Trash',
-                  ),
+                  const SizedBox(height: 12),
+                  if (_emails.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(40.0),
+                        child: Text("No unread emails found.", style: TextStyle(color: AppColors.textSecondary)),
+                      ),
+                    )
+                  else
+                    ..._emails.map((msg) => _buildEmailTile(msg)).toList(),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // Data Usage section
-            const Text(
-              'Data Usage',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Row(
-                children: [
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Last Sync Data: 8MB',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: AppColors.textSecondary,
-                    size: 18,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildEmailTile(Message msg) {
+    // Basic extraction of Subject and From from headers
+    String subject = "No Subject";
+    String from = "Unknown";
+    
+    if (msg.payload?.headers != null) {
+      for (var header in msg.payload!.headers!) {
+        if (header.name == 'Subject') subject = header.value ?? subject;
+        if (header.name == 'From') from = header.value ?? from;
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(from, style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+          const SizedBox(height: 4),
+          Text(subject, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15), maxLines: 1, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
+          Text(msg.snippet ?? "", style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+        ],
       ),
     );
   }

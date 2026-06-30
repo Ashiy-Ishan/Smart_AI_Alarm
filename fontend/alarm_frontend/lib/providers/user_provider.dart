@@ -6,11 +6,23 @@ import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
   AuthUserModel? _user;
+  bool _isInitialized = false;
 
   AuthUserModel? get user => _user;
   bool get isAuthenticated => _user != null;
+  bool get isInitialized => _isInitialized;
 
   UserProvider() {
+    // Check initial user state immediately
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      _user = AuthUserModel(
+        email: currentUser.email ?? '',
+        fullName: currentUser.displayName ?? '',
+        profileImage: currentUser.photoURL ?? '',
+      );
+    }
+
     FirebaseAuth.instance.authStateChanges().listen((User? firebaseUser) {
       if (firebaseUser == null) {
         _user = null;
@@ -21,6 +33,7 @@ class UserProvider extends ChangeNotifier {
           profileImage: firebaseUser.photoURL ?? '',
         );
       }
+      _isInitialized = true;
       notifyListeners();
     });
   }

@@ -2,6 +2,7 @@ import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/section_card.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
+import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_colors.dart';
@@ -17,6 +18,18 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  bool _isGoogleLinked = false;
+
+  void _handleGoogleLink() async {
+    final account = await GoogleSyncService().linkAccount();
+    if (account != null) {
+      setState(() => _isGoogleLinked = true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Google Account Linked Successfully!")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +84,14 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 SectionCard(
                   title: "Account Linking",
                   children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.link, color: AppColors.primary),
+                      title: const Text("Sync Google Data", style: TextStyle(color: AppColors.textPrimary, fontSize: 15)),
+                      subtitle: Text(_isGoogleLinked ? "Calendar & Gmail Linked" : "Tap to connect", style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      trailing: Icon(_isGoogleLinked ? Icons.check_circle : Icons.arrow_forward_ios, size: 16, color: _isGoogleLinked ? Colors.green : AppColors.textSecondary),
+                      onTap: _handleGoogleLink,
+                    ),
                     _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar),
                     _tile(context, "Gmail", Icons.mail, AppRoutes.gmail),
                     _tile(context, "Message", Icons.message, AppRoutes.message),

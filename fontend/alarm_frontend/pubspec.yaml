@@ -49,6 +49,9 @@ dependencies:
   cloud_firestore: ^6.6.0
   firebase_database: ^12.4.4
   network_info_plus: ^8.1.0
+  googleapis: ^16.0.0
+  googleapis_auth: ^2.3.2
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

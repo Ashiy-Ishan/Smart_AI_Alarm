@@ -22,25 +22,37 @@ class BottomNavBar extends StatelessWidget {
     ];
 
     return Container(
-      decoration: const BoxDecoration(color: Color(0xFF1A1D24)),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16, bottom: 24), // Increased bottom padding for 3-button nav
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (index) {
-              return GestureDetector(
-                onTap: () => onTap(index),
-                child: Icon(
-                  items[index],
-                  size: 26,
-                  color: currentIndex == index
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
-                ),
-              );
-            }),
+      decoration: const BoxDecoration(
+        color: Color(0xFF1A1D24),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 24), // Maintain clearance for 3-button nav
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(items.length, (index) {
+                return GestureDetector(
+                  onTap: () => onTap(index),
+                  child: Icon(
+                    items[index],
+                    size: 26,
+                    color: currentIndex == index
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                  ),
+                );
+              }),
+            ),
           ),
         ),
       ),
