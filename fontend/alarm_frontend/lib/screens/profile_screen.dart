@@ -84,14 +84,6 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 SectionCard(
                   title: "Account Linking",
                   children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.link, color: AppColors.primary),
-                      title: const Text("Sync Google Data", style: TextStyle(color: AppColors.textPrimary, fontSize: 15)),
-                      subtitle: Text(_isGoogleLinked ? "Calendar & Gmail Linked" : "Tap to connect", style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                      trailing: Icon(_isGoogleLinked ? Icons.check_circle : Icons.arrow_forward_ios, size: 16, color: _isGoogleLinked ? Colors.green : AppColors.textSecondary),
-                      onTap: _handleGoogleLink,
-                    ),
                     _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar),
                     _tile(context, "Gmail", Icons.mail, AppRoutes.gmail),
                     _tile(context, "Message", Icons.message, AppRoutes.message),

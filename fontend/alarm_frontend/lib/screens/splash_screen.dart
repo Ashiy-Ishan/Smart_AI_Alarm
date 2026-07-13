@@ -36,10 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     if (userProvider.isAuthenticated) {
-      // User is already logged in, go straight to main screen
       Navigator.pushReplacementNamed(context, AppRoutes.main);
     }
-    // If not authenticated, we stay on this screen and let them click "Get Started"
   }
 
   @override
@@ -47,45 +45,76 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height - 100,
-              child: Column(
-                children: [
-                  const Spacer(flex: 2),
-                  Lottie.asset('assets/lotties/alarm.json'),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'Smarter Wake-Ups,\nBetter Days.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(), // Prevent manual scroll on splash
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Top Spacing
+                      const SizedBox.shrink(),
+
+                      // Center Content Group
+                      Column(
+                        children: [
+                          // Dynamic Lottie size based on screen height
+                          SizedBox(
+                            height: constraints.maxHeight * 0.35,
+                            child: Lottie.asset(
+                              'assets/lotties/alarm.json',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          const Text(
+                            'Smarter Wake-Ups,\nBetter Days.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                              height: 1.2,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Bottom Actions Group
+                      Column(
+                        children: [
+                          PrimaryButton(
+                            text: 'Get Started',
+                            onPressed: () {
+                              Navigator.pushNamed(context, AppRoutes.auth);
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          const Text(
+                            'SUSL POWERED',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                              letterSpacing: 2.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          // Added extra padding for different system nav bars
+                          SizedBox(height: MediaQuery.of(context).padding.bottom > 0 ? 10 : 20),
+                        ],
+                      ),
+                    ],
                   ),
-                  const Spacer(flex: 1),
-                  PrimaryButton(
-                    text: 'Get Started',
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.auth);
-                    },
-                  ),
-                  const Spacer(flex: 2),
-                  const Text(
-                    'SUSL POWERED',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
