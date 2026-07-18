@@ -5,11 +5,20 @@ import 'package:alarm_frontend/components/gmail_scan_card.dart';
 import 'package:alarm_frontend/components/agenda_timeline_item.dart';
 import 'package:alarm_frontend/models/agenda_model.dart';
 
-class ScheduleScreen extends StatelessWidget {
+class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
 
   @override
+  State<ScheduleScreen> createState() => _ScheduleScreenState();
+}
+
+class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     const List<AgendaModel> agenda = [
       AgendaModel(
         time: '08:00',

@@ -4,11 +4,20 @@ import 'package:alarm_frontend/components/sleep_analytics_card.dart';
 import 'package:alarm_frontend/components/habit_learning_card.dart';
 import 'package:alarm_frontend/components/accuracy_score_card.dart';
 
-class InsightScreen extends StatelessWidget {
+class InsightScreen extends StatefulWidget {
   const InsightScreen({super.key});
 
   @override
+  State<InsightScreen> createState() => _InsightScreenState();
+}
+
+class _InsightScreenState extends State<InsightScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(

@@ -2,16 +2,38 @@ import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/models/section_card.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
+import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_colors.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final AuthUserModel user;
   const ProfileScreen({super.key, required this.user});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  bool _isGoogleLinked = false;
+
+  void _handleGoogleLink() async {
+    final account = await GoogleSyncService().linkAccount();
+    if (account != null) {
+      setState(() => _isGoogleLinked = true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Google Account Linked Successfully!")),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -38,10 +60,10 @@ class ProfileScreen extends StatelessWidget {
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: AppColors.primary,
-                  backgroundImage: user.profileImage.isNotEmpty
-                      ? NetworkImage(user.profileImage)
+                  backgroundImage: widget.user.profileImage.isNotEmpty
+                      ? NetworkImage(widget.user.profileImage)
                       : null,
-                  child: user.profileImage.isEmpty
+                  child: widget.user.profileImage.isEmpty
                       ? const Icon(Icons.person, size: 40)
                       : null,
                 ),
@@ -49,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 Text(
-                  user.fullName.isEmpty ? "User Name" : user.fullName,
+                  widget.user.fullName.isEmpty ? "User Name" : widget.user.fullName,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 18,
@@ -136,8 +158,6 @@ class ProfileScreen extends StatelessWidget {
                             await Provider.of<UserProvider>(context, listen: false)
                                 .signOut(context);
                             if (!context.mounted) return;
-                            // rootNavigator: true targets the MaterialApp-level navigator,
-                            // fully removing MainScreen (and its nav bar) from the tree.
                             Navigator.of(context, rootNavigator: true)
                                 .pushNamedAndRemoveUntil(
                                     AppRoutes.splash, (route) => false);

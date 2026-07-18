@@ -1,48 +1,41 @@
 {
   "project_info": {
-    "project_number": "541409753782",
-    "project_id": "ai-alarm-system",
-    "storage_bucket": "ai-alarm-system.firebasestorage.app"
+    "project_number": "667577209576",
+    "firebase_url": "https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smart-ai-alarm-2f71d",
+    "storage_bucket": "smart-ai-alarm-2f71d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:541409753782:android:a76adcd00f478112514417",
+        "mobilesdk_app_id": "1:667577209576:android:REPLACE_WITH_YOUR_ANDROID_APP_ID",
         "android_client_info": {
-          "package_name": "com.example.alarm_frontend"
+          "package_name": "com.smartalarm"
         }
       },
       "oauth_client": [
         {
-          "client_id": "541409753782-c2rn6brdjt60cn0i5avh83hvf46kg8v5.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.alarm_frontend",
-            "certificate_hash": "bdc6b07e1b75e0836a7891f37f1efc866161d21b"
-          }
-        },
-        {
-          "client_id": "541409753782-e7hqfqt84uh170tv4963t9g7k5m57dgi.apps.googleusercontent.com",
+          "client_id": "667577209576-hdghjntnf9ij6i7dfdjtinel64lqmdbe.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD_WGKziURG618kBYffpBLzjjTIMAK-BZk"
+          "current_key": "AIzaSyBQlTD6zBHUBr2_aUHf4yoWkMAubsjxbak"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "541409753782-e7hqfqt84uh170tv4963t9g7k5m57dgi.apps.googleusercontent.com",
+              "client_id": "667577209576-hdghjntnf9ij6i7dfdjtinel64lqmdbe.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "541409753782-vund55t15s7ihfr9j3jeb8r3or1hikjl.apps.googleusercontent.com",
+              "client_id": "667577209576-blv1mdnjq1dptms7uandsr5ofah0961s.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.alarmFrontend"
+                "bundle_id": "com.smartalarm"
               }
             }
           ]

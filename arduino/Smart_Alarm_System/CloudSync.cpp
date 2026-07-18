@@ -22,6 +22,8 @@ unsigned long lastWiFiCheck = 0;
 unsigned long atlasSyncInterval = 60000; 
 bool isFirebaseInitialized = false; 
 
+String devicePath = ""; 
+
 void setupNetworkAndTime() {
   WiFi.begin(wifiSSID.c_str(), wifiPass.c_str());
   int dotCount = 0;
@@ -37,8 +39,12 @@ void setupNetworkAndTime() {
     if(dotCount > 3) dotCount = 0; 
   }
 
-  if (WiFi.status() == WL_CONNECTED) drawBootScreen("Connected!");
-  else drawBootScreen("Offline Mode!");
+  if (WiFi.status() == WL_CONNECTED) {
+    drawBootScreen("Connected!");
+    devicePath = "Devices/" + WiFi.macAddress();
+  } else {
+    drawBootScreen("Offline Mode!");
+  }
   delay(500);
 
   config.api_key = API_KEY;
@@ -72,11 +78,9 @@ void syncWithFirebase(unsigned long currentMillis) {
   if (currentMillis - lastFirebaseSync >= 5000) {
     lastFirebaseSync = currentMillis;
     
-    if (Firebase.ready()) {
-      
-      // AUTO-CREATE DATABASE KEYS ON FIRST BOOT
+    if (Firebase.ready() && devicePath != "") {
       if (!isFirebaseInitialized) {
-        if (Firebase.RTDB.get(&fbdo, "smartAlarm/AlarmTime")) {
+        if (Firebase.RTDB.get(&fbdo, devicePath + "/AlarmTime")) {
           if (fbdo.dataType() == "null") {
             FirebaseJson defaultAppKeys;
             defaultAppKeys.set("AlarmTime", "07:00");     
@@ -86,13 +90,12 @@ void syncWithFirebase(unsigned long currentMillis) {
             defaultAppKeys.set("ManualLamp", false);      
             defaultAppKeys.set("MobileStop", false);      
             
-            Firebase.RTDB.updateNode(&fbdo, "smartAlarm", &defaultAppKeys);
+            Firebase.RTDB.updateNode(&fbdo, devicePath, &defaultAppKeys);
           }
         }
         isFirebaseInitialized = true; 
       }
 
-      // 1. SEND ESP32 DATA TO FIREBASE
       FirebaseJson json;
       json.set("Temperature", temperature);
       json.set("Humidity", humidity);
@@ -104,20 +107,19 @@ void syncWithFirebase(unsigned long currentMillis) {
       else if (currentAlarmState == RESTING) json.set("UserStatus", "snooze");
       else if (currentAlarmState == IDLE && !wokeUpFlagPushed) json.set("UserStatus", "idle");
 
-      Firebase.RTDB.updateNode(&fbdo, "smartAlarm", &json);
+      Firebase.RTDB.updateNode(&fbdo, devicePath, &json);
 
-      // 2. RECEIVE APP SETTINGS FROM FIREBASE
-      if (Firebase.RTDB.getString(&fbdo, "smartAlarm/AlarmTime")) alarmTime = fbdo.stringData();
+      if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmTime")) alarmTime = fbdo.stringData();
       
-      if (Firebase.RTDB.get(&fbdo, "smartAlarm/SoundLevel")) {
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/SoundLevel")) {
         soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
       
-      if (Firebase.RTDB.get(&fbdo, "smartAlarm/SelectedTone")) {
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/SelectedTone")) {
         selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
 
-      if (Firebase.RTDB.get(&fbdo, "smartAlarm/RelayEnabled")) {
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/RelayEnabled")) {
         if (fbdo.dataType() == "string") {
           String val = fbdo.stringData(); val.toLowerCase();
           isRelayEnabled = (val == "true" || val == "1" || val == "on");
@@ -126,19 +128,18 @@ void syncWithFirebase(unsigned long currentMillis) {
 
       bool previousManualState = isManualLampOn;
 
-      if (Firebase.RTDB.get(&fbdo, "smartAlarm/ManualLamp")) {
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/ManualLamp")) {
         if (fbdo.dataType() == "string") {
           String val = fbdo.stringData(); val.toLowerCase();
           isManualLampOn = (val == "true" || val == "1" || val == "on");
         } else isManualLampOn = fbdo.boolData();
       }
 
-      // If manual app switch is turned off, kill the 15-minute timer
       if (previousManualState == true && isManualLampOn == false) {
         isLampOnByAlarm = false;
       }
 
-      if (Firebase.RTDB.getBool(&fbdo, "smartAlarm/MobileStop")) {
+      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
         if (fbdo.boolData() == true) {
           isStopped = true;
           playTonePattern(0, 0, 0, true); 
@@ -146,11 +147,11 @@ void syncWithFirebase(unsigned long currentMillis) {
           isLampOnByAlarm = false; 
           isManualLampOn = false; 
           
-          Firebase.RTDB.setBool(&fbdo, "smartAlarm/ManualLamp", false);
+          Firebase.RTDB.setBool(&fbdo, devicePath + "/ManualLamp", false);
           
           currentAlarmState = IDLE; 
-          Firebase.RTDB.setBool(&fbdo, "smartAlarm/MobileStop", false); 
-          Firebase.RTDB.setString(&fbdo, "smartAlarm/UserStatus", "stopped_by_mobile");
+          Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false); 
+          Firebase.RTDB.setString(&fbdo, devicePath + "/UserStatus", "stopped_by_mobile");
         }
       }
     }
@@ -165,7 +166,9 @@ void syncWithAtlas(unsigned long currentMillis) {
       http.begin(SERVER_URL);
       http.setTimeout(2500); 
       http.addHeader("Content-Type", "application/json");
-      String jsonPayload = "{\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
+      
+      String jsonPayload = "{\"device_id\":\"" + WiFi.macAddress() + "\",\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
+      
       int httpResponseCode = http.POST(jsonPayload);
       if (httpResponseCode == 200) { atlasStatus = "SUCCESS"; atlasSyncInterval = 60000; } 
       else { atlasStatus = "FAILED"; atlasSyncInterval = 5000; }
