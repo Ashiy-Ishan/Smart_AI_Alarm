@@ -15,6 +15,15 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter/services.dart'; // Added for SystemChrome
 
+import 'package:alarm_frontend/services/notification_service.dart';
+
+// Background message handler
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -28,6 +37,12 @@ void main() async {
   try {
     await dotenv.load(fileName: ".env");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    
+    // Set up background messaging handler
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    
+    // Initialize notifications
+    await NotificationService().initialize();
   } catch (e) {
     debugPrint("Initialization failed: $e");
   }
