@@ -1,3 +1,4 @@
+// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -49,12 +50,12 @@ class WeeklyBarChart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: items
               .map((d) => Text(
-                    d.label,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
-                    ),
-                  ))
+            d.label,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+            ),
+          ))
               .toList(),
         ),
       ],

@@ -21,6 +21,7 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
+  late PageController _pageController;
 
   /// One dedicated NavigatorKey per tab so each tab keeps its own back-stack.
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
@@ -31,36 +32,45 @@ class MainScreenState extends State<MainScreen> {
     GlobalKey<NavigatorState>(), // Profile
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: currentIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void changeTab(int index) {
     if (currentIndex == index) {
       // Tapping the active tab pops back to its root screen
       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
     } else {
-      // Reset the tab we're leaving so returning to it always shows its root
-      _navigatorKeys[currentIndex].currentState?.popUntil((route) => route.isFirst);
       setState(() => currentIndex = index);
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
   /// Wraps each tab's root screen in its own Navigator.
-  /// Using Offstage keeps all navigators alive so state is preserved.
   Widget _buildTabNavigator(int index, Widget rootScreen) {
-    return Offstage(
-      offstage: currentIndex != index,
-      child: Navigator(
-        key: _navigatorKeys[index],
-        // The first route in each tab is always the tab's root screen.
-        // Any named push inside a tab is handled by AppRouter.
-        onGenerateRoute: (settings) {
-          if (settings.name == Navigator.defaultRouteName) {
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (_) => rootScreen,
-            );
-          }
-          return AppRouter.onGenerateRoute(settings);
-        },
-      ),
+    return Navigator(
+      key: _navigatorKeys[index],
+      onGenerateRoute: (settings) {
+        if (settings.name == Navigator.defaultRouteName) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => rootScreen,
+          );
+        }
+        return AppRouter.onGenerateRoute(settings);
+      },
     );
   }
 
@@ -70,7 +80,6 @@ class MainScreenState extends State<MainScreen> {
     final user = userProvider.user ?? const AuthUserModel();
 
     return PopScope(
-      // Let the tab's own navigator handle back presses first
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
@@ -80,7 +89,11 @@ class MainScreenState extends State<MainScreen> {
         }
       },
       child: Scaffold(
-        body: Stack(
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => currentIndex = index);
+          },
           children: [
             _buildTabNavigator(0, const HomeScreen()),
             _buildTabNavigator(1, const ScheduleScreen()),

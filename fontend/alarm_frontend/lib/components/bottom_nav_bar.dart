@@ -22,22 +22,64 @@ class BottomNavBar extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 30),
-      decoration: BoxDecoration(color: const Color(0xFF1A1D24)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (index) {
-          return GestureDetector(
-            onTap: () => onTap(index),
-            child: Icon(
-              items[index],
-              size: 26,
-              color: currentIndex == index
-                  ? AppColors.primary
-                  : AppColors.textSecondary,
+      decoration: const BoxDecoration(
+        color: Color(0xFF1A1D24),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 12), // Reduced vertical padding
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(items.length, (index) {
+                final bool isSelected = currentIndex == index;
+                
+                return GestureDetector(
+                  onTap: () => onTap(index),
+                  behavior: HitTestBehavior.opaque,
+                  child: TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 200),
+                    tween: Tween<double>(
+                      begin: isSelected ? 1.0 : 0.9,
+                      end: isSelected ? 1.2 : 1.0,
+                    ),
+                    builder: (context, scale, child) {
+                      return Transform.scale(
+                        scale: scale,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: isSelected 
+                                ? AppColors.primary.withOpacity(0.1) 
+                                : Colors.transparent,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            items[index],
+                            size: 26,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.textSecondary,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }),
             ),
-          );
-        }),
+          ),
+        ),
       ),
     );
   }

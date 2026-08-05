@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.alarmFrontend</string>
+	<string>com.smartalarm</string>
 	<key>PROJECT_ID</key>
 	<string>ai-alarm-system</string>
 	<key>STORAGE_BUCKET</key>

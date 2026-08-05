@@ -1,3 +1,4 @@
+// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -76,7 +77,7 @@ class MotionNavCard extends StatelessWidget {
                   ],
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
