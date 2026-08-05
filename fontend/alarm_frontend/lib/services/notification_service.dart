@@ -29,7 +29,7 @@ class NotificationService {
       macOS: DarwinInitializationSettings(),
     );
 
-    await _plugin.initialize(settings);
+    await _plugin.initialize(settings: settings);
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     await android?.createNotificationChannel(_channel);
@@ -43,10 +43,10 @@ class NotificationService {
   }) async {
     await initialize();
     await _plugin.show(
-      1001,
-      title,
-      body,
-      const NotificationDetails(
+      id: 1001,
+      title: title,
+      body: body,
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'alarm_alerts',
           'Alarm alerts',
@@ -60,5 +60,5 @@ class NotificationService {
     );
   }
 
-  Future<void> cancelAlarm() => _plugin.cancel(1001);
+  Future<void> cancelAlarm() => _plugin.cancel(id: 1001);
 }
