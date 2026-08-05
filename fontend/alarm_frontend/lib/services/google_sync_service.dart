@@ -21,16 +21,20 @@ class GoogleSyncService {
   }
 
   Future<AuthClient?> _client() async {
-    await _googleSignIn.initialize();
-    final account = await _googleSignIn.authenticate(scopeHint: _scopes);
-    final authorization = await account.authorizationClient.authorizeScopes(_scopes);
-    final token = authorization.accessToken;
-    final credentials = AccessCredentials(
-      AccessToken('Bearer', token, DateTime.now().toUtc().add(const Duration(minutes: 50))),
-      null,
-      _scopes,
-    );
-    return authenticatedClient(http.Client(), credentials);
+    try {
+      await _googleSignIn.initialize();
+      final account = await _googleSignIn.authenticate(scopeHint: _scopes);
+      final authorization = await account.authorizationClient.authorizeScopes(_scopes);
+      final credentials = AccessCredentials(
+        AccessToken('Bearer', authorization.accessToken,
+            DateTime.now().toUtc().add(const Duration(minutes: 50))),
+        null,
+        _scopes,
+      );
+      return authenticatedClient(http.Client(), credentials);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<List<calendar.Event>> fetchUpcomingEvents() async {
