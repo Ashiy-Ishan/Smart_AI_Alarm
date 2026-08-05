@@ -8,6 +8,7 @@ import 'package:alarm_frontend/screens/alarm/alarm_ringing_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,8 +21,7 @@ import 'package:alarm_frontend/services/notification_service.dart';
 // Background message handler
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 void main() async {
@@ -64,6 +64,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   StreamSubscription? _alarmSubscription;
+  StreamSubscription<User?>? _authSubscription;
   String? _currentMac;
   bool _isAlarmShowing = false;
 
@@ -81,8 +82,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _setupAlarmListener() {
-    FirebaseAuth.instance.authStateChanges().listen((user) async {
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) async {
       _alarmSubscription?.cancel();
+      _alarmSubscription = null;
       if (user != null && user.email != null) {
         final hiddenUid = _getHiddenUid(user.email!);
         
@@ -112,11 +114,14 @@ class _MyAppState extends State<MyApp> {
             });
           }
         }
+      } else if (_isAlarmShowing) {
+        _hideAlarmOverlay();
       }
     });
   }
 
   void _showAlarmOverlay(String uid, String mac) {
+    if (_navigatorKey.currentState == null) return;
     _isAlarmShowing = true;
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
@@ -127,12 +132,14 @@ class _MyAppState extends State<MyApp> {
 
   void _hideAlarmOverlay() {
     _isAlarmShowing = false;
-    _navigatorKey.currentState?.pop();
+    final navigator = _navigatorKey.currentState;
+    if (navigator?.canPop() ?? false) navigator!.pop();
   }
 
   @override
   void dispose() {
     _alarmSubscription?.cancel();
+    _authSubscription?.cancel();
     super.dispose();
   }
 

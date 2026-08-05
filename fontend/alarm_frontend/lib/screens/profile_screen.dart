@@ -20,14 +20,29 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
   bool get wantKeepAlive => true;
 
   bool _isGoogleLinked = false;
+  bool _isLinkingGoogle = false;
 
-  void _handleGoogleLink() async {
-    final account = await GoogleSyncService().linkAccount();
-    if (account != null) {
-      setState(() => _isGoogleLinked = true);
+  Future<void> _handleGoogleLink() async {
+    if (_isLinkingGoogle) return;
+    setState(() => _isLinkingGoogle = true);
+    try {
+      final account = await GoogleSyncService().linkAccount();
+      if (!mounted) return;
+      setState(() => _isGoogleLinked = account != null);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Google Account Linked Successfully!")),
+        SnackBar(
+          content: Text(account == null
+              ? 'Google account was not linked.'
+              : 'Google account linked successfully.'),
+        ),
       );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google linking failed: $error')),
+      );
+    } finally {
+      if (mounted) setState(() => _isLinkingGoogle = false);
     }
   }
 
@@ -84,6 +99,18 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 SectionCard(
                   title: "Account Linking",
                   children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.account_circle, color: AppColors.primary),
+                      title: Text(
+                        _isGoogleLinked ? 'Google linked' : 'Link Google account',
+                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+                      ),
+                      trailing: _isLinkingGoogle
+                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary))
+                          : const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textSecondary),
+                      onTap: _isLinkingGoogle ? null : _handleGoogleLink,
+                    ),
                     _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar),
                     _tile(context, "Gmail", Icons.mail, AppRoutes.gmail),
                     _tile(context, "Message", Icons.message, AppRoutes.message),

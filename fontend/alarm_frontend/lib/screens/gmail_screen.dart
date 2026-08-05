@@ -26,13 +26,17 @@ class _GmailScreenState extends State<GmailScreen> {
   }
 
   Future<void> _fetchEmails() async {
+    if (!mounted) return;
     setState(() => _isLoading = true);
-    final emails = await _syncService.fetchLatestEmails();
-    if (mounted) {
+    try {
+      final emails = await _syncService.fetchLatestEmails();
+      if (!mounted) return;
       setState(() {
         _emails = emails;
         _isLoading = false;
       });
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -85,7 +89,7 @@ class _GmailScreenState extends State<GmailScreen> {
                       ),
                     )
                   else
-                    ..._emails.map((msg) => _buildEmailTile(msg)).toList(),
+                    ..._emails.map(_buildEmailTile),
                 ],
               ),
         ),

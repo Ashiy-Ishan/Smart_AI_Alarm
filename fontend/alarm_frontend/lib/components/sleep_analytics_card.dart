@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -162,8 +161,8 @@ class _SleepChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          AppColors.primary.withOpacity(0.35),
-          AppColors.primary.withOpacity(0.0),
+          AppColors.primary.withValues(alpha: 0.35),
+          AppColors.primary.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTRB(xMin, yMin, xMax, yMax))
       ..style = PaintingStyle.fill;

@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -36,7 +35,7 @@ class CustomCheckboxTile extends StatelessWidget {
               height: size,
               decoration: BoxDecoration(
                 color: isChecked
-                    ? AppColors.primary.withOpacity(0.2)
+                    ? AppColors.primary.withValues(alpha: 0.2)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(

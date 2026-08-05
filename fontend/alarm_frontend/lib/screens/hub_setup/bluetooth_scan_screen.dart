@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' as ble;
 import 'package:alarm_frontend/utils/app_colors.dart';
@@ -14,30 +15,42 @@ class BluetoothScanScreen extends StatefulWidget {
 class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
   final custom.BluetoothService _bleService = custom.BluetoothService();
   bool _isScanning = false;
+  StreamSubscription<bool>? _scanningSubscription;
 
   @override
   void initState() {
     super.initState();
-    _startScan();
+    _scanningSubscription = ble.FlutterBluePlus.isScanning.listen((scanning) {
+      if (mounted) setState(() => _isScanning = scanning);
+    });
+    unawaited(_startScan());
   }
 
-  void _startScan() async {
-    bool hasPermission = await _bleService.requestPermissions();
+  @override
+  void dispose() {
+    _scanningSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _startScan() async {
+    final hasPermission = await _bleService.requestPermissions();
+    if (!mounted) return;
     if (hasPermission) {
       setState(() => _isScanning = true);
-      
-      // Stop any existing scan first
-      await ble.FlutterBluePlus.stopScan();
-      
-      // Start scan with aggressive parameters for S21 compatibility
-      await ble.FlutterBluePlus.startScan(
-        timeout: const Duration(seconds: 15),
-        androidUsesFineLocation: true,
-      );
-
-      ble.FlutterBluePlus.isScanning.listen((scanning) {
-        if (mounted) setState(() => _isScanning = scanning);
-      });
+      try {
+        await ble.FlutterBluePlus.stopScan();
+        await ble.FlutterBluePlus.startScan(
+          timeout: const Duration(seconds: 15),
+          androidUsesFineLocation: true,
+        );
+      } catch (error) {
+        if (mounted) {
+          setState(() => _isScanning = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Bluetooth scan failed: $error')),
+          );
+        }
+      }
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -66,10 +79,10 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
               initialData: const [],
               builder: (c, snapshot) {
                 // Filter for "Alarm" devices
-                final alarmDevices = snapshot.data!
+                final alarmDevices = (snapshot.data ?? const <ble.ScanResult>[])
                     .where((r) {
                       final name = r.device.platformName.toLowerCase();
-                      final localName = r.advertisementData.localName.toLowerCase();
+                      final localName = r.advertisementData.advName.toLowerCase();
                       return name.contains("alarm") || localName.contains("alarm");
                     })
                     .toList();
@@ -138,8 +151,7 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
                               onTap: () async {
                                 bool connected = await _bleService.connectToDevice(r.device);
                                 if (connected && mounted) {
-                                  Navigator.push(
-                                    context,
+                                  Navigator.of(this.context).push(
                                     MaterialPageRoute(
                                       builder: (_) => WifiSetupScreen(device: r.device),
                                     ),

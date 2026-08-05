@@ -27,6 +27,13 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     _autoDetectWifi();
   }
 
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _ssidController.dispose();
+    super.dispose();
+  }
+
   Future<void> _autoDetectWifi() async {
     String? wifiName;
     try {
@@ -34,10 +41,13 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
       if (wifiName != null && wifiName.startsWith('"') && wifiName.endsWith('"')) {
         wifiName = wifiName.substring(1, wifiName.length - 1);
       }
-    } catch (e) {}
+    } catch (error) {
+      debugPrint('Unable to detect Wi-Fi name: $error');
+    }
 
-    if (mounted && wifiName != null) {
-      setState(() => _ssidController.text = wifiName!);
+    final detectedName = wifiName;
+    if (mounted && detectedName != null && detectedName.isNotEmpty) {
+      setState(() => _ssidController.text = detectedName);
     }
   }
 
@@ -104,7 +114,7 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     );
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     final String ssid = _ssidController.text.trim();
     final String password = _passwordController.text.trim();
 
@@ -121,7 +131,10 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
 
     try {
       final bleService = custom.BluetoothService();
-      await bleService.sendProvisioningData(ssid, password, hiddenUid);
+      final sent = await bleService.sendProvisioningData(ssid, password, hiddenUid);
+      if (!sent) {
+        throw StateError('Could not send Wi-Fi credentials to the device.');
+      }
 
       final rtdb = FirebaseDatabase.instance.ref();
       await rtdb.child('Users').child(hiddenUid).child('Devices').child(macAddress).set({

@@ -20,6 +20,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
   List<google_calendar.Event> _events = [];
   bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -28,11 +29,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> _fetchEvents() async {
+    if (!mounted) return;
     setState(() => _isLoading = true);
-    final events = await _syncService.fetchUpcomingEvents();
-    if (mounted) {
+    try {
+      final events = await _syncService.fetchUpcomingEvents();
+      if (!mounted) return;
       setState(() {
         _events = events;
+        _errorMessage = null;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Unable to load calendar events.';
         _isLoading = false;
       });
     }
@@ -113,6 +123,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   const SizedBox(height: 14),
                   if (_isLoading)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                  else if (_errorMessage != null)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Text(_errorMessage!, style: const TextStyle(color: AppColors.textSecondary)),
+                      ),
+                    )
                   else if (_events.isEmpty)
                     const Center(
                       child: Padding(
@@ -121,7 +138,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                     )
                   else
-                    ..._events.map((event) => _buildEventItem(event)).toList(),
+                    ..._events.map(_buildEventItem),
                 ],
               ),
             ),

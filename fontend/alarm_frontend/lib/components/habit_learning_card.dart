@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -96,7 +95,7 @@ class _HabitChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final paintGrid = Paint()
-      ..color = AppColors.border.withOpacity(0.35)
+      ..color = AppColors.border.withValues(alpha: 0.35)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -179,8 +178,8 @@ class _HabitChartPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            color.withOpacity(opacity),
-            color.withOpacity(0.0),
+            color.withValues(alpha: opacity),
+            color.withValues(alpha: 0.0),
           ],
         ).createShader(Rect.fromLTRB(xMin, yMin, xMax, yMax))
         ..style = PaintingStyle.fill;

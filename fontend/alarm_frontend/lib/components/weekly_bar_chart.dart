@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -37,7 +36,7 @@ class WeeklyBarChart extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isHighlighted
                         ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.45),
+                        : AppColors.primary.withValues(alpha: 0.45),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

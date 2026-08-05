@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
