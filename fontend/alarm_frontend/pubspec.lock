@@ -664,17 +664,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
-<<<<<<< HEAD
-  native_toolchain_c:
-    dependency: transitive
-    description:
-      name: native_toolchain_c
-      sha256: "6ba77bb18063eebe9de401f5e6437e95e1438af0a87a3a39084fbd37c90df572"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.17.6"
-=======
->>>>>>> main
   nested:
     dependency: transitive
     description:
@@ -952,8 +941,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
-<<<<<<< HEAD
-=======
   timezone:
     dependency: transitive
     description:
@@ -962,7 +949,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
->>>>>>> main
   typed_data:
     dependency: transitive
     description:
