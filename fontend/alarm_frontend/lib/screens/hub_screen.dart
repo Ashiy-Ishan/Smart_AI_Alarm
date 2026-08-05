@@ -7,7 +7,6 @@ import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/hub_env_card.dart';
 import 'package:alarm_frontend/components/hub_motion_row.dart';
 import 'package:alarm_frontend/components/hub_device_control_card.dart';
-import 'package:alarm_frontend/components/hub_status_card.dart';
 import 'package:alarm_frontend/screens/motion_log_screen.dart';
 import 'package:alarm_frontend/screens/hub_setup/bluetooth_scan_screen.dart';
 
@@ -128,7 +127,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
         TextButton(
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
-            _findUserDevice();
+            if (mounted) unawaited(_findUserDevice());
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -280,7 +279,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
       context: context,
       barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) {
+        builder: (context, _) {
           return AlertDialog(
             backgroundColor: AppColors.card,
             title: const Text("Factory Reset Warning", style: TextStyle(color: Colors.orangeAccent)),
@@ -312,10 +311,10 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
       ),
     );
 
-    _startResetCountdown(context);
+    _startResetCountdown();
   }
 
-  void _startResetCountdown(BuildContext context) {
+  void _startResetCountdown() {
     _countdown = 15;
     _updateDevice('FactoryReset', true);
 
@@ -326,7 +325,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
         }
       } else {
         timer.cancel();
-        _verifyAndExecuteReset(context);
+        unawaited(_verifyAndExecuteReset());
       }
     });
   }
@@ -341,7 +340,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
     }
   }
 
-  void _verifyAndExecuteReset(BuildContext context) async {
+  Future<void> _verifyAndExecuteReset() async {
     if (_macAddress == null || _hiddenUid == null) return;
 
     final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).child('FactoryReset').get();
@@ -357,7 +356,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
           );
         }
       } catch (e) {
-        print("Reset Error: $e");
+        debugPrint("Reset Error: $e");
       }
     }
   }

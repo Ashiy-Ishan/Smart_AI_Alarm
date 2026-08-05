@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/models/message_notification_model.dart';
@@ -21,7 +20,7 @@ class MessageNotificationTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        color: isSelected ? AppColors.primary.withOpacity(0.04) : Colors.transparent,
+        color: isSelected ? AppColors.primary.withValues(alpha: 0.04) : Colors.transparent,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [

@@ -138,7 +138,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                     )
                   else
-                    ..._events.map((event) => _buildEventItem(event)).toList(),
+                    ..._events.map(_buildEventItem),
                 ],
               ),
             ),

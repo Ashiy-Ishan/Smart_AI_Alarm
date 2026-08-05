@@ -280,7 +280,12 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         Center(
           child: SizedBox(
             height: 150,
-            child: Lottie.asset(asset, fit: BoxFit.contain, errorBuilder: (_, __, ___) => Lottie.asset('assets/lotties/home.json')),
+            child: Lottie.asset(
+              asset,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) =>
+                  Lottie.asset('assets/lotties/home.json'),
+            ),
           ),
         ),
         const SizedBox(height: 10),

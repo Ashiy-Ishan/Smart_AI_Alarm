@@ -1,4 +1,3 @@
-// TODO Implement this library.
 class AgendaModel {
   final String time;
   final String title;

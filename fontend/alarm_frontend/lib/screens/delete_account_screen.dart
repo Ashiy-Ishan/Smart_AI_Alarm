@@ -61,7 +61,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           WarningCard(
             title: 'Delete Your Account',
             description: 'This action is permanent.\nAll your data will be erased.',
-            borderColor: AppColors.primary.withOpacity(0.5),
+            borderColor: AppColors.primary.withValues(alpha: 0.5),
           ),
 
           const SizedBox(height: 14),
@@ -184,7 +184,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _canDelete
                           ? Colors.redAccent
-                          : Colors.redAccent.withOpacity(0.4),
+                          : Colors.redAccent.withValues(alpha: 0.4),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
