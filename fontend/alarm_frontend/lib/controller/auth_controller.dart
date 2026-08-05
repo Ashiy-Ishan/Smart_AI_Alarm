@@ -20,13 +20,12 @@ class AuthController {
       
       // 2. Authenticate (get identity)
       final googleUser = await googleSignIn.authenticate();
-      if (googleUser == null) return null;
 
       // 3. Automatically request the required API scopes (Calendar/Gmail)
       // This triggers the combined "Request Access" screen
       await googleUser.authorizationClient.authorizeScopes(_requiredScopes);
 
-      final googleAuth = await googleUser.authentication;
+      final googleAuth = googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
