@@ -10,7 +10,8 @@ CALENDAR_CREDENTIALS = "calendar_credentials"
 CALENDAR_EVENTS_CACHE = "calendar_events_cache"
 
 def get_collections(db: Database | None = None) -> dict:
-    db = db or get_database()
+    if db is None:
+        db = get_database()
     return {
         USERS: db[USERS],
         ALARMS: db[ALARMS],

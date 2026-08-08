@@ -5,6 +5,7 @@
       "codebase": "default",
       "ignore": [
         ".venv",
+        "venv",
         ".git",
         "__pycache__",
         "*.pyc",

@@ -12,12 +12,13 @@ from config.settings import get_settings
 # Firebase initialization
 _settings = get_settings()
 _firebase_opts: dict = {}
-if _settings.firebase_storage_bucket:
-    _firebase_opts["storageBucket"] = _settings.firebase_storage_bucket
-firebase_admin.initialize_app(options=_firebase_opts or None)
+if _settings.storage_bucket:
+    _firebase_opts["storageBucket"] = _settings.storage_bucket
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(options=_firebase_opts or None)
 
-from db.collections import ensure_indexes
-ensure_indexes()
+#from db.collections import ensure_indexes
+#ensure_indexes()
 
 logging.basicConfig(
     level=logging.INFO,
