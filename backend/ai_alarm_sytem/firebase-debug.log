@@ -1123,3 +1123,67 @@ specVersion: v1alpha1
 2026-08-08 10:29:12,664 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:29:12] "GET /__/quitquitquit HTTP/1.1" 200 -
 
 [info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:30:00.037Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\notifications\email.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\notifications\\email.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:30:01.051Z] Customer code is not Node
+[debug] [2026-08-08T10:30:01.052Z] Validating python source
+[debug] [2026-08-08T10:30:01.052Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:30:01.053Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:30:01.065Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:30:01.223Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:30:01.233Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:30:01.233Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:30:02] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:30:02.031Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 2026-08-08 10:30:02,028 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:30:02] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:30:02] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-08 10:30:02,049 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:30:02] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
