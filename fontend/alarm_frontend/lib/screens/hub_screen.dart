@@ -40,6 +40,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
     super.dispose();
   }
 
+  // user unique id from email
   String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
@@ -127,7 +128,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
         TextButton(
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
-            if (mounted) unawaited(_findUserDevice());
+            _findUserDevice();
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -279,7 +280,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
       context: context,
       barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
-        builder: (context, _) {
+        builder: (context, setDialogState) {
           return AlertDialog(
             backgroundColor: AppColors.card,
             title: const Text("Factory Reset Warning", style: TextStyle(color: Colors.orangeAccent)),
@@ -311,10 +312,10 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
       ),
     );
 
-    _startResetCountdown();
+    _startResetCountdown(context);
   }
 
-  void _startResetCountdown() {
+  void _startResetCountdown(BuildContext context) {
     _countdown = 15;
     _updateDevice('FactoryReset', true);
 
@@ -325,7 +326,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
         }
       } else {
         timer.cancel();
-        unawaited(_verifyAndExecuteReset());
+        _verifyAndExecuteReset(context);
       }
     });
   }
@@ -340,7 +341,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
     }
   }
 
-  Future<void> _verifyAndExecuteReset() async {
+  void _verifyAndExecuteReset(BuildContext context) async {
     if (_macAddress == null || _hiddenUid == null) return;
 
     final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).child('FactoryReset').get();
@@ -349,6 +350,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
       try {
         await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).remove();
         if (mounted) {
+          // Check if the current context is still valid before popping
           Navigator.of(context, rootNavigator: true).pop(); // Close dialog
           setState(() => _macAddress = null);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -356,7 +358,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
           );
         }
       } catch (e) {
-        debugPrint("Reset Error: $e");
+        // failed to reset
       }
     }
   }

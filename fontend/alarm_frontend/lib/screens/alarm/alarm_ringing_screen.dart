@@ -1,111 +1,143 @@
-import 'package:alarm_frontend/services/notification_service.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
+import '../../utils/app_colors.dart';
 
-class AlarmRingingScreen extends StatefulWidget {
+class AlarmRingingScreen extends StatelessWidget {
+  final String macAddress;
+  final String hiddenUid;
+
   const AlarmRingingScreen({
     super.key,
     required this.macAddress,
     required this.hiddenUid,
   });
 
-  final String macAddress;
-  final String hiddenUid;
-
-  @override
-  State<AlarmRingingScreen> createState() => _AlarmRingingScreenState();
-}
-
-class _AlarmRingingScreenState extends State<AlarmRingingScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _pulseController;
-  bool _updating = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat(reverse: true);
+  void _stopAlarm() {
+    FirebaseDatabase.instance
+        .ref()
+        .child('Users')
+        .child(hiddenUid)
+        .child('Devices')
+        .child(macAddress)
+        .update({
+          'MobileStop': true, 
+          'AlarmStatus': 'IDLE'
+        });
   }
 
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
+  // add 5 minutes to CURRENT real time for the device, NOT the user alarm setting
+  void _snoozeAlarm() async {
+    final ref = FirebaseDatabase.instance
+        .ref()
+        .child('Users')
+        .child(hiddenUid)
+        .child('Devices')
+        .child(macAddress);
 
-  Future<void> _updateStatus(String status) async {
-    if (_updating) return;
-    setState(() => _updating = true);
-    try {
-      await FirebaseDatabase.instance
-          .ref('Users/${widget.hiddenUid}/Devices/${widget.macAddress}/AlarmStatus')
-          .set(status);
-      await NotificationService().cancelAlarm();
-      if (mounted) Navigator.of(context).pop();
-    } on FirebaseException catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unable to update alarm: ${error.message ?? error.code}')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _updating = false);
-    }
+    // Get the current actual time
+    DateTime now = DateTime.now();
+    DateTime snoozeTime = now.add(const Duration(minutes: 5));
+    String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
+
+    // Update cloud with temporary snooze time
+    // Hardware should look at 'SnoozeTime' field instead of 'AlarmTime' during snooze
+    await ref.update({
+      'SnoozeUntil': snoozeTimeStr,
+      'AlarmStatus': 'SNOOZE'
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.primary.withOpacity(0.2),
+              AppColors.background,
+            ],
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "WAKE UP!",
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 4,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // show the actual time when it's ringing
+            Text(
+              DateFormat("HH:mm").format(DateTime.now()),
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 80,
+                fontWeight: FontWeight.w200,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+            SizedBox(
+              height: 250,
+              child: Lottie.asset('assets/lotties/alarm.json'),
+            ),
+            const SizedBox(height: 60),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Row(
                 children: [
-                  Text('ALARM RINGING', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.primary, letterSpacing: 2)),
-                  const SizedBox(height: 32),
-                  AnimatedBuilder(
-                    animation: _pulseController,
-                    builder: (context, child) => Transform.scale(
-                      scale: 1 + (_pulseController.value * .12),
-                      child: child,
-                    ),
-                    child: const CircleAvatar(
-                      radius: 92,
-                      backgroundColor: AppColors.card,
-                      child: Icon(Icons.alarm_on_rounded, size: 96, color: AppColors.primary),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _snoozeAlarm();
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.card,
+                        foregroundColor: AppColors.textPrimary,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text("SNOOZE", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ),
                   ),
-                  const SizedBox(height: 36),
-                  Text('Your alarm is active', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: AppColors.textPrimary)),
-                  const SizedBox(height: 12),
-                  Text('Device: ${widget.macAddress}', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary)),
-                  const SizedBox(height: 48),
-                  FilledButton.icon(
-                    onPressed: _updating ? null : () => _updateStatus('SNOOZED'),
-                    icon: const Icon(Icons.snooze_rounded),
-                    label: const Text('Snooze'),
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    onPressed: _updating ? null : () => _updateStatus('STOPPED'),
-                    icon: const Icon(Icons.stop_circle_outlined),
-                    label: Text(_updating ? 'Updating...' : 'Stop alarm'),
-                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.primary),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _stopAlarm();
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text("STOP", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

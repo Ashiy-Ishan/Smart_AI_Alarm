@@ -5,7 +5,7 @@ import 'package:googleapis/gmail/v1.dart';
 import 'package:logger/logger.dart';
 
 class AuthController {
-  // Define required scopes for the entire app
+  // permissions needed for the app
   static const List<String> _requiredScopes = [
     CalendarApi.calendarReadonlyScope,
     GmailApi.gmailReadonlyScope,
@@ -15,14 +15,11 @@ class AuthController {
     try {
       final googleSignIn = GoogleSignIn.instance;
       
-      // 1. Initialize for v7.0.0+
       await googleSignIn.initialize();
       
-      // 2. Authenticate (get identity)
       final googleUser = await googleSignIn.authenticate();
 
-      // 3. Automatically request the required API scopes (Calendar/Gmail)
-      // This triggers the combined "Request Access" screen
+      // ask for calendar and gmail permissions right away
       await googleUser.authorizationClient.authorizeScopes(_requiredScopes);
 
       final googleAuth = googleUser.authentication;
