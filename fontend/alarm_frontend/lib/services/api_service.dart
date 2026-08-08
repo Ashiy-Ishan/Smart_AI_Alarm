@@ -31,4 +31,21 @@ class ApiService {
 
     throw Exception('Backend error: ${response.statusCode} ${response.body}');
   }
+
+  static Future<dynamic> post(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    }
+
+    throw Exception('Backend error: ${response.statusCode} ${response.body}');
+  }
 }
