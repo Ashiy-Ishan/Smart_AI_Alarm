@@ -282,6 +282,34 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_background_service">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service-5.1.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_background_service_android">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_android-6.3.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_background_service_ios">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_ios-5.0.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_background_service_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_platform_interface-5.1.2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_blue_plus">
           <value>
             <list>
@@ -1192,6 +1220,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_messaging_platform_interface-4.9.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_messaging_web-4.2.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/fixnum-1.1.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service-5.1.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_android-6.3.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_ios-5.0.3/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_platform_interface-5.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_blue_plus-2.3.9/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_blue_plus_android-9.0.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_blue_plus_darwin-9.0.3/lib" />
