@@ -1,6 +1,7 @@
 import 'package:alarm_frontend/controller/auth_controller.dart';
 import 'package:alarm_frontend/models/auth_model_user.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
+import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -72,6 +73,10 @@ class UserProvider extends ChangeNotifier {
         fullName: user.displayName ?? '',
         profileImage: user.photoURL ?? '',
       );
+      
+      // Warm up sync service immediately after login
+      await GoogleSyncService().isLinked();
+
       notifyListeners();
       if (context.mounted) {
         Navigator.of(context, rootNavigator: true).pushReplacementNamed(AppRoutes.main);

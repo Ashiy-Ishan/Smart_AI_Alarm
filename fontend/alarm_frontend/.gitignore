@@ -40,7 +40,7 @@ app.*.symbols
 app.*.map.json
 
 # Sensitive info
-.env
+
 
 # Android Studio will place build artifacts here
 /android/app/debug
