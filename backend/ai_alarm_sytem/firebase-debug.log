@@ -526,3 +526,600 @@ specVersion: v1alpha1
 [debug] [2026-08-08T09:53:56.753Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
 [debug] [2026-08-08T09:53:56.753Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
 [info] >  2026-08-08 09:53:56,720 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 09:53:56] "GET /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 HTTP/1.1" 500 - {"user":"2026-08-08 09:53:56,720 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 09:53:56] \"\u001b[35m\u001b[1mGET /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 HTTP/1.1\u001b[0m\" 500 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-08 09:53:56,720 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 09:53:56] \"\u001b[35m\u001b[1mGET /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 HTTP/1.1\u001b[0m\" 500 -\r"}}
+[debug] [2026-08-08T10:17:28.491Z] [work-queue] {"queuedWork":["/smart-ai-alarm-2f71d/us-central1/api/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13-2026-08-08T10:17:28.479Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-08T10:17:28.593Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/smart-ai-alarm-2f71d/us-central1/api/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13-2026-08-08T10:17:28.479Z"],"workRunningCount":1}
+[debug] [2026-08-08T10:17:28.597Z] Accepted request GET /smart-ai-alarm-2f71d/us-central1/api/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 --> us-central1-api
+[debug] [2026-08-08T10:17:28.665Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-08-08T10:17:28.671Z] [functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168, mapping to path=/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168, mapping to path=/calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168"}}
+[debug] [2026-08-08T10:17:28.673Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-08-08T10:17:28.688Z] [worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: BUSY"}}
+[info] >  2026-08-08 10:17:31,527 ERROR api: Exception on /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13 [GET] {"user":"2026-08-08 10:17:31,527 ERROR api: Exception on /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13 [GET]\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-08 10:17:31,527 ERROR api: Exception on /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13 [GET]\r"}}
+[info] >  Traceback (most recent call last): {"user":"Traceback (most recent call last):\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m Traceback (most recent call last):\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 1511, in wsgi_app\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 1511, in wsgi_app\r"}}
+[info] >      response = self.full_dispatch_request() {"user":"    response = self.full_dispatch_request()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     response = self.full_dispatch_request()\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 919, in full_dispatch_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 919, in full_dispatch_request\r"}}
+[info] >      rv = self.handle_user_exception(e) {"user":"    rv = self.handle_user_exception(e)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     rv = self.handle_user_exception(e)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 917, in full_dispatch_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 917, in full_dispatch_request\r"}}
+[info] >      rv = self.dispatch_request() {"user":"    rv = self.dispatch_request()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     rv = self.dispatch_request()\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 902, in dispatch_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 902, in dispatch_request\r"}}
+[info] >      return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return] {"user":"    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\r"}}
+[info] >             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^ {"user":"           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\functions_framework\execution_id.py", line 157, in wrapper {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\functions_framework\\execution_id.py\", line 157, in wrapper\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\functions_framework\\execution_id.py\", line 157, in wrapper\r"}}
+[info] >      result = view_function(*args, **kwargs) {"user":"    result = view_function(*args, **kwargs)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     result = view_function(*args, **kwargs)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\functions_framework\__init__.py", line 142, in view_func {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\functions_framework\\__init__.py\", line 142, in view_func\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\functions_framework\\__init__.py\", line 142, in view_func\r"}}
+[info] >      return function(request._get_current_object()) {"user":"    return function(request._get_current_object())\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return function(request._get_current_object())\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions\https_fn.py", line 447, in on_request_wrapped {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\https_fn.py\", line 447, in on_request_wrapped\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\https_fn.py\", line 447, in on_request_wrapped\r"}}
+[info] >      return wrapped_function(request) {"user":"    return wrapped_function(request)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return wrapped_function(request)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions\core.py", line 124, in wrapper {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\core.py\", line 124, in wrapper\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\core.py\", line 124, in wrapper\r"}}
+[info] >      return fn(*args, **kwargs) {"user":"    return fn(*args, **kwargs)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return fn(*args, **kwargs)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py", line 231, in api {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py\", line 231, in api\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py\", line 231, in api\r"}}
+[info] >      return _app.full_dispatch_request() {"user":"    return _app.full_dispatch_request()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return _app.full_dispatch_request()\r"}}
+[info] >             ~~~~~~~~~~~~~~~~~~~~~~~~~~^^ {"user":"           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~~~~~~~~~~~~~~~~~~^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 919, in full_dispatch_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 919, in full_dispatch_request\r"}}
+[info] >      rv = self.handle_user_exception(e) {"user":"    rv = self.handle_user_exception(e)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     rv = self.handle_user_exception(e)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 917, in full_dispatch_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 917, in full_dispatch_request\r"}}
+[info] >      rv = self.dispatch_request() {"user":"    rv = self.dispatch_request()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     rv = self.dispatch_request()\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 902, in dispatch_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\flask\\app.py\", line 902, in dispatch_request\r"}}
+[info] >      return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return] {"user":"    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\r"}}
+[info] >             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^ {"user":"           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py", line 173, in calendar_events {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py\", line 173, in calendar_events\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py\", line 173, in calendar_events\r"}}
+[info] >      events = get_upcoming_events(user_id, hours_ahead=hours_ahead) {"user":"    events = get_upcoming_events(user_id, hours_ahead=hours_ahead)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     events = get_upcoming_events(user_id, hours_ahead=hours_ahead)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\integrations\calendar.py", line 306, in get_upcoming_events {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 306, in get_upcoming_events\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 306, in get_upcoming_events\r"}}
+[info] >      items = _calendar_request(user_id, { {"user":"    items = _calendar_request(user_id, {\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     items = _calendar_request(user_id, {\r"}}
+[info] >          "timeMin": start.isoformat(), {"user":"        \"timeMin\": start.isoformat(),\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         \"timeMin\": start.isoformat(),\r"}}
+[info] >      ...<3 lines>... {"user":"    ...<3 lines>...\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ...<3 lines>...\r"}}
+[info] >          "maxResults": 10, {"user":"        \"maxResults\": 10,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         \"maxResults\": 10,\r"}}
+[info] >      }) {"user":"    })\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     })\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\integrations\calendar.py", line 239, in _calendar_request {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 239, in _calendar_request\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 239, in _calendar_request\r"}}
+[info] >      token = get_access_token(user_id) {"user":"    token = get_access_token(user_id)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     token = get_access_token(user_id)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\integrations\calendar.py", line 73, in get_access_token {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 73, in get_access_token\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 73, in get_access_token\r"}}
+[info] >      creds = _get_creds(user_id) {"user":"    creds = _get_creds(user_id)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     creds = _get_creds(user_id)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\integrations\calendar.py", line 18, in _get_creds {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 18, in _get_creds\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py\", line 18, in _get_creds\r"}}
+[info] >      return get_collections()[CALENDAR_CREDENTIALS].find_one({"user_id": user_id}) {"user":"    return get_collections()[CALENDAR_CREDENTIALS].find_one({\"user_id\": user_id})\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return get_collections()[CALENDAR_CREDENTIALS].find_one({\"user_id\": user_id})\r"}}
+[info] >             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^ {"user":"           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\collection.py", line 1754, in find_one {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\collection.py\", line 1754, in find_one\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\collection.py\", line 1754, in find_one\r"}}
+[info] >      for result in cursor.limit(-1): {"user":"    for result in cursor.limit(-1):\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     for result in cursor.limit(-1):\r"}}
+[info] >                    ~~~~~~~~~~~~^^^^ {"user":"                  ~~~~~~~~~~~~^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m                   ~~~~~~~~~~~~^^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1166, in __next__ {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 1166, in __next__\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 1166, in __next__\r"}}
+[info] >      return self.next() {"user":"    return self.next()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return self.next()\r"}}
+[info] >             ~~~~~~~~~^^ {"user":"           ~~~~~~~~~^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1142, in next {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 1142, in next\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 1142, in next\r"}}
+[info] >      if len(self._data) or self._refresh(): {"user":"    if len(self._data) or self._refresh():\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     if len(self._data) or self._refresh():\r"}}
+[info] >                            ~~~~~~~~~~~~~^^ {"user":"                          ~~~~~~~~~~~~~^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m                           ~~~~~~~~~~~~~^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1090, in _refresh {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 1090, in _refresh\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 1090, in _refresh\r"}}
+[info] >      self._send_message(q) {"user":"    self._send_message(q)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     self._send_message(q)\r"}}
+[info] >      ~~~~~~~~~~~~~~~~~~^^^ {"user":"    ~~~~~~~~~~~~~~~~~~^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ~~~~~~~~~~~~~~~~~~^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 985, in _send_message {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 985, in _send_message\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\cursor.py\", line 985, in _send_message\r"}}
+[info] >      response = client._run_operation( {"user":"    response = client._run_operation(\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     response = client._run_operation(\r"}}
+[info] >          operation, self._unpack_response, address=self._address {"user":"        operation, self._unpack_response, address=self._address\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         operation, self._unpack_response, address=self._address\r"}}
+[info] >      ) {"user":"    )\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     )\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\_csot.py\", line 125, in csot_wrapper\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\_csot.py\", line 125, in csot_wrapper\r"}}
+[info] >      return func(self, *args, **kwargs) {"user":"    return func(self, *args, **kwargs)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return func(self, *args, **kwargs)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1956, in _run_operation {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 1956, in _run_operation\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 1956, in _run_operation\r"}}
+[info] >      return self._retryable_read( {"user":"    return self._retryable_read(\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return self._retryable_read(\r"}}
+[info] >             ~~~~~~~~~~~~~~~~~~~~^ {"user":"           ~~~~~~~~~~~~~~~~~~~~^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~~~~~~~~~~~~^\r"}}
+[info] >          _cmd, {"user":"        _cmd,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         _cmd,\r"}}
+[info] >          ^^^^^ {"user":"        ^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         ^^^^^\r"}}
+[info] >      ...<4 lines>... {"user":"    ...<4 lines>...\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ...<4 lines>...\r"}}
+[info] >          operation=operation.name, {"user":"        operation=operation.name,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         operation=operation.name,\r"}}
+[info] >          ^^^^^^^^^^^^^^^^^^^^^^^^^ {"user":"        ^^^^^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         ^^^^^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >      ) {"user":"    )\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     )\r"}}
+[info] >      ^ {"user":"    ^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2076, in _retryable_read {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 2076, in _retryable_read\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 2076, in _retryable_read\r"}}
+[info] >      return self._retry_internal( {"user":"    return self._retry_internal(\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return self._retry_internal(\r"}}
+[info] >             ~~~~~~~~~~~~~~~~~~~~^ {"user":"           ~~~~~~~~~~~~~~~~~~~~^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m            ~~~~~~~~~~~~~~~~~~~~^\r"}}
+[info] >          func, {"user":"        func,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         func,\r"}}
+[info] >          ^^^^^ {"user":"        ^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         ^^^^^\r"}}
+[info] >      ...<9 lines>... {"user":"    ...<9 lines>...\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ...<9 lines>...\r"}}
+[info] >          is_aggregate_write=is_aggregate_write, {"user":"        is_aggregate_write=is_aggregate_write,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         is_aggregate_write=is_aggregate_write,\r"}}
+[info] >          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ {"user":"        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >      ) {"user":"    )\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     )\r"}}
+[info] >      ^ {"user":"    ^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\_csot.py\", line 125, in csot_wrapper\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\_csot.py\", line 125, in csot_wrapper\r"}}
+[info] >      return func(self, *args, **kwargs) {"user":"    return func(self, *args, **kwargs)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return func(self, *args, **kwargs)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2038, in _retry_internal {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 2038, in _retry_internal\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 2038, in _retry_internal\r"}}
+[info] >      ).run() {"user":"    ).run()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ).run()\r"}}
+[info] >        ~~~^^ {"user":"      ~~~^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m       ~~~^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2811, in run {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 2811, in run\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 2811, in run\r"}}
+[info] >      res = self._read() if self._is_read else self._write() {"user":"    res = self._read() if self._is_read else self._write()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     res = self._read() if self._is_read else self._write()\r"}}
+[info] >            ~~~~~~~~~~^^ {"user":"          ~~~~~~~~~~^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m           ~~~~~~~~~~^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 3029, in _read {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 3029, in _read\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 3029, in _read\r"}}
+[info] >      with self._client._conn_from_server(self._read_pref, self._server, self._session) as ( {"user":"    with self._client._conn_from_server(self._read_pref, self._server, self._session) as (\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     with self._client._conn_from_server(self._read_pref, self._server, self._session) as (\r"}}
+[info] >           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ {"user":"         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 141, in __enter__ {"user":"  File \"C:\\Users\\USER\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\contextlib.py\", line 141, in __enter__\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\contextlib.py\", line 141, in __enter__\r"}}
+[info] >      return next(self.gen) {"user":"    return next(self.gen)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return next(self.gen)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1885, in _conn_from_server {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 1885, in _conn_from_server\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 1885, in _conn_from_server\r"}}
+[info] >      with self._checkout(server, session) as conn: {"user":"    with self._checkout(server, session) as conn:\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     with self._checkout(server, session) as conn:\r"}}
+[info] >           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^ {"user":"         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m          ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 141, in __enter__ {"user":"  File \"C:\\Users\\USER\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\contextlib.py\", line 141, in __enter__\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\contextlib.py\", line 141, in __enter__\r"}}
+[info] >      return next(self.gen) {"user":"    return next(self.gen)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return next(self.gen)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1795, in _checkout {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 1795, in _checkout\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\mongo_client.py\", line 1795, in _checkout\r"}}
+[info] >      with server.checkout(handler=err_handler) as conn: {"user":"    with server.checkout(handler=err_handler) as conn:\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     with server.checkout(handler=err_handler) as conn:\r"}}
+[info] >           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^ {"user":"         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m          ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 141, in __enter__ {"user":"  File \"C:\\Users\\USER\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\contextlib.py\", line 141, in __enter__\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\contextlib.py\", line 141, in __enter__\r"}}
+[info] >      return next(self.gen) {"user":"    return next(self.gen)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return next(self.gen)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\pool.py", line 1125, in checkout {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 1125, in checkout\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 1125, in checkout\r"}}
+[info] >      conn = self._get_conn(checkout_started_time, handler=handler) {"user":"    conn = self._get_conn(checkout_started_time, handler=handler)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     conn = self._get_conn(checkout_started_time, handler=handler)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\pool.py", line 1287, in _get_conn {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 1287, in _get_conn\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 1287, in _get_conn\r"}}
+[info] >      conn = self.connect(handler=handler) {"user":"    conn = self.connect(handler=handler)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     conn = self.connect(handler=handler)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\pool.py", line 1077, in connect {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 1077, in connect\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 1077, in connect\r"}}
+[info] >      conn.authenticate() {"user":"    conn.authenticate()\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     conn.authenticate()\r"}}
+[info] >      ~~~~~~~~~~~~~~~~~^^ {"user":"    ~~~~~~~~~~~~~~~~~^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ~~~~~~~~~~~~~~~~~^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\pool.py", line 515, in authenticate {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 515, in authenticate\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 515, in authenticate\r"}}
+[info] >      auth.authenticate(creds, self, reauthenticate=reauthenticate) {"user":"    auth.authenticate(creds, self, reauthenticate=reauthenticate)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     auth.authenticate(creds, self, reauthenticate=reauthenticate)\r"}}
+[info] >      ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ {"user":"    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\auth.py", line 450, in authenticate {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\auth.py\", line 450, in authenticate\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\auth.py\", line 450, in authenticate\r"}}
+[info] >      auth_func(credentials, conn) {"user":"    auth_func(credentials, conn)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     auth_func(credentials, conn)\r"}}
+[info] >      ~~~~~~~~~^^^^^^^^^^^^^^^^^^^ {"user":"    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\auth.py", line 355, in _authenticate_default {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\auth.py\", line 355, in _authenticate_default\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\auth.py\", line 355, in _authenticate_default\r"}}
+[info] >      return _authenticate_scram(credentials, conn, "SCRAM-SHA-1") {"user":"    return _authenticate_scram(credentials, conn, \"SCRAM-SHA-1\")\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return _authenticate_scram(credentials, conn, \"SCRAM-SHA-1\")\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\auth.py", line 135, in _authenticate_scram {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\auth.py\", line 135, in _authenticate_scram\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\auth.py\", line 135, in _authenticate_scram\r"}}
+[info] >      res = conn.command(source, cmd) {"user":"    res = conn.command(source, cmd)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     res = conn.command(source, cmd)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\helpers.py", line 53, in inner {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\helpers.py\", line 53, in inner\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\helpers.py\", line 53, in inner\r"}}
+[info] >      return func(*args, **kwargs) {"user":"    return func(*args, **kwargs)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return func(*args, **kwargs)\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\pool.py", line 403, in command {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 403, in command\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\pool.py\", line 403, in command\r"}}
+[info] >      return command( {"user":"    return command(\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     return command(\r"}}
+[info] >          self, {"user":"        self,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         self,\r"}}
+[info] >      ...<20 lines>... {"user":"    ...<20 lines>...\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ...<20 lines>...\r"}}
+[info] >          write_concern=write_concern, {"user":"        write_concern=write_concern,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         write_concern=write_concern,\r"}}
+[info] >      ) {"user":"    )\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     )\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\synchronous\network.py", line 212, in command {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\network.py\", line 212, in command\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\synchronous\\network.py\", line 212, in command\r"}}
+[info] >      helpers_shared._check_command_response( {"user":"    helpers_shared._check_command_response(\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     helpers_shared._check_command_response(\r"}}
+[info] >      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^ {"user":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\r"}}
+[info] >          response_doc, {"user":"        response_doc,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         response_doc,\r"}}
+[info] >          ^^^^^^^^^^^^^ {"user":"        ^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         ^^^^^^^^^^^^^\r"}}
+[info] >      ...<2 lines>... {"user":"    ...<2 lines>...\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ...<2 lines>...\r"}}
+[info] >          parse_write_concern_error=parse_write_concern_error, {"user":"        parse_write_concern_error=parse_write_concern_error,\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         parse_write_concern_error=parse_write_concern_error,\r"}}
+[info] >          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ {"user":"        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r"}}
+[info] >      ) {"user":"    )\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     )\r"}}
+[info] >      ^ {"user":"    ^\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     ^\r"}}
+[info] >    File "C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\pymongo\helpers_shared.py", line 284, in _check_command_response {"user":"  File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\helpers_shared.py\", line 284, in _check_command_response\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m   File \"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\pymongo\\helpers_shared.py\", line 284, in _check_command_response\r"}}
+[info] >      raise OperationFailure(errmsg, code, response, max_wire_version) {"user":"    raise OperationFailure(errmsg, code, response, max_wire_version)\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m     raise OperationFailure(errmsg, code, response, max_wire_version)\r"}}
+[info] >  pymongo.errors.OperationFailure: bad auth : authentication failed, full error: {'ok': 0, 'errmsg': 'bad auth : authentication failed', 'code': 8000, 'codeName': 'AtlasError'} {"user":"pymongo.errors.OperationFailure: bad auth : authentication failed, full error: {'ok': 0, 'errmsg': 'bad auth : authentication failed', 'code': 8000, 'codeName': 'AtlasError'}\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m pymongo.errors.OperationFailure: bad auth : authentication failed, full error: {'ok': 0, 'errmsg': 'bad auth : authentication failed', 'code': 8000, 'codeName': 'AtlasError'}\r"}}
+[debug] [2026-08-08T10:17:31.931Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 3243.4348ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 3243.4348ms"}}
+[debug] [2026-08-08T10:17:31.933Z] [worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: IDLE"}}
+[debug] [2026-08-08T10:17:31.934Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-08-08T10:17:31.934Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-08-08T10:17:31.934Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[info] >  2026-08-08 10:17:31,677 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:17:31] "GET /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 HTTP/1.1" 500 - {"user":"2026-08-08 10:17:31,677 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:17:31] \"\u001b[35m\u001b[1mGET /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 HTTP/1.1\u001b[0m\" 500 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-08 10:17:31,677 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:17:31] \"\u001b[35m\u001b[1mGET /calendar/events/eTJjhrNAQcUxsvvfQSi6vuYGPf13?hours_ahead=168 HTTP/1.1\u001b[0m\" 500 -\r"}}
+[debug] [2026-08-08T10:24:02.773Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\db\mongo.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\db\\mongo.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:24:02.834Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\db\mongo.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\db\\mongo.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:24:03.983Z] Customer code is not Node
+[debug] [2026-08-08T10:24:03.989Z] Validating python source
+[debug] [2026-08-08T10:24:03.990Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:24:04.063Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:24:04.128Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:24:04.385Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:24:04.401Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:24:04.401Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:24:05] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-08 10:24:05,959 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:24:05] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:24:05.969Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:24:05] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:24:05,986 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:24:05] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:24:06.012Z] [worker-pool] Shutting down IDLE worker (us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Shutting down IDLE worker (us-central1-api)"}}
+[debug] [2026-08-08T10:24:06.012Z] [worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: FINISHING {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: FINISHING"}}
+[debug] [2026-08-08T10:24:06.020Z] [worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: exited {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: exited"}}
+[debug] [2026-08-08T10:24:06.020Z] [worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: FINISHED {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-58535dbe-00b5-4246-9d51-33aa9f17b7ba]: FINISHED"}}
+[debug] [2026-08-08T10:24:27.606Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\integrations\calendar.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\calendar.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:24:28.607Z] Customer code is not Node
+[debug] [2026-08-08T10:24:28.608Z] Validating python source
+[debug] [2026-08-08T10:24:28.608Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:24:28.611Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:24:28.625Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:24:28.819Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:24:28.831Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:24:28.831Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:24:30] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-08 10:24:30,066 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:24:30] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:24:30.069Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:24:30] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:24:30,086 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:24:30] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:24:44.137Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:24:45.150Z] Customer code is not Node
+[debug] [2026-08-08T10:24:45.150Z] Validating python source
+[debug] [2026-08-08T10:24:45.150Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:24:45.151Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:24:45.160Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:24:45.324Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:24:45.335Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:24:45.335Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:24:46] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-08 10:24:46,135 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:24:46] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:24:46.136Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:24:46] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:24:46,145 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:24:46] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:26:27.890Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\integrations\iot.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\integrations\\iot.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:26:29.047Z] Customer code is not Node
+[debug] [2026-08-08T10:26:29.063Z] Validating python source
+[debug] [2026-08-08T10:26:29.064Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:26:29.175Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:26:29.237Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:26:29.706Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:26:29.713Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:26:29.713Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:26:31] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:26:31.315Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 2026-08-08 10:26:31,309 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:26:31] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:26:31] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:26:31,326 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:26:31] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:26:36.388Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\notifications\email.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\notifications\\email.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:26:36.463Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\notifications\email.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\notifications\\email.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:26:37.470Z] Customer code is not Node
+[debug] [2026-08-08T10:26:37.470Z] Validating python source
+[debug] [2026-08-08T10:26:37.470Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:26:37.472Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:26:37.566Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:26:41.034Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:26:41.047Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:26:41.048Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:26:42] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-08 10:26:42,338 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:26:42] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:26:42.340Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:26:42] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:26:42,347 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:26:42] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:26:59.221Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\alarm.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\alarm.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:27:00.237Z] Customer code is not Node
+[debug] [2026-08-08T10:27:00.238Z] Validating python source
+[debug] [2026-08-08T10:27:00.238Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:27:00.240Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:27:00.256Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:27:00.433Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:27:00.448Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:27:00.448Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:27:01] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:27:01.212Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 2026-08-08 10:27:01,210 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:27:01] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:27:01] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:27:01,219 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:27:01] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-08T10:29:10.190Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\notifications\email.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\notifications\\email.py changed, reloading triggers"}}
+[debug] [2026-08-08T10:29:11.203Z] Customer code is not Node
+[debug] [2026-08-08T10:29:11.204Z] Validating python source
+[debug] [2026-08-08T10:29:11.204Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-08T10:29:11.214Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-08T10:29:11.227Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-08T10:29:11.418Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-08T10:29:11.427Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-08T10:29:11.427Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:29:12] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-08 10:29:12,654 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:29:12] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-08T10:29:12.655Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [08/Aug/2026 10:29:12] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-08 10:29:12,664 INFO werkzeug: 127.0.0.1 - - [08/Aug/2026 10:29:12] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}

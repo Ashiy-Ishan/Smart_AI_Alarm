@@ -169,9 +169,14 @@ def calendar_status(user_id: str):
 def calendar_events(user_id: str):
     from integrations.calendar import get_upcoming_events
 
-    hours_ahead = min(max(int(flask.request.args.get("hours_ahead", 24)), 1), 168)
-    events = get_upcoming_events(user_id, hours_ahead=hours_ahead)
-    return _jsonify({"count": len(events), "events": events})
+    try:
+        hours_ahead = min(max(int(flask.request.args.get("hours_ahead", 24)), 1), 168)
+        events = get_upcoming_events(user_id, hours_ahead=hours_ahead)
+        return _jsonify({"count": len(events), "events": events})
+    except Exception as exc:
+        logger.error("Error fetching calendar events for user %s: %s", user_id, exc)
+        return _jsonify({"count": 0, "events": []})
+
 
 
 @_app.delete("/calendar/access/<user_id>")

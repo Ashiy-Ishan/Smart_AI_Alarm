@@ -1,0 +1,8 @@
+{
+  "venvPath": "backend/ai_alarm_sytem",
+  "venv": "venv",
+  "extraPaths": [
+    "backend/ai_alarm_sytem",
+    "backend/ai_alarm_sytem/venv/Lib/site-packages"
+  ]
+}
