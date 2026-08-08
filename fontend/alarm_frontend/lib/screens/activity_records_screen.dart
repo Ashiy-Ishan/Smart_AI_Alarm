@@ -10,24 +10,25 @@ class ActivityRecordsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text('Activity Records', style: AppTextStyles.heading),
+          children: [
+            const Text('Activity Records', style: AppTextStyles.heading),
             Text(
               'Mon, Nov 12',
               style: TextStyle(
-                color: AppColors.textSecondary,
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -40,7 +41,6 @@ class ActivityRecordsScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 16),
 
-          // Movement Analysis Card
           ActivitySectionCard(
             title: 'Movement Analysis',
             child: Column(
@@ -52,20 +52,20 @@ class ActivityRecordsScreen extends StatelessWidget {
                   child: ActivityBarChart(),
                 ),
                 const SizedBox(height: 10),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '07:15 AM',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
                     Text(
                       '09:15 AM',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -82,7 +82,6 @@ class ActivityRecordsScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Sleep Analysis Card
           ActivitySectionCard(
             title: 'Sleep Analysis',
             child: Column(
@@ -96,7 +95,7 @@ class ActivityRecordsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
                           value: 0.72,
-                          backgroundColor: AppColors.border,
+                          backgroundColor: theme.dividerColor,
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             AppColors.primary,
                           ),
@@ -105,10 +104,10 @@ class ActivityRecordsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Text(
+                    Text(
                       '7h 12m',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -125,7 +124,6 @@ class ActivityRecordsScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Daily Summary Card
           ActivitySectionCard(
             title: 'Daily Summary',
             child: Column(

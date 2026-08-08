@@ -12,21 +12,23 @@ class AgendaTimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Time label
           SizedBox(
             width: 48,
             child: Text(
               agenda.time,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                fontSize: 13
+              ),
             ),
           ),
           const SizedBox(width: 8),
-          // Gold left border accent
           Container(
             width: 3,
             height: 58,
@@ -40,9 +42,9 @@ class AgendaTimelineItem extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.card,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: theme.dividerColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +52,6 @@ class AgendaTimelineItem extends StatelessWidget {
                   Text(
                     agenda.title,
                     style: const TextStyle(
-                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
@@ -58,7 +59,10 @@ class AgendaTimelineItem extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     agenda.subtitle,
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    style: TextStyle(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                      fontSize: 12
+                    ),
                   ),
                 ],
               ),

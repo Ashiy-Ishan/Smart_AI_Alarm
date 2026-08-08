@@ -51,7 +51,6 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     }
   }
 
-  // generate unique id for user
   String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
@@ -142,7 +141,6 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
         throw StateError('Could not send Wi-Fi credentials to the device.');
       }
 
-      // set initial cloud data
       final rtdb = FirebaseDatabase.instance.ref();
       await rtdb.child('Users').child(hiddenUid).child('Devices').child(macAddress).set({
         "AlarmTime": "07:00",

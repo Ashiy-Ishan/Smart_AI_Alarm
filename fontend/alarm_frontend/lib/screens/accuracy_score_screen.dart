@@ -39,19 +39,19 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Custom top back arrow row
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                  icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color, size: 24),
                   onPressed: () => Navigator.of(context).pop(),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -60,11 +60,9 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
 
               const SizedBox(height: 16),
 
-              // Title Header
               const Text(
                 'Accuracy Score',
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
@@ -76,7 +74,6 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
                   children: [
                     const SizedBox(height: 24),
 
-                    // Ring Gauge Circular Progress (92%)
                     const Center(
                       child: AccuracyRingGauge(
                         accuracy: 0.92,
@@ -86,12 +83,10 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
 
                     const SizedBox(height: 28),
 
-                    // Key Metrics Table Card
                     AccuracyMetricsCard(items: _metrics),
 
                     const SizedBox(height: 14),
 
-                    // Weekly Trend Pill
                     const WeeklyTrendCard(
                       label: 'Weekly Trend :',
                       trend: 'Up',
@@ -99,7 +94,6 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
 
                     const SizedBox(height: 14),
 
-                    // AI Insight Paragraph
                     const AiInsightCard(
                       title: 'AI Insight:',
                       content:
@@ -111,7 +105,6 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
                 ),
               ),
 
-              // Bottom Action Buttons
               Row(
                 children: [
                   Expanded(
@@ -120,17 +113,17 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2A2D35),
-                          side: const BorderSide(color: Color(0xFF5A5F6B), width: 1.5),
+                          backgroundColor: theme.cardColor,
+                          side: BorderSide(color: theme.dividerColor, width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
+                        child: Text(
                           'View Report',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: theme.textTheme.bodyLarge?.color,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -145,17 +138,17 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2A2D35),
-                          side: const BorderSide(color: Color(0xFF5A5F6B), width: 1.5),
+                          backgroundColor: theme.cardColor,
+                          side: BorderSide(color: theme.dividerColor, width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
+                        child: Text(
                           'Refresh Score',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: theme.textTheme.bodyLarge?.color,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),

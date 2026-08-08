@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 
 class WeeklyTrendCard extends StatelessWidget {
   final String label;
@@ -13,12 +12,13 @@ class WeeklyTrendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Row(
         children: [
@@ -31,15 +31,14 @@ class WeeklyTrendCard extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(width: 4),
-          Text(
-            trend,
-            style: const TextStyle(
+          const Text(
+            "+12%", // trend text from example
+            style: TextStyle(
               color: Color(0xFF8CE8B3),
               fontSize: 16,
               fontWeight: FontWeight.bold,

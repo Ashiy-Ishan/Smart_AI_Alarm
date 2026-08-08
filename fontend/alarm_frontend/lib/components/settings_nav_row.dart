@@ -15,6 +15,7 @@ class SettingsNavRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Padding(
@@ -23,19 +24,22 @@ class SettingsNavRow extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: const TextStyle(fontSize: 14),
             ),
             const Spacer(),
             if (badge != null) ...[
               Text(
                 badge!,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                style: TextStyle(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                  fontSize: 13
+                ),
               ),
               const SizedBox(width: 4),
             ],
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppColors.textSecondary,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
               size: 18,
             ),
           ],

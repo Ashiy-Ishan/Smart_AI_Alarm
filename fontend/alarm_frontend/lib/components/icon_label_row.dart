@@ -28,7 +28,6 @@ class IconLabelRow extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: AppColors.textPrimary,
               fontSize: 14,
             ),
           ),

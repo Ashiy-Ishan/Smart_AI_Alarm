@@ -6,55 +6,90 @@ import 'package:http/http.dart' as http;
 class GoogleSyncService {
   static final GoogleSyncService _instance = GoogleSyncService._internal();
   factory GoogleSyncService() => _instance;
-  GoogleSyncService._internal();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  GoogleSignInAccount? _cachedAccount;
+  bool _isInitialized = false;
+
+  GoogleSyncService._internal();
+
+  Future<void> _ensureInitialized() async {
+    if (_isInitialized && _cachedAccount != null) return;
+    try {
+      await _googleSignIn.initialize();
+      _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
+      _isInitialized = true;
+    } catch (e) {
+      print('Google Init Error: $e');
+    }
+  }
 
   final List<String> _scopes = [
     CalendarApi.calendarReadonlyScope,
     GmailApi.gmailReadonlyScope,
+    "https://www.googleapis.com/auth/contacts.readonly",
   ];
+
+  Future<bool> isLinked() async {
+    await _ensureInitialized();
+    
+    _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
+    if (_cachedAccount == null) return false;
+
+    try {
+      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
+      return authz != null && authz.accessToken != null;
+    } catch (e) {
+      return false;
+    }
+  }
 
   Future<GoogleSignInAccount?> linkAccount() async {
     try {
-      await _googleSignIn.initialize();
-      
-      // log in and get user details
-      final account = await _googleSignIn.authenticate();
-      
-      if (account != null) {
-        // get permissions for calendar and gmail
-        await account.authorizationClient.authorizeScopes(_scopes);
+      await _ensureInitialized();
+
+      _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
+      _cachedAccount ??= await _googleSignIn.authenticate();
+
+      if (_cachedAccount != null) {
+        await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
       }
-      
-      return account;
+
+      return _cachedAccount;
     } catch (e) {
-      print('Error linking account: $e');
+      print('Link Error: $e');
       return null;
+    }
+  }
+
+  Future<void> unlinkAccount() async {
+    try {
+      await _googleSignIn.signOut();
+      _cachedAccount = null;
+    } catch (e) {
+      print('Unlink Error: $e');
     }
   }
 
   Future<http.Client?> _getAuthenticatedClient() async {
     try {
-      await _googleSignIn.initialize();
-      
-      // check if user is already logged in
-      final account = await _googleSignIn.authenticate();
-      
-      if (account == null) return null;
+      await _ensureInitialized();
+      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
 
-      // try to get access without showing a popup
-      var authz = await account.authorizationClient.authorizationForScopes(_scopes);
-      
-      // if silent fails, show the popup
-      authz ??= await account.authorizationClient.authorizeScopes(_scopes);
-      
+      if (_cachedAccount == null) return null;
+
+      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
+
+      if (authz == null || authz.accessToken == null) {
+        authz = await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
+      }
+
       final String? token = authz.accessToken;
       if (token == null) return null;
-      
+
       return GoogleAuthenticatedClient(token);
     } catch (e) {
-      print('Error getting authenticated client: $e');
+      print('Auth Client Error: $e');
       return null;
     }
   }
@@ -69,14 +104,13 @@ class GoogleSyncService {
       final events = await calendar.events.list(
         'primary',
         timeMin: now,
-        maxResults: 10,
+        maxResults: 15,
         orderBy: 'startTime',
         singleEvents: true,
       );
 
       return events.items ?? [];
     } catch (e) {
-      print('Error fetching events: $e');
       return [];
     }
   }
@@ -88,7 +122,7 @@ class GoogleSyncService {
 
       final gmail = GmailApi(client);
       final response = await gmail.users.messages.list('me', maxResults: 10, q: 'is:unread');
-      
+
       List<Message> emails = [];
       if (response.messages != null) {
         for (var msg in response.messages!) {
@@ -98,13 +132,13 @@ class GoogleSyncService {
       }
       return emails;
     } catch (e) {
-      print('Error fetching emails: $e');
       return [];
     }
   }
 
   Future<void> signOut() async {
     await _googleSignIn.signOut();
+    _cachedAccount = null;
   }
 }
 

@@ -15,16 +15,7 @@ class ClearHistoryScreen extends StatefulWidget {
 
 class _ClearHistoryScreenState extends State<ClearHistoryScreen> {
   bool _isClearing = false;
-
-  final List<String> _historyItems = [
-    'Search History',
-    'Activity Records',
-    'Motion Logs',
-    'Email Cache',
-    'AI Predictions',
-    'Recent Notifications',
-  ];
-
+  final List<String> _historyItems = ['Search History', 'Activity Records', 'Motion Logs', 'Email Cache', 'AI Predictions', 'Recent Notifications'];
   late final List<bool> _checked;
 
   @override
@@ -41,121 +32,62 @@ class _ClearHistoryScreenState extends State<ClearHistoryScreen> {
     if (mounted) {
       setState(() {
         _isClearing = false;
-        for (int i = 0; i < _checked.length; i++) {
-          _checked[i] = false;
-        }
+        for (int i = 0; i < _checked.length; i++) _checked[i] = false;
       });
     }
   }
 
-  void _onCancel() => Navigator.of(context).pop();
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color), onPressed: () => Navigator.pop(context)),
         title: const Text('Clear History', style: AppTextStyles.heading),
         titleSpacing: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-
-            // History Management Header Card
-            const InfoCard(
-              title: 'History Management',
-              description: 'Manage and remove stored activity data\nfrom your account',
-            ),
-
+            const InfoCard(title: 'History Management', description: 'Manage and remove stored activity data\nfrom your account'),
             const SizedBox(height: 14),
-
-            // Checklist Card
             Container(
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
-              ),
+              decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(14), border: Border.all(color: theme.dividerColor)),
               child: Column(
                 children: List.generate(_historyItems.length, (i) {
-                  final isLast = i == _historyItems.length - 1;
                   return Column(
                     children: [
-                      CustomCheckboxTile(
-                        label: _historyItems[i],
-                        isChecked: _checked[i],
-                        onChanged: (val) => setState(() => _checked[i] = val),
-                      ),
-                      if (!isLast)
-                        const Divider(
-                          height: 1,
-                          color: AppColors.border,
-                          indent: 16,
-                          endIndent: 16,
-                        ),
+                      CustomCheckboxTile(label: _historyItems[i], isChecked: _checked[i], onChanged: (val) => setState(() => _checked[i] = val)),
+                      if (i != _historyItems.length - 1) Divider(height: 1, color: theme.dividerColor, indent: 16, endIndent: 16),
                     ],
                   );
                 }),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            // Warning Card
-            const WarningCard(
-              title: 'Warning:',
-              description: 'Cleaning history will permanently remove\nselected records',
-            ),
-
+            const WarningCard(title: 'Warning:', description: 'Cleaning history will permanently remove\nselected records'),
             const Spacer(),
-
-            // Buttons
             Row(
               children: [
                 Expanded(
                   child: SizedBox(
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: _onCancel,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3A3F4B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(backgroundColor: theme.cardColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), side: BorderSide(color: theme.dividerColor), elevation: 0),
+                      child: Text('Cancel', style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: PrimaryButton(
-                    text: 'Clear Selected',
-                    isLoading: _isClearing,
-                    onPressed: _anySelected ? _onClearSelected : () {},
-                  ),
-                ),
+                Expanded(child: PrimaryButton(text: 'Clear Selected', isLoading: _isClearing, onPressed: _anySelected ? _onClearSelected : () {})),
               ],
             ),
-
             const SizedBox(height: 24),
           ],
         ),

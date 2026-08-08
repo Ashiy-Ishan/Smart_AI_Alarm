@@ -15,6 +15,7 @@ class ActivityStatLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(bottom: bottomPadding),
       child: Row(
@@ -22,7 +23,6 @@ class ActivityStatLine extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -30,8 +30,8 @@ class ActivityStatLine extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             value,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
               fontSize: 13,
             ),
           ),

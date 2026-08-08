@@ -13,7 +13,6 @@ class UserProvider extends ChangeNotifier {
   bool get isInitialized => _isInitialized;
 
   UserProvider() {
-    // Check initial user state immediately
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       _user = AuthUserModel(
@@ -38,6 +37,27 @@ class UserProvider extends ChangeNotifier {
     });
   }
 
+  Future<void> deleteAccount(BuildContext context) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.delete();
+        _user = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Deletion failed: ${e.toString().split(']').last.trim()}"),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      rethrow;
+    }
+  }
+
   Future<void> signInWithGoogle(BuildContext context) async {
     final user = await AuthController.signInWithGoogle();
     if (user == null) {
@@ -54,8 +74,7 @@ class UserProvider extends ChangeNotifier {
       );
       notifyListeners();
       if (context.mounted) {
-        Navigator.of(context, rootNavigator: true)
-            .pushReplacementNamed(AppRoutes.main);
+        Navigator.of(context, rootNavigator: true).pushReplacementNamed(AppRoutes.main);
       }
     }
   }
@@ -80,10 +99,7 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              "Sign Up Failed: ${e.toString().split(']').last.trim()}",
-              style: const TextStyle(color: Colors.white),
-            ),
+            content: Text("Sign Up Failed: ${e.toString().split(']').last.trim()}"),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -111,10 +127,7 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              "Sign In Failed: ${e.toString().split(']').last.trim()}",
-              style: const TextStyle(color: Colors.white),
-            ),
+            content: Text("Sign In Failed: ${e.toString().split(']').last.trim()}"),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -141,10 +154,7 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              "Failed to send reset link: ${e.toString().split(']').last.trim()}",
-              style: const TextStyle(color: Colors.white),
-            ),
+            content: Text("Failed to send reset link: ${e.toString().split(']').last.trim()}"),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -167,4 +177,3 @@ class UserProvider extends ChangeNotifier {
     }
   }
 }
-

@@ -11,22 +11,22 @@ class SecurityOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         children: [
-          // Shield icon
           Container(
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.15),
+              color: AppColors.primary.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -39,23 +39,21 @@ class SecurityOverviewCard extends StatelessWidget {
           const Text(
             'Data Security Overview',
             style: TextStyle(
-              color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Your personal data are protected\nwith end-to-end encryption.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
               fontSize: 13,
               height: 1.5,
             ),
           ),
           const SizedBox(height: 16),
-          // Encryption Status
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -63,7 +61,7 @@ class SecurityOverviewCard extends StatelessWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: theme.dividerColor,
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.primary, width: 2),
                 ),
@@ -74,9 +72,12 @@ class SecurityOverviewCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              const Text(
+              Text(
                 'Encryption Status: ',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                style: TextStyle(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                  fontSize: 13
+                ),
               ),
               Text(
                 isEncryptionActive ? 'Active' : 'Inactive',

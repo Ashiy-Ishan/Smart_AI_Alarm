@@ -14,6 +14,7 @@ class AccuracyRingGauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: 190,
       height: 190,
@@ -25,7 +26,7 @@ class AccuracyRingGauge extends StatelessWidget {
             width: 176,
             height: 176,
             child: CustomPaint(
-              painter: _RingPainter(accuracy),
+              painter: _RingPainter(accuracy, theme.dividerColor),
             ),
           ),
           Column(
@@ -34,7 +35,6 @@ class AccuracyRingGauge extends StatelessWidget {
               Text(
                 '${(accuracy * 100).toInt()}%',
                 style: const TextStyle(
-                  color: Colors.white,
                   fontSize: 44,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
@@ -44,8 +44,8 @@ class AccuracyRingGauge extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Color(0xFFC5C6CA),
+                style: TextStyle(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -60,8 +60,9 @@ class AccuracyRingGauge extends StatelessWidget {
 
 class _RingPainter extends CustomPainter {
   final double accuracy;
+  final Color trackColor;
 
-  _RingPainter(this.accuracy);
+  _RingPainter(this.accuracy, this.trackColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -70,7 +71,7 @@ class _RingPainter extends CustomPainter {
     final double radius = size.width / 2 - 8;
 
     final paintTrack = Paint()
-      ..color = const Color(0xFF2C2F36)
+      ..color = trackColor
       ..strokeWidth = 10.0
       ..style = PaintingStyle.stroke;
 
@@ -80,10 +81,8 @@ class _RingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    // Draw full background circle
     canvas.drawCircle(Offset(centerX, centerY), radius, paintTrack);
 
-    // Draw active progress arc (starting from top: -pi / 2)
     canvas.drawArc(
       Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
       -pi / 2,

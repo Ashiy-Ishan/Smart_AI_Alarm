@@ -14,15 +14,16 @@ class EmailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.dividerColor),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,9 +32,9 @@ class EmailCard extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: theme.dividerColor),
               ),
               child: Icon(email.icon, color: AppColors.primary, size: 20),
             ),
@@ -47,7 +48,6 @@ class EmailCard extends StatelessWidget {
                       Text(
                         email.name,
                         style: const TextStyle(
-                          color: Colors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
@@ -55,15 +55,15 @@ class EmailCard extends StatelessWidget {
                       const Spacer(),
                       Text(
                         email.time,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
+                        style: TextStyle(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                           fontSize: 12,
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Icon(
+                      Icon(
                         Icons.chevron_right,
-                        color: AppColors.textSecondary,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
                         size: 16,
                       ),
                     ],
@@ -74,8 +74,8 @@ class EmailCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           email.preview,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
+                          style: TextStyle(
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -87,10 +87,10 @@ class EmailCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.2),
+                            color: AppColors.primary.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                              color: AppColors.primary.withValues(alpha: 0.5),
+                              color: AppColors.primary.withOpacity(0.5),
                             ),
                           ),
                           child: const Text(

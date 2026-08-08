@@ -30,11 +30,7 @@ class _GmailScreenState extends State<GmailScreen> {
     setState(() => _isLoading = true);
     try {
       final emails = await _syncService.fetchLatestEmails();
-      if (!mounted) return;
-      setState(() {
-        _emails = emails;
-        _isLoading = false;
-      });
+      if (mounted) setState(() { _emails = emails; _isLoading = false; });
     } catch (_) {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -42,22 +38,19 @@ class _GmailScreenState extends State<GmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final userEmail = FirebaseAuth.instance.currentUser?.email ?? 'Unknown User';
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: theme.brightness == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: AppColors.background,
+          backgroundColor: theme.scaffoldBackgroundColor,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+          leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color), onPressed: () => Navigator.pop(context)),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
               const Text('Gmail', style: AppTextStyles.heading),
               Text(userEmail, style: AppTextStyles.subHeading),
@@ -70,24 +63,14 @@ class _GmailScreenState extends State<GmailScreen> {
           child: _isLoading 
             ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
             : ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.all(16),
                 children: [
-                  SyncStatusCard(
-                    statusText: 'Synced ${_emails.length} unread emails',
-                  ),
+                  SyncStatusCard(statusText: 'Synced ${_emails.length} unread emails'),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Recent Unread Messages',
-                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
+                  const Text('Recent Unread Messages', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 12),
                   if (_emails.isEmpty)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(40.0),
-                        child: Text("No unread emails found.", style: TextStyle(color: AppColors.textSecondary)),
-                      ),
-                    )
+                    const Center(child: Padding(padding: EdgeInsets.all(40), child: Text("No unread emails found.", style: TextStyle(color: AppColors.textSecondary))))
                   else
                     ..._emails.map(_buildEmailTile),
                 ],
@@ -98,31 +81,24 @@ class _GmailScreenState extends State<GmailScreen> {
   }
 
   Widget _buildEmailTile(Message msg) {
-    // Basic extraction of Subject and From from headers
-    String subject = "No Subject";
-    String from = "Unknown";
-    
+    String subject = "No Subject", from = "Unknown";
     if (msg.payload?.headers != null) {
-      for (var header in msg.payload!.headers!) {
-        if (header.name == 'Subject') subject = header.value ?? subject;
-        if (header.name == 'From') from = header.value ?? from;
+      for (var h in msg.payload!.headers!) {
+        if (h.name == 'Subject') subject = h.value ?? subject;
+        if (h.name == 'From') from = h.value ?? from;
       }
     }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
-      ),
+      decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(14), border: Border.all(color: Theme.of(context).dividerColor)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(from, style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
           const SizedBox(height: 4),
-          Text(subject, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15), maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text(subject, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15), maxLines: 1, overflow: TextOverflow.ellipsis),
           const SizedBox(height: 4),
           Text(msg.snippet ?? "", style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
         ],

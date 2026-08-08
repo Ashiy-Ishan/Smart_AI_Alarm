@@ -5,19 +5,22 @@ class GlowBackground extends StatelessWidget {
   final double blurRadius;
   final double spreadRadius;
   final Alignment alignment;
-  final Color glowColor;
+  final Color? glowColor;
 
   const GlowBackground({
     super.key,
     this.size = 240,
     this.blurRadius = 120,
     this.spreadRadius = 20,
-    this.glowColor = const Color(0x3DD9B56D),
+    this.glowColor,
     this.alignment = Alignment.center,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (theme.brightness == Brightness.light) return const SizedBox.shrink();
+
     return IgnorePointer(
       child: Align(
         alignment: alignment,
@@ -28,7 +31,7 @@ class GlowBackground extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: glowColor,
+                color: glowColor ?? const Color(0x3DD9B56D),
                 blurRadius: blurRadius,
                 spreadRadius: spreadRadius,
               ),

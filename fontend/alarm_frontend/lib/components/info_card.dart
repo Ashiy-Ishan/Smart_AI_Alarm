@@ -13,13 +13,14 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +28,6 @@ class InfoCard extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
@@ -35,8 +35,8 @@ class InfoCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             description,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
               fontSize: 13,
               height: 1.5,
             ),

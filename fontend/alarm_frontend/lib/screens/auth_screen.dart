@@ -48,10 +48,10 @@ class _AuthScreenState extends State<AuthScreen> {
   void showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: AppColors.card,
+        backgroundColor: Theme.of(context).cardColor,
         content: Text(
           message,
-          style: const TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
       ),
     );
@@ -82,7 +82,6 @@ class _AuthScreenState extends State<AuthScreen> {
       Navigator.of(context, rootNavigator: true)
           .pushReplacementNamed(AppRoutes.main);
     } catch (e) {
-      // Errors are handled and shown via SnackBar in UserProvider
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -128,7 +127,6 @@ class _AuthScreenState extends State<AuthScreen> {
       Navigator.of(context, rootNavigator: true)
           .pushReplacementNamed(AppRoutes.verifyAccount);
     } catch (e) {
-      // Errors are handled and shown via SnackBar in UserProvider
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -154,7 +152,6 @@ class _AuthScreenState extends State<AuthScreen> {
         switchPage(AuthPageModel.login());
       }
     } catch (e) {
-      // Errors are handled and shown via SnackBar in UserProvider
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -165,7 +162,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -195,6 +192,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildLoginView() {
+    final theme = Theme.of(context);
     return Form(
       key: formData.loginFormKey,
       child: Column(
@@ -238,9 +236,9 @@ class _AuthScreenState extends State<AuthScreen> {
             alignment: Alignment.centerRight,
             child: GestureDetector(
               onTap: () => switchPage(AuthPageModel.resetPassword()),
-              child: const Text(
+              child: Text(
                 'Forgot Password ?',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 15),
+                style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 15),
               ),
             ),
           ),
@@ -269,9 +267,9 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Don't have an account ? ",
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.signup()),
@@ -286,6 +284,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildSignupView() {
+    final theme = Theme.of(context);
     return Form(
       key: formData.signupFormKey,
       child: Column(
@@ -376,9 +375,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
+              Text(
                 'I agree to ',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
               ),
               const Text('terms', style: AppTextStyles.link),
             ],
@@ -394,9 +393,9 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Already have an account? ',
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.login()),
