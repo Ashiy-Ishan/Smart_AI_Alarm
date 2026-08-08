@@ -1,64 +1,69 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-/// Configures and displays the app's local notifications.
 class NotificationService {
-  NotificationService._();
-
-  static final NotificationService _instance = NotificationService._();
-
+  static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
+  NotificationService._internal();
 
-  static const _channel = AndroidNotificationChannel(
-    'alarm_alerts',
-    'Alarm alerts',
-    description: 'Notifications displayed when an alarm starts ringing.',
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
+  // Define high importance channel for Android
+  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
+    'alarm_high_importance', // id
+    'High Importance Alarm Notifications', // title
+    description: 'This channel is used for important alarm notifications.', // description
     importance: Importance.max,
-    playSound: true,
   );
 
-  final FlutterLocalNotificationsPlugin _plugin =
-      FlutterLocalNotificationsPlugin();
-  bool _initialized = false;
-
   Future<void> initialize() async {
-    if (_initialized) return;
-
-    const settings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(),
-      macOS: DarwinInitializationSettings(),
+    // 1. Request permissions for Android 13+ and iOS
+    await _fcm.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
     );
 
-    await _plugin.initialize(settings: settings);
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    await android?.createNotificationChannel(_channel);
-    await android?.requestNotificationsPermission();
-    _initialized = true;
+    // 2. Setup local notifications
+    const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+    const InitializationSettings initSettings = InitializationSettings(android: androidInit, iOS: iosInit);
+    
+    await _localNotifications.initialize(settings:initSettings);
+
+    // 3. Create the notification channel on Android
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(_channel);
+
+    // 4. Foreground listener
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _showLocalNotification(message);
+    });
+
+    String? token = await _fcm.getToken();
+    print("FCM Token: $token");
   }
 
-  Future<void> showAlarm({
-    required String title,
-    required String body,
-  }) async {
-    await initialize();
-    await _plugin.show(
-      id: 1001,
-      title: title,
-      body: body,
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'alarm_alerts',
-          'Alarm alerts',
-          channelDescription: 'Notifications displayed when an alarm starts ringing.',
-          importance: Importance.max,
-          priority: Priority.max,
-          fullScreenIntent: true,
-        ),
-        iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
-      ),
+  void _showLocalNotification(RemoteMessage message) async {
+    // Use the high importance channel
+    AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      _channel.id,
+      _channel.name,
+      channelDescription: _channel.description,
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: true,
+    );
+
+    NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+
+    await _localNotifications.show(
+      id: message.hashCode,
+      title: message.notification?.title ?? "Alarm Notification",
+      body: message.notification?.body ?? "Check your smart alarm device.",
+      notificationDetails: platformDetails,
     );
   }
-
-  Future<void> cancelAlarm() => _plugin.cancel(id: 1001);
 }

@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.dispose();
   }
 
-  // Consistent UID generation logic
+  // user unique id from email
   String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
@@ -50,14 +50,13 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     return "user_${prefix}_$suffix";
   }
 
-  // New: Real-time listener for the user's device link
+  // listen for device connection changes
   void _setupDeviceListener() {
     final email = FirebaseAuth.instance.currentUser?.email ?? "";
     if (email.isEmpty) return;
 
     _hiddenUid = _getHiddenUid(email);
     
-    // Listen to the User's Devices node directly
     _deviceSubscription = _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').onValue.listen((event) {
       if (event.snapshot.exists && mounted) {
         final devices = event.snapshot.value as Map<dynamic, dynamic>;
@@ -85,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     }
   }
 
+  // different greetings based on time
   (String greeting, String secondary, String asset) _getTimeBasedData() {
     final hour = DateTime.now().hour;
     if (hour >= 5 && hour < 12) {
@@ -153,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                 _buildNextEventCard(),
                 const SizedBox(height: 20),
                 
-                // LIVE ALARM CARD FROM RTDB
+                // realtime alarm data
                 if (_macAddress != null)
                   _buildLiveAlarmCard()
                 else
@@ -238,6 +238,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     );
   }
 
+  // open clock to set time
   Future<void> _pickTime(BuildContext context, String currentTime) async {
     final parts = currentTime.split(':');
     final initialTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));

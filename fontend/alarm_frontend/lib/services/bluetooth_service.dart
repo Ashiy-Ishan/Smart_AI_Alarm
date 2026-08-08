@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' as ble;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/foundation.dart';
 
 class BluetoothService {
   static final BluetoothService _instance = BluetoothService._internal();
@@ -11,16 +11,17 @@ class BluetoothService {
 
   ble.BluetoothDevice? connectedDevice;
   ble.BluetoothCharacteristic? writeCharacteristic;
-  ble.BluetoothCharacteristic? readMacCharacteristic; // New: for reading real MAC
+  ble.BluetoothCharacteristic? readMacCharacteristic;
 
-  // UUIDs - These should match your ESP32 firmware
-  static const _serviceUuid = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
-  static const _characteristicUuid = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
-  static const _macReadUuid = 'beb5483e-36e1-4688-b7f5-ea07361b26a9';
+  // these must match the esp32 code
+  final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+  final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+  final String MAC_READ_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a9";
 
+  // ask user for bluetooth and location
   Future<bool> requestPermissions() async {
     if (Platform.isAndroid) {
-      final statuses = await <Permission>[
+      Map<Permission, PermissionStatus> statuses = await [
         Permission.bluetoothScan,
         Permission.bluetoothConnect,
         Permission.location,
@@ -40,12 +41,12 @@ class BluetoothService {
       List<ble.BluetoothService> services = await device.discoverServices();
       
       for (var service in services) {
-        if (service.uuid.toString().toLowerCase() == _serviceUuid) {
+        if (service.uuid.toString().toLowerCase() == SERVICE_UUID.toLowerCase()) {
           for (var char in service.characteristics) {
-            if (char.uuid.toString().toLowerCase() == _characteristicUuid) {
+            if (char.uuid.toString().toLowerCase() == CHARACTERISTIC_UUID.toLowerCase()) {
               writeCharacteristic = char;
             }
-            if (char.uuid.toString().toLowerCase() == _macReadUuid) {
+            if (char.uuid.toString().toLowerCase() == MAC_READ_UUID.toLowerCase()) {
               readMacCharacteristic = char;
             }
           }
@@ -53,25 +54,24 @@ class BluetoothService {
       }
       return writeCharacteristic != null;
     } catch (e) {
-      debugPrint('Bluetooth connection error: $e');
       return false;
     }
   }
 
-  /// Attempts to read the "Real WiFi MAC" from the device if it provides it
+  // get the real wifi mac from hardware
   Future<String?> getDeviceRealMac() async {
     if (readMacCharacteristic != null) {
       try {
         List<int> value = await readMacCharacteristic!.read();
         return utf8.decode(value).trim();
       } catch (e) {
-        debugPrint('Error reading device MAC: $e');
+        print('mac read error: $e');
       }
     }
-    // Fallback to Bluetooth MAC if hardware doesn't provide WiFi MAC
     return connectedDevice?.remoteId.toString();
   }
 
+  // send wifi details and user id to device
   Future<bool> sendProvisioningData(String ssid, String password, String uid) async {
     if (writeCharacteristic != null) {
       try {

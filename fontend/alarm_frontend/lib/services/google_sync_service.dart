@@ -1,73 +1,122 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:googleapis/gmail/v1.dart' as gmail;
-import 'package:googleapis_auth/googleapis_auth.dart';
+import 'package:googleapis/calendar/v3.dart';
+import 'package:googleapis/gmail/v1.dart';
 import 'package:http/http.dart' as http;
 
-/// Provides the small Google Calendar/Gmail surface used by the profile tabs.
 class GoogleSyncService {
-  static const _scopes = <String>[
-    calendar.CalendarApi.calendarReadonlyScope,
-    gmail.GmailApi.gmailReadonlyScope,
-  ];
+  static final GoogleSyncService _instance = GoogleSyncService._internal();
+  factory GoogleSyncService() => _instance;
+  GoogleSyncService._internal();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
-  Future<GoogleSignInAccount?> linkAccount() async {
-    await _googleSignIn.initialize();
-    final account = await _googleSignIn.authenticate(scopeHint: _scopes);
-    await account.authorizationClient.authorizeScopes(_scopes);
-    return account;
-  }
+  final List<String> _scopes = [
+    CalendarApi.calendarReadonlyScope,
+    GmailApi.gmailReadonlyScope,
+  ];
 
-  Future<AuthClient?> _client() async {
+  Future<GoogleSignInAccount?> linkAccount() async {
     try {
       await _googleSignIn.initialize();
-      final account = await _googleSignIn.authenticate(scopeHint: _scopes);
-      final authorization = await account.authorizationClient.authorizeScopes(_scopes);
-      final credentials = AccessCredentials(
-        AccessToken('Bearer', authorization.accessToken,
-            DateTime.now().toUtc().add(const Duration(minutes: 50))),
-        null,
-        _scopes,
-      );
-      return authenticatedClient(http.Client(), credentials);
-    } catch (_) {
+      
+      // log in and get user details
+      final account = await _googleSignIn.authenticate();
+      
+      if (account != null) {
+        // get permissions for calendar and gmail
+        await account.authorizationClient.authorizeScopes(_scopes);
+      }
+      
+      return account;
+    } catch (e) {
+      print('Error linking account: $e');
       return null;
     }
   }
 
-  Future<List<calendar.Event>> fetchUpcomingEvents() async {
-    final client = await _client();
-    if (client == null) return <calendar.Event>[];
+  Future<http.Client?> _getAuthenticatedClient() async {
     try {
-      final events = await calendar.CalendarApi(client).events.list(
-            'primary',
-            timeMin: DateTime.now().toUtc(),
-            maxResults: 20,
-            singleEvents: true,
-            orderBy: 'startTime',
-          );
-      return events.items ?? <calendar.Event>[];
-    } catch (_) {
-      return <calendar.Event>[];
-    } finally {
-      client.close();
+      await _googleSignIn.initialize();
+      
+      // check if user is already logged in
+      final account = await _googleSignIn.authenticate();
+      
+      if (account == null) return null;
+
+      // try to get access without showing a popup
+      var authz = await account.authorizationClient.authorizationForScopes(_scopes);
+      
+      // if silent fails, show the popup
+      authz ??= await account.authorizationClient.authorizeScopes(_scopes);
+      
+      final String? token = authz.accessToken;
+      if (token == null) return null;
+      
+      return GoogleAuthenticatedClient(token);
+    } catch (e) {
+      print('Error getting authenticated client: $e');
+      return null;
     }
   }
 
-  Future<List<gmail.Message>> fetchLatestEmails() async {
-    final client = await _client();
-    if (client == null) return <gmail.Message>[];
+  Future<List<Event>> fetchUpcomingEvents() async {
     try {
-      final api = gmail.GmailApi(client);
-      final listed = await api.users.messages.list('me', q: 'is:unread', maxResults: 20);
-      final messages = listed.messages ?? <gmail.Message>[];
-      return Future.wait(messages.map((message) => api.users.messages.get('me', message.id!)));
-    } catch (_) {
-      return <gmail.Message>[];
-    } finally {
-      client.close();
+      final client = await _getAuthenticatedClient();
+      if (client == null) return [];
+
+      final calendar = CalendarApi(client);
+      final now = DateTime.now().toUtc();
+      final events = await calendar.events.list(
+        'primary',
+        timeMin: now,
+        maxResults: 10,
+        orderBy: 'startTime',
+        singleEvents: true,
+      );
+
+      return events.items ?? [];
+    } catch (e) {
+      print('Error fetching events: $e');
+      return [];
     }
+  }
+
+  Future<List<Message>> fetchLatestEmails() async {
+    try {
+      final client = await _getAuthenticatedClient();
+      if (client == null) return [];
+
+      final gmail = GmailApi(client);
+      final response = await gmail.users.messages.list('me', maxResults: 10, q: 'is:unread');
+      
+      List<Message> emails = [];
+      if (response.messages != null) {
+        for (var msg in response.messages!) {
+          final fullMsg = await gmail.users.messages.get('me', msg.id!);
+          emails.add(fullMsg);
+        }
+      }
+      return emails;
+    } catch (e) {
+      print('Error fetching emails: $e');
+      return [];
+    }
+  }
+
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+  }
+}
+
+class GoogleAuthenticatedClient extends http.BaseClient {
+  final String accessToken;
+  final http.Client _inner = http.Client();
+
+  GoogleAuthenticatedClient(this.accessToken);
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    request.headers['Authorization'] = 'Bearer $accessToken';
+    return _inner.send(request);
   }
 }
