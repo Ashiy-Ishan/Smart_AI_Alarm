@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String baseUrl =
-      'http://10.0.2.2:5001/'
+      'http://127.0.0.1:5001/'
       'smart-ai-alarm-2f71d/'
       'us-central1/'
       'api';
