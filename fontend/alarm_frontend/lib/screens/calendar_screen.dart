@@ -1,10 +1,10 @@
-import 'package:alarm_frontend/services/google_sync_service.dart';
+import 'package:alarm_frontend/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/calendar_grid.dart';
 import 'package:alarm_frontend/components/upcoming_event_item.dart';
-import 'package:googleapis/calendar/v3.dart' as google_calendar;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -15,11 +15,17 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  final GoogleSyncService _syncService = GoogleSyncService();
   int _selectedDay = DateTime.now().day;
-  final DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
-  List<google_calendar.Event> _events = [];
+
+  final DateTime _currentMonth = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+  );
+
+  List<Map<String, dynamic>> _events = [];
+
   bool _isLoading = true;
+
   String? _errorMessage;
 
   @override
@@ -30,17 +36,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Future<void> _fetchEvents() async {
     if (!mounted) return;
-    setState(() => _isLoading = true);
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
-      final events = await _syncService.fetchUpcomingEvents();
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception('User is not logged in');
+      }
+
+      final response = await ApiService.get(
+        '/calendar/events/${user.uid}?hours_ahead=168',
+      );
+
+      final List<dynamic> eventData = response['events'] ?? [];
+
       if (!mounted) return;
+
       setState(() {
-        _events = events;
-        _errorMessage = null;
+        _events = eventData
+            .map((event) => Map<String, dynamic>.from(event))
+            .toList();
+
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Calendar backend error: $e');
+
       if (!mounted) return;
+
       setState(() {
         _errorMessage = 'Unable to load calendar events.';
         _isLoading = false;
@@ -57,18 +85,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         title: const Text('Calendar', style: AppTextStyles.heading),
         titleSpacing: 0,
         actions: [
           IconButton(
             onPressed: _fetchEvents,
-            icon: const Icon(
-              Icons.refresh,
-              color: AppColors.primary,
-              size: 26,
-            ),
+            icon: const Icon(Icons.refresh, color: AppColors.primary, size: 26),
           ),
         ],
       ),
@@ -80,7 +106,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           children: [
             const SizedBox(height: 4),
 
-            // Month Label
             Text(
               DateFormat('MMMM yyyy').format(DateTime.now()),
               style: const TextStyle(
@@ -92,16 +117,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
             const SizedBox(height: 16),
 
-            // Calendar Card (Grid)
             CalendarGrid(
               month: _currentMonth,
               selectedDay: _selectedDay,
-              onDaySelected: (day) => setState(() => _selectedDay = day),
+              onDaySelected: (day) {
+                setState(() {
+                  _selectedDay = day;
+                });
+              },
             ),
 
             const SizedBox(height: 20),
 
-            // Upcoming Events Card
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -120,21 +147,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+
                   const SizedBox(height: 14),
+
                   if (_isLoading)
-                    const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    )
                   else if (_errorMessage != null)
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Text(_errorMessage!, style: const TextStyle(color: AppColors.textSecondary)),
+                        child: Text(
+                          _errorMessage!,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                       ),
                     )
                   else if (_events.isEmpty)
                     const Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text("No upcoming events found.", style: TextStyle(color: AppColors.textSecondary)),
+                        child: Text(
+                          'No upcoming events found.',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
                       ),
                     )
                   else
@@ -150,18 +194,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildEventItem(google_calendar.Event event) {
-    String timeStr = "";
-    if (event.start?.dateTime != null) {
-      timeStr = DateFormat('jm').format(event.start!.dateTime!.toLocal());
-    } else if (event.start?.date != null) {
-      timeStr = "All Day";
+  Widget _buildEventItem(Map<String, dynamic> event) {
+    String timeText = 'All Day';
+
+    final dynamic start = event['start'];
+
+    if (start != null) {
+      try {
+        DateTime? dateTime;
+
+        if (start is String) {
+          dateTime = DateTime.tryParse(start);
+        } else if (start is Map) {
+          final dynamic dateTimeValue = start['dateTime'];
+
+          final dynamic dateValue = start['date'];
+
+          if (dateTimeValue != null) {
+            dateTime = DateTime.tryParse(dateTimeValue.toString());
+          } else if (dateValue != null) {
+            timeText = 'All Day';
+          }
+        }
+
+        if (dateTime != null) {
+          timeText = DateFormat('jm').format(dateTime.toLocal());
+        }
+      } catch (e) {
+        debugPrint('Calendar event parsing error: $e');
+      }
     }
 
     return UpcomingEventItem(
       icon: Icons.calendar_today,
-      title: event.summary ?? "No Title",
-      time: timeStr,
+      title: event['summary']?.toString() ?? 'No Title',
+      time: timeText,
     );
   }
 }
