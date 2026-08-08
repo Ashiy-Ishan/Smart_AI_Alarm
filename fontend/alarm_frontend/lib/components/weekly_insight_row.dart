@@ -13,6 +13,7 @@ class WeeklyInsightRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -23,8 +24,8 @@ class WeeklyInsightRow extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary,
                 fontSize: 13,
                 height: 1.4,
               ),

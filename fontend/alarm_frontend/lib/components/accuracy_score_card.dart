@@ -8,6 +8,7 @@ class AccuracyScoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -16,27 +17,26 @@ class AccuracyScoreCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.dividerColor),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Accuracy Score',
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.white,
+                  color: theme.textTheme.bodyLarge?.color,
                   size: 24,
                 ),
               ],
@@ -45,7 +45,6 @@ class AccuracyScoreCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Left metrics: 88% + High (green)
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +52,6 @@ class AccuracyScoreCard extends StatelessWidget {
                       Text(
                         '88%',
                         style: TextStyle(
-                          color: Colors.white,
                           fontSize: 48,
                           fontWeight: FontWeight.w800,
                           height: 1.0,
@@ -73,21 +71,20 @@ class AccuracyScoreCard extends StatelessWidget {
                   ),
                 ),
 
-                // Right circular speedometer gauge
                 Column(
                   children: [
                     SizedBox(
                       width: 120,
                       height: 70,
                       child: CustomPaint(
-                        painter: _GaugePainter(0.88),
+                        painter: _GaugePainter(0.88, theme.dividerColor),
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Predictive Model',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -105,8 +102,9 @@ class AccuracyScoreCard extends StatelessWidget {
 
 class _GaugePainter extends CustomPainter {
   final double accuracy;
+  final Color trackColor;
 
-  _GaugePainter(this.accuracy);
+  _GaugePainter(this.accuracy, this.trackColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -115,7 +113,7 @@ class _GaugePainter extends CustomPainter {
     final double radius = size.width / 2 - 10;
 
     final paintTrack = Paint()
-      ..color = const Color(0xFF2C2F36)
+      ..color = trackColor
       ..strokeWidth = 10.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -126,7 +124,6 @@ class _GaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    // Draw background arc (180 degrees)
     canvas.drawArc(
       Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
       pi,
@@ -135,7 +132,6 @@ class _GaugePainter extends CustomPainter {
       paintTrack,
     );
 
-    // Draw foreground active arc (88%)
     canvas.drawArc(
       Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
       pi,
@@ -144,7 +140,6 @@ class _GaugePainter extends CustomPainter {
       paintActive,
     );
 
-    // Draw needle
     final needleAngle = pi + (pi * accuracy);
     final double needleLength = radius - 8;
 
@@ -152,16 +147,15 @@ class _GaugePainter extends CustomPainter {
     final double needleY = centerY + needleLength * sin(needleAngle);
 
     final needlePaint = Paint()
-      ..color = const Color(0xFFE4E6EB)
+      ..color = AppColors.primary
       ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
     canvas.drawLine(Offset(centerX, centerY), Offset(needleX, needleY), needlePaint);
 
-    // Draw needle pin base center circle
     final pinPaint = Paint()
-      ..color = const Color(0xFFE4E6EB)
+      ..color = AppColors.primary
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(centerX, centerY), 6.0, pinPaint);
   }

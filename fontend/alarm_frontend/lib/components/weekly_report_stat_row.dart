@@ -13,6 +13,7 @@ class WeeklyReportStatRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
@@ -20,7 +21,6 @@ class WeeklyReportStatRow extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -29,7 +29,10 @@ class WeeklyReportStatRow extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                fontSize: 13
+              ),
             ),
           ),
         ],

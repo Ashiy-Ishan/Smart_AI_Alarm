@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:alarm_frontend/firebase_options.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
+import 'package:alarm_frontend/providers/theme_provider.dart'; // added theme provider
 import 'package:alarm_frontend/routes/app_router.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/screens/alarm/alarm_ringing_screen.dart';
-import 'package:alarm_frontend/services/background_service.dart';
-import 'package:alarm_frontend/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,8 +15,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:alarm_frontend/services/notification_service.dart';
+import 'package:alarm_frontend/services/background_service.dart';
 
-// runs when a notification comes in while app is closed
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -26,7 +26,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // make the app go behind the system bars
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,
     statusBarColor: Colors.transparent,
@@ -41,14 +40,16 @@ void main() async {
     
     await NotificationService().initialize();
 
-    // Start the always-running background service
     await AppBackgroundService.initializeService();
   } catch (e) {
     debugPrint("App init failed: $e");
   }
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()), // added
+      ],
       child: const MyApp(),
     ),
   );
@@ -73,7 +74,6 @@ class _MyAppState extends State<MyApp> {
     _setupAlarmListener();
   }
 
-  // generate unique id for user
   String _getHiddenUid(String email) {
     String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
     String hash = email.hashCode.abs().toString();
@@ -81,7 +81,6 @@ class _MyAppState extends State<MyApp> {
     return "user_${prefix}_$suffix";
   }
 
-  // watch for alarm ringing status in cloud
   void _setupAlarmListener() {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       _alarmSubscription?.cancel();
@@ -116,7 +115,6 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  // show the full screen alarm
   void _showAlarmOverlay(String uid, String mac) {
     _isAlarmShowing = true;
     _navigatorKey.currentState?.push(
@@ -141,15 +139,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       navigatorKey: _navigatorKey,
       title: 'AI Alarm App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: AppColors.background,
-        useMaterial3: true,
-        textTheme: GoogleFonts.lexendDecaTextTheme(),
-      ),
+      theme: themeProvider.currentTheme, // using dynamic theme
       initialRoute: AppRoutes.splash,
       onGenerateRoute: AppRouter.onGenerateRoute,
     );

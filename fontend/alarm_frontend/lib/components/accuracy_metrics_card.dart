@@ -12,11 +12,12 @@ class AccuracyMetricsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         children: List.generate(items.length, (i) {
@@ -38,7 +39,6 @@ class AccuracyMetricsCard extends StatelessWidget {
                       child: Text(
                         item.label,
                         style: const TextStyle(
-                          color: Color(0xFFC5C6CA),
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.1,
@@ -57,9 +57,9 @@ class AccuracyMetricsCard extends StatelessWidget {
                 ),
               ),
               if (!isLast)
-                const Divider(
+                Divider(
                   height: 1,
-                  color: AppColors.border,
+                  color: theme.dividerColor,
                   indent: 16,
                   endIndent: 16,
                 ),

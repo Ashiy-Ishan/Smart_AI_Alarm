@@ -23,15 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkAuthStatus() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    // Wait until UserProvider is initialized or max 3 seconds
     int attempts = 0;
-    while (!userProvider.isInitialized && attempts < 30) {
+    while (!userProvider.isInitialized && attempts < 10) {
       await Future.delayed(const Duration(milliseconds: 100));
       attempts++;
     }
-
-    // Give another 1s for splash to look nice
-    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
@@ -42,13 +38,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (userProvider.isInitialized && userProvider.isAuthenticated) {
+      return Scaffold(backgroundColor: theme.scaffoldBackgroundColor);
+    }
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(), // Prevent manual scroll on splash
+              physics: const NeverScrollableScrollPhysics(),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight,
@@ -58,13 +60,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Top Spacing
                       const SizedBox.shrink(),
-
-                      // Center Content Group
                       Column(
                         children: [
-                          // Dynamic Lottie size based on screen height
                           SizedBox(
                             height: constraints.maxHeight * 0.35,
                             child: Lottie.asset(
@@ -85,8 +83,6 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                         ],
                       ),
-
-                      // Bottom Actions Group
                       Column(
                         children: [
                           PrimaryButton(
@@ -96,16 +92,15 @@ class _SplashScreenState extends State<SplashScreen> {
                             },
                           ),
                           const SizedBox(height: 32),
-                          const Text(
+                          Text(
                             'SUSL POWERED',
                             style: TextStyle(
-                              color: AppColors.textSecondary,
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
                               fontSize: 12,
                               letterSpacing: 2.0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          // Added extra padding for different system nav bars
                           SizedBox(height: MediaQuery.of(context).padding.bottom > 0 ? 10 : 20),
                         ],
                       ),

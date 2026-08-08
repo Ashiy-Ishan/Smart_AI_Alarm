@@ -11,6 +11,7 @@ class WeeklyMotionReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     const List<WeeklyChartItem> weeklyData = [
       WeeklyChartItem(label: 'Sun', value: 0.4),
       WeeklyChartItem(label: 'Mon', value: 0.7),
@@ -22,22 +23,25 @@ class WeeklyMotionReportScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text('Weekly Motion Report', style: AppTextStyles.heading),
+          children: [
+            const Text('Weekly Motion Report', style: AppTextStyles.heading),
             Text(
               'Nov 5 - Nov 12',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                fontSize: 12
+              ),
             ),
           ],
         ),
@@ -48,7 +52,6 @@ class WeeklyMotionReportScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 16),
 
-          // Weekly Activity Overview Card
           ReportSectionCard(
             title: 'Weekly Activity Overview',
             child: Column(
@@ -70,7 +73,6 @@ class WeeklyMotionReportScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Weekly Sleep Summary Card
           ReportSectionCard(
             title: 'Weekly Sleep Summary',
             child: Column(
@@ -84,16 +86,19 @@ class WeeklyMotionReportScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
                           value: 0.72,
-                          backgroundColor: AppColors.border,
+                          backgroundColor: theme.dividerColor,
                           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
                           minHeight: 6,
                         ),
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Text(
+                    Text(
                       '7h 12m',
-                      style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                      style: TextStyle(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                        fontSize: 12
+                      ),
                     ),
                   ],
                 ),
@@ -109,7 +114,6 @@ class WeeklyMotionReportScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Weekly Insights Card
           ReportSectionCard(
             title: 'Weekly Insights',
             child: Column(

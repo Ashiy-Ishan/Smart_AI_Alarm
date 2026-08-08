@@ -12,8 +12,7 @@ import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
-  static final GlobalKey<MainScreenState> globalKey =
-      GlobalKey<MainScreenState>();
+  static final GlobalKey<MainScreenState> globalKey = GlobalKey<MainScreenState>();
 
   @override
   State<MainScreen> createState() => MainScreenState();
@@ -23,13 +22,12 @@ class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   late PageController _pageController;
 
-  /// One dedicated NavigatorKey per tab so each tab keeps its own back-stack.
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
-    GlobalKey<NavigatorState>(), // Home
-    GlobalKey<NavigatorState>(), // Schedule
-    GlobalKey<NavigatorState>(), // Hub
-    GlobalKey<NavigatorState>(), // Insight
-    GlobalKey<NavigatorState>(), // Profile
+    GlobalKey<NavigatorState>(), // home
+    GlobalKey<NavigatorState>(), // schedule
+    GlobalKey<NavigatorState>(), // hub
+    GlobalKey<NavigatorState>(), // insight
+    GlobalKey<NavigatorState>(), // profile
   ];
 
   @override
@@ -46,28 +44,19 @@ class MainScreenState extends State<MainScreen> {
 
   void changeTab(int index) {
     if (currentIndex == index) {
-      // Tapping the active tab pops back to its root screen
       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
     } else {
       setState(() => currentIndex = index);
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
-  /// Wraps each tab's root screen in its own Navigator.
   Widget _buildTabNavigator(int index, Widget rootScreen) {
     return Navigator(
       key: _navigatorKeys[index],
       onGenerateRoute: (settings) {
         if (settings.name == Navigator.defaultRouteName) {
-          return MaterialPageRoute(
-            settings: settings,
-            builder: (_) => rootScreen,
-          );
+          return MaterialPageRoute(settings: settings, builder: (_) => rootScreen);
         }
         return AppRouter.onGenerateRoute(settings);
       },
@@ -84,16 +73,12 @@ class MainScreenState extends State<MainScreen> {
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         final nav = _navigatorKeys[currentIndex].currentState;
-        if (nav != null && nav.canPop()) {
-          nav.pop();
-        }
+        if (nav != null && nav.canPop()) nav.pop();
       },
       child: Scaffold(
         body: PageView(
           controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => currentIndex = index);
-          },
+          onPageChanged: (index) => setState(() => currentIndex = index),
           children: [
             _buildTabNavigator(0, const HomeScreen()),
             _buildTabNavigator(1, const ScheduleScreen()),
@@ -102,10 +87,7 @@ class MainScreenState extends State<MainScreen> {
             _buildTabNavigator(4, ProfileScreen(user: user)),
           ],
         ),
-        bottomNavigationBar: BottomNavBar(
-          currentIndex: currentIndex,
-          onTap: changeTab,
-        ),
+        bottomNavigationBar: BottomNavBar(currentIndex: currentIndex, onTap: changeTab),
       ),
     );
   }

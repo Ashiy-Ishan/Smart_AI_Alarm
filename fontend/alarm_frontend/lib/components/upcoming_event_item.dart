@@ -15,6 +15,7 @@ class UpcomingEventItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: Row(
@@ -23,9 +24,9 @@ class UpcomingEventItem extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: theme.scaffoldBackgroundColor,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: theme.dividerColor),
             ),
             child: Icon(icon, color: AppColors.primary, size: 18),
           ),
@@ -34,7 +35,6 @@ class UpcomingEventItem extends StatelessWidget {
             child: Text(
               title,
               style: const TextStyle(
-                color: AppColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -43,8 +43,8 @@ class UpcomingEventItem extends StatelessWidget {
           if (time.isNotEmpty)
             Text(
               time,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                 fontSize: 13,
               ),
             ),

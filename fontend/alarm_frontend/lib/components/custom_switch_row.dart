@@ -17,19 +17,23 @@ class CustomSwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           Text(
             label,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            style: const TextStyle(fontSize: 14),
           ),
           if (badge != null) ...[
             const SizedBox(width: 8),
             Text(
               badge!,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                fontSize: 12
+              ),
             ),
           ],
           const Spacer(),
@@ -38,10 +42,8 @@ class CustomSwitchRow extends StatelessWidget {
             child: Switch(
               value: value,
               onChanged: onChanged,
-              activeThumbColor: Colors.black,
+              activeColor: Colors.black,
               activeTrackColor: AppColors.primary,
-              inactiveThumbColor: AppColors.textSecondary,
-              inactiveTrackColor: AppColors.border,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),

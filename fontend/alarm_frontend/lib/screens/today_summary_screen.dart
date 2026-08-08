@@ -23,16 +23,17 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: theme.textTheme.bodyLarge?.color),
         title: const Text(
           "Today’s Summary",
           style: TextStyle(
-            color: AppColors.textPrimary,
             fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
@@ -44,154 +45,148 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
           physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Divider(color: AppColors.border),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Divider(color: theme.dividerColor),
 
-                  const SizedBox(height: 40),
+                const SizedBox(height: 40),
 
-                  const Text(
-                    "Today’s Events",
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                const Text(
+                  "Today’s Events",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
 
-                  const SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: events.length,
-                    itemBuilder: (context, index) {
-                      return EventCard(event: events[index]);
-                    },
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    return EventCard(event: events[index]);
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                Divider(color: theme.dividerColor),
+
+                const SizedBox(height: 20),
+
+                const Text(
+                  "Activity Summary",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 15),
 
-                  const Divider(color: AppColors.border),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    "Activity Summary",
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.border),
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          const Icon(
+                            Icons.directions_walk,
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(height: 5),
+                          const Text(
+                            "4,867",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Steps",
+                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
+                          ),
+                        ],
+                      ),
 
-                  const SizedBox(height: 15),
-
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                      children: const [
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.directions_walk,
+                      Column(
+                        children: [
+                          const Text(
+                            "37 min",
+                            style: TextStyle(
                               color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              "4,867",
-                              style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "Steps",
-                              style: TextStyle(color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            "Movement",
+                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
+                          ),
+                        ],
+                      ),
 
-                        Column(
-                          children: [
-                            Text(
-                              "37 min",
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      Column(
+                        children: [
+                          const Text(
+                            "230",
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Text(
-                              "Movement",
-                              style: TextStyle(color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
-
-                        Column(
-                          children: [
-                            Text(
-                              "230",
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "Cal",
-                              style: TextStyle(color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          Text(
+                            "Cal",
+                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
+                ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  const Divider(color: AppColors.border),
+                Divider(color: theme.dividerColor),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  const Text(
-                    "Health Insights",
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                const Text(
+                  "Health Insights",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
 
-                  const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-                  Container(height: 4, width: 40, color: AppColors.primary),
+                Container(height: 4, width: 40, color: AppColors.primary),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Text(
-                      "Sleep quality improved today",
-                      style: TextStyle(color: AppColors.textPrimary),
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.border),
                   ),
+                  child: const Text(
+                    "Sleep quality improved today",
+                  ),
+                ),
 
-                  const SizedBox(height: 20),
-                ],
-              ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),

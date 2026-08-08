@@ -15,12 +15,13 @@ class KeyStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,17 +29,19 @@ class KeyStatusCard extends StatelessWidget {
           const Text(
             'Key Status',
             style: TextStyle(
-              color: AppColors.textPrimary,
               fontSize: 15,
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 6),
           Row(
-            children: const [
+            children: [
               Text('On-Device Keys: ',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
-              Text('System Managed',
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                    fontSize: 13
+                  )),
+              const Text('System Managed',
                   style: TextStyle(
                     color: AppColors.primary,
                     fontSize: 13,
@@ -47,33 +50,37 @@ class KeyStatusCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          const Text(
+          Text(
             'your keys for use on multiple devices.',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+              fontSize: 13
+            ),
           ),
           const SizedBox(height: 14),
-          // Passphrase input
           Container(
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: theme.scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: theme.dividerColor),
             ),
             child: TextField(
               controller: controller,
               obscureText: true,
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-              decoration: const InputDecoration(
+              style: const TextStyle(fontSize: 14),
+              decoration: InputDecoration(
                 hintText: 'Enter New Passphrase',
-                hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                hintStyle: TextStyle(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary, 
+                  fontSize: 13
+                ),
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               ),
             ),
           ),
           const SizedBox(height: 14),
-          // Update Passphrase button
           Align(
             alignment: Alignment.centerRight,
             child: SizedBox(
@@ -109,10 +116,10 @@ class KeyStatusCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
+          Text(
             'Important: Keep this safe.\nPassphrase cannot be recovered.',
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
               fontSize: 12,
               height: 1.5,
             ),

@@ -13,12 +13,10 @@ class BluetoothService {
   ble.BluetoothCharacteristic? writeCharacteristic;
   ble.BluetoothCharacteristic? readMacCharacteristic;
 
-  // these must match the esp32 code
   final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   final String MAC_READ_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a9";
 
-  // ask user for bluetooth and location
   Future<bool> requestPermissions() async {
     if (Platform.isAndroid) {
       Map<Permission, PermissionStatus> statuses = await [
@@ -58,7 +56,6 @@ class BluetoothService {
     }
   }
 
-  // get the real wifi mac from hardware
   Future<String?> getDeviceRealMac() async {
     if (readMacCharacteristic != null) {
       try {
@@ -71,7 +68,6 @@ class BluetoothService {
     return connectedDevice?.remoteId.toString();
   }
 
-  // send wifi details and user id to device
   Future<bool> sendProvisioningData(String ssid, String password, String uid) async {
     if (writeCharacteristic != null) {
       try {

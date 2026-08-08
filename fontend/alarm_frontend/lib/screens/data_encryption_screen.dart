@@ -15,14 +15,7 @@ class DataEncryptionScreen extends StatefulWidget {
 class _DataEncryptionScreenState extends State<DataEncryptionScreen> {
   final TextEditingController _passphraseController = TextEditingController();
   bool _isUpdating = false;
-
-  final List<String> _encryptedTypes = [
-    'Sleep Analytics',
-    'Motion Logs',
-    'Account & profile data',
-    'Device Environment data',
-  ];
-
+  final List<String> _encryptedTypes = ['Sleep Analytics', 'Motion Logs', 'Account & profile data', 'Device Environment data'];
   late final List<bool> _encryptedChecked;
 
   @override
@@ -45,15 +38,13 @@ class _DataEncryptionScreenState extends State<DataEncryptionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color), onPressed: () => Navigator.pop(context)),
         title: const Text('Data Encryption', style: AppTextStyles.heading),
         titleSpacing: 0,
       ),
@@ -61,54 +52,24 @@ class _DataEncryptionScreenState extends State<DataEncryptionScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
           const SizedBox(height: 16),
-
-          // Security Overview Card
-          const SecurityOverviewCard(
-            isEncryptionActive: true,
-          ),
-
+          const SecurityOverviewCard(isEncryptionActive: true),
           const SizedBox(height: 16),
-
-          // Encryption Data Types Card
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
-            ),
+            decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: theme.dividerColor)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Encryption Data types',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                const Text('Encryption Data types', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 12),
                 ...List.generate(_encryptedTypes.length, (i) {
-                  return CustomCheckboxTile(
-                    label: _encryptedTypes[i],
-                    isChecked: _encryptedChecked[i],
-                    onChanged: (val) => setState(() => _encryptedChecked[i] = val),
-                  );
+                  return CustomCheckboxTile(label: _encryptedTypes[i], isChecked: _encryptedChecked[i], onChanged: (val) => setState(() => _encryptedChecked[i] = val));
                 }),
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // Key Status Card
-          KeyStatusCard(
-            controller: _passphraseController,
-            isUpdating: _isUpdating,
-            onUpdatePassphrase: _onUpdatePassphrase,
-          ),
-
+          KeyStatusCard(controller: _passphraseController, isUpdating: _isUpdating, onUpdatePassphrase: _onUpdatePassphrase),
           const SizedBox(height: 24),
         ],
       ),

@@ -20,20 +20,24 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: TextField(
         controller: widget.controller,
         obscureText: _obscurePassword,
-        style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+        style: const TextStyle(fontSize: 14),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          hintStyle: TextStyle(
+            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary, 
+            fontSize: 13
+          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
           suffixIcon: IconButton(
@@ -41,7 +45,7 @@ class _PasswordFieldState extends State<PasswordField> {
               _obscurePassword
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
-              color: AppColors.textSecondary,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
               size: 20,
             ),
             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),

@@ -15,22 +15,21 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Title
           if (title != null && title!.isNotEmpty) ...[
             Text(
               title!,
               style: const TextStyle(
-                color: AppColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -38,14 +37,13 @@ class SectionCard extends StatelessWidget {
             const SizedBox(height: 10),
           ],
 
-          /// Children with dividers (PRO TIP)
           Column(
             children: List.generate(children.length, (index) {
               return Column(
                 children: [
                   children[index],
                   if (index != children.length - 1)
-                    const Divider(color: AppColors.border, height: 18),
+                    Divider(color: theme.dividerColor, height: 18),
                 ],
               );
             }),

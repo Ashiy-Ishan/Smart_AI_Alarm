@@ -15,7 +15,6 @@ class AlarmRingingScreen extends StatelessWidget {
   });
 
   void _stopAlarm() {
-    // stop the alarm in cloud - the background listener will automatically close this screen
     FirebaseDatabase.instance
         .ref()
         .child('Users')
@@ -40,7 +39,6 @@ class AlarmRingingScreen extends StatelessWidget {
     DateTime snoozeTime = now.add(const Duration(minutes: 5));
     String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
 
-    // update snooze in cloud - listener will handle closing the screen
     await ref.update({
       'SnoozeUntil': snoozeTimeStr,
       'AlarmStatus': 'SNOOZE'
@@ -49,10 +47,11 @@ class AlarmRingingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return PopScope(
-      canPop: false, // user cannot dismiss this screen with back button
+      canPop: false,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -61,7 +60,7 @@ class AlarmRingingScreen extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 AppColors.primary.withOpacity(0.2),
-                AppColors.background,
+                theme.scaffoldBackgroundColor,
               ],
             ),
           ),
@@ -81,8 +80,8 @@ class AlarmRingingScreen extends StatelessWidget {
               
               Text(
                 DateFormat("HH:mm").format(DateTime.now()),
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: theme.textTheme.bodyLarge?.color,
                   fontSize: 80,
                   fontWeight: FontWeight.w200,
                 ),
@@ -102,12 +101,14 @@ class AlarmRingingScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: _snoozeAlarm,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.card,
-                          foregroundColor: AppColors.textPrimary,
+                          backgroundColor: theme.cardColor,
+                          foregroundColor: theme.textTheme.bodyLarge?.color,
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
+                          elevation: 0,
+                          side: BorderSide(color: theme.dividerColor),
                         ),
                         child: const Text("SNOOZE", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       ),
@@ -123,6 +124,7 @@ class AlarmRingingScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
+                          elevation: 0,
                         ),
                         child: const Text("STOP", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       ),

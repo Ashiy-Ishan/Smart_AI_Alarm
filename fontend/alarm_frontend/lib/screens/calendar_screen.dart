@@ -27,7 +27,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _fetchEvents();
   }
 
-  // fetch real events from google
   Future<void> _fetchEvents() async {
     setState(() => _isLoading = true);
     final events = await _syncService.fetchUpcomingEvents();
@@ -41,26 +40,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text('Calendar', style: AppTextStyles.heading),
         titleSpacing: 0,
         actions: [
-          IconButton(
-            onPressed: _fetchEvents,
-            icon: const Icon(
-              Icons.refresh,
-              color: AppColors.primary,
-              size: 26,
-            ),
-          ),
+          IconButton(onPressed: _fetchEvents, icon: const Icon(Icons.refresh, color: AppColors.primary, size: 26)),
         ],
       ),
       body: RefreshIndicator(
@@ -70,64 +63,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 4),
-
-            // Today's month and year
-            Text(
-              DateFormat('MMMM yyyy').format(DateTime.now()),
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-
+            Text(DateFormat('MMMM yyyy').format(DateTime.now()), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             const SizedBox(height: 16),
-
-            // interactive calendar grid
             CalendarGrid(
               month: _currentMonth,
               selectedDay: _selectedDay,
               onDaySelected: (day) => setState(() => _selectedDay = day),
             ),
-
             const SizedBox(height: 20),
-
-            // dynamic events card
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border),
-              ),
+              decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: theme.dividerColor)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Upcoming Events',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  const Text('Upcoming Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 14),
                   if (_isLoading)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   else if (_events.isEmpty)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text("No upcoming events found.", style: TextStyle(color: AppColors.textSecondary)),
-                      ),
-                    )
+                    const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("No upcoming events found.", style: TextStyle(color: AppColors.textSecondary))))
                   else
                     ..._events.map((event) => _buildEventItem(event)),
                 ],
               ),
             ),
-
-            const SizedBox(height: 100), // Space for 3-button nav
+            const SizedBox(height: 100),
           ],
         ),
       ),
@@ -138,14 +99,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     String timeStr = "All Day";
     if (event.start?.dateTime != null) {
       timeStr = DateFormat('jm').format(event.start!.dateTime!.toLocal());
-    } else if (event.start?.date != null) {
-      timeStr = "All Day";
     }
-
-    return UpcomingEventItem(
-      icon: Icons.calendar_today,
-      title: event.summary ?? "No Title",
-      time: timeStr,
-    );
+    return UpcomingEventItem(icon: Icons.calendar_today, title: event.summary ?? "No Title", time: timeStr);
   }
 }

@@ -13,16 +13,14 @@ class GoogleSyncService {
 
   GoogleSyncService._internal();
 
-  // try to restore the session from phone storage
   Future<void> _ensureInitialized() async {
-    if (_isInitialized) return;
+    if (_isInitialized && _cachedAccount != null) return;
     try {
       await _googleSignIn.initialize();
-      // look for saved login on the phone
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
       _isInitialized = true;
     } catch (e) {
-      print('Google Restore Error: $e');
+      print('Google Init Error: $e');
     }
   }
 
@@ -32,27 +30,28 @@ class GoogleSyncService {
     "https://www.googleapis.com/auth/contacts.readonly",
   ];
 
-  // check if we have a saved account
   Future<bool> isLinked() async {
     await _ensureInitialized();
+    
     _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-    return _cachedAccount != null;
+    if (_cachedAccount == null) return false;
+
+    try {
+      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
+      return authz != null && authz.accessToken != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<GoogleSignInAccount?> linkAccount() async {
     try {
       await _ensureInitialized();
 
-      // try silent login first
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
-
-      // if not found, show account picker
-      if (_cachedAccount == null) {
-        _cachedAccount = await _googleSignIn.authenticate();
-      }
+      _cachedAccount ??= await _googleSignIn.authenticate();
 
       if (_cachedAccount != null) {
-        // ensure permissions are granted
         await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
       }
 
@@ -75,18 +74,14 @@ class GoogleSyncService {
   Future<http.Client?> _getAuthenticatedClient() async {
     try {
       await _ensureInitialized();
-
-      // always try to restore silently before failing
       _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
 
       if (_cachedAccount == null) return null;
 
-      // get access without popup
       var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
 
       if (authz == null || authz.accessToken == null) {
-        print("Silent auth failed. Account may be unlinked.");
-        return null;
+        authz = await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
       }
 
       final String? token = authz.accessToken;
@@ -116,7 +111,6 @@ class GoogleSyncService {
 
       return events.items ?? [];
     } catch (e) {
-      print('Calendar Error: $e');
       return [];
     }
   }
@@ -138,7 +132,6 @@ class GoogleSyncService {
       }
       return emails;
     } catch (e) {
-      print('Gmail Error: $e');
       return [];
     }
   }

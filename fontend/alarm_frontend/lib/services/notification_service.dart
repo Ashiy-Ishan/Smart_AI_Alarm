@@ -15,17 +15,13 @@ class NotificationService {
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
     'alarm_high_importance',
     'High Importance Alarm Notifications',
-    description: 'This channel is used for important alarm notifications.',
+    description: 'Channel for critical alarm alerts',
     importance: Importance.max,
     playSound: true,
   );
 
   Future<void> initialize() async {
-    await _fcm.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
     const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
@@ -80,16 +76,8 @@ class NotificationService {
 
   void _showLocalNotification(RemoteMessage message) async {
     final List<AndroidNotificationAction> androidActions = [
-      const AndroidNotificationAction(
-        'snooze_action',
-        'SNOOZE',
-        showsUserInterface: true,
-      ),
-      const AndroidNotificationAction(
-        'stop_action',
-        'STOP',
-        showsUserInterface: true,
-      ),
+      const AndroidNotificationAction('snooze_action', 'SNOOZE', showsUserInterface: true),
+      const AndroidNotificationAction('stop_action', 'STOP', showsUserInterface: true),
     ];
 
     final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
@@ -102,13 +90,11 @@ class NotificationService {
       actions: androidActions,
     );
 
-    NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
-
     await _localNotifications.show(
       id: message.hashCode,
       title: message.notification?.title ?? "Alarm Ringing!",
       body: message.notification?.body ?? "Check your smart alarm device.",
-      notificationDetails: platformDetails,
+      notificationDetails: NotificationDetails(android: androidDetails),
     );
   }
 }
