@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/gmail/v1.dart';
@@ -13,6 +14,7 @@ class GoogleSyncService {
 
   GoogleSyncService._internal();
 
+  // initialize and restore existing session
   Future<void> _ensureInitialized() async {
     if (_isInitialized && _cachedAccount != null) return;
     try {
@@ -30,13 +32,21 @@ class GoogleSyncService {
     "https://www.googleapis.com/auth/contacts.readonly",
   ];
 
+  // Robust check if user is linked to google data services
   Future<bool> isLinked() async {
-    await _ensureInitialized();
-    
-    _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-    if (_cachedAccount == null) return false;
-
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return false;
+
+      // if logged in with google, we prioritize that account
+      bool isGoogleAuth = user.providerData.any((p) => p.providerId == 'google.com');
+      
+      await _ensureInitialized();
+      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
+      
+      if (_cachedAccount == null) return false;
+
+      // verify that we have the required permissions
       var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
       return authz != null && authz.accessToken != null;
     } catch (e) {
@@ -44,14 +54,19 @@ class GoogleSyncService {
     }
   }
 
+  // start linking process
   Future<GoogleSignInAccount?> linkAccount() async {
     try {
       await _ensureInitialized();
 
+      // try silent restoration
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
+      
+      // show account picker only if totally necessary
       _cachedAccount ??= await _googleSignIn.authenticate();
 
       if (_cachedAccount != null) {
+        // request specific permissions
         await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
       }
 
@@ -62,6 +77,7 @@ class GoogleSyncService {
     }
   }
 
+  // disconnect from google services
   Future<void> unlinkAccount() async {
     try {
       await _googleSignIn.signOut();
@@ -71,6 +87,7 @@ class GoogleSyncService {
     }
   }
 
+  // get client for background sync
   Future<http.Client?> _getAuthenticatedClient() async {
     try {
       await _ensureInitialized();
@@ -78,10 +95,13 @@ class GoogleSyncService {
 
       if (_cachedAccount == null) return null;
 
+      // get access silently
       var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
 
+      // if expired, try to refresh silently or return null
       if (authz == null || authz.accessToken == null) {
-        authz = await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
+        // we avoid authenticate() here to prevent unexpected popups during sync
+        return null;
       }
 
       final String? token = authz.accessToken;
@@ -94,6 +114,7 @@ class GoogleSyncService {
     }
   }
 
+  // api calls
   Future<List<Event>> fetchUpcomingEvents() async {
     try {
       final client = await _getAuthenticatedClient();
