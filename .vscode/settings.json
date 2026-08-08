@@ -1,6 +1,11 @@
 {
   "python.defaultInterpreterPath": "${workspaceFolder}/backend/ai_alarm_sytem/venv/Scripts/python.exe",
+  "python.envFile": "${workspaceFolder}/backend/ai_alarm_sytem/.env",
   "python.analysis.extraPaths": [
+    "${workspaceFolder}/backend/ai_alarm_sytem",
+    "${workspaceFolder}/backend/ai_alarm_sytem/venv/Lib/site-packages"
+  ],
+  "python.autoComplete.extraPaths": [
     "${workspaceFolder}/backend/ai_alarm_sytem",
     "${workspaceFolder}/backend/ai_alarm_sytem/venv/Lib/site-packages"
   ]

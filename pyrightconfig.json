@@ -1,8 +1,15 @@
 {
   "venvPath": "backend/ai_alarm_sytem",
   "venv": "venv",
+  "executionEnvironments": [
+    {
+      "root": "backend/ai_alarm_sytem",
+      "extraPaths": [
+        "backend/ai_alarm_sytem/venv/Lib/site-packages"
+      ]
+    }
+  ],
   "extraPaths": [
-    "backend/ai_alarm_sytem",
     "backend/ai_alarm_sytem/venv/Lib/site-packages"
   ]
 }
