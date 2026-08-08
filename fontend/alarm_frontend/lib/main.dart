@@ -5,6 +5,8 @@ import 'package:alarm_frontend/routes/app_router.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/screens/alarm/alarm_ringing_screen.dart';
+import 'package:alarm_frontend/services/background_service.dart';
+import 'package:alarm_frontend/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,7 +16,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:alarm_frontend/services/notification_service.dart';
 
 // runs when a notification comes in while app is closed
 @pragma('vm:entry-point')
@@ -39,6 +40,9 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     
     await NotificationService().initialize();
+
+    // Start the always-running background service
+    await AppBackgroundService.initializeService();
   } catch (e) {
     debugPrint("App init failed: $e");
   }

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/services/weather_service.dart';
+import 'package:alarm_frontend/services/background_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.initState();
     _loadWeather();
     _setupDeviceListener();
+    
+    // Request permission to stay alive in background
+    AppBackgroundService.requestOptimizationPermission();
   }
 
   @override

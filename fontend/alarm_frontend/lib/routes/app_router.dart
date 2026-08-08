@@ -11,7 +11,6 @@ import 'package:alarm_frontend/screens/export_motion_data_screen.dart';
 import 'package:alarm_frontend/screens/feedback_screen.dart';
 import 'package:alarm_frontend/screens/gmail_screen.dart';
 import 'package:alarm_frontend/screens/main_screen.dart';
-import 'package:alarm_frontend/screens/message_screen.dart';
 import 'package:alarm_frontend/screens/motion_log_screen.dart';
 import 'package:alarm_frontend/screens/set_alarm_screen.dart';
 import 'package:alarm_frontend/screens/splash_screen.dart';
@@ -69,9 +68,6 @@ class AppRouter {
 
       case AppRoutes.gmail:
         return _slide(const GmailScreen());
-
-      case AppRoutes.message:
-        return _slide(const MessageScreen());
 
       case AppRoutes.dataEncryption:
         return _slide(const DataEncryptionScreen());

@@ -20,29 +20,59 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
   bool get wantKeepAlive => true;
 
   bool _isGoogleLinked = false;
-  bool _isLinkingGoogle = false;
+  bool _isLoadingStatus = true;
 
-  Future<void> _handleGoogleLink() async {
-    if (_isLinkingGoogle) return;
-    setState(() => _isLinkingGoogle = true);
-    try {
+  @override
+  void initState() {
+    super.initState();
+    _checkLinkStatus();
+  }
+
+  Future<void> _checkLinkStatus() async {
+    final linked = await GoogleSyncService().isLinked();
+    if (mounted) {
+      setState(() {
+        _isGoogleLinked = linked;
+        _isLoadingStatus = false;
+      });
+    }
+  }
+
+  void _handleToggleLink(bool value) async {
+    if (value) {
       final account = await GoogleSyncService().linkAccount();
-      if (!mounted) return;
-      setState(() => _isGoogleLinked = account != null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(account == null
-              ? 'Google account was not linked.'
-              : 'Google account linked successfully.'),
+      if (account != null && mounted) {
+        setState(() => _isGoogleLinked = true);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Google Account Linked Successfully!")),
+        );
+      }
+    } else {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.card,
+          title: const Text("Unlink Google?", style: TextStyle(color: AppColors.textPrimary)),
+          content: const Text("This will stop syncing your Gmail and Calendar data.", style: TextStyle(color: AppColors.textSecondary)),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancel")),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text("Unlink", style: TextStyle(color: Colors.redAccent)),
+            ),
+          ],
         ),
       );
-    } catch (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google linking failed: $error')),
-      );
-    } finally {
-      if (mounted) setState(() => _isLinkingGoogle = false);
+
+      if (confirm == true) {
+        await GoogleSyncService().unlinkAccount();
+        if (mounted) {
+          setState(() => _isGoogleLinked = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Google Account Unlinked.")),
+          );
+        }
+      }
     }
   }
 
@@ -101,19 +131,19 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                   children: [
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.account_circle, color: AppColors.primary),
-                      title: Text(
-                        _isGoogleLinked ? 'Google linked' : 'Link Google account',
-                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
-                      ),
-                      trailing: _isLinkingGoogle
-                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary))
-                          : const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textSecondary),
-                      onTap: _isLinkingGoogle ? null : _handleGoogleLink,
+                      leading: const Icon(Icons.link, color: AppColors.primary),
+                      title: const Text("Google Services", style: TextStyle(color: AppColors.textPrimary, fontSize: 15)),
+                      subtitle: Text(_isLoadingStatus ? "Checking status..." : (_isGoogleLinked ? "Active" : "Not Linked"), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      trailing: _isLoadingStatus 
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Switch(
+                            value: _isGoogleLinked,
+                            onChanged: _handleToggleLink,
+                            activeColor: AppColors.primary,
+                          ),
                     ),
-                    _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar),
-                    _tile(context, "Gmail", Icons.mail, AppRoutes.gmail),
-                    _tile(context, "Message", Icons.message, AppRoutes.message),
+                    _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar, _isGoogleLinked),
+                    _tile(context, "Gmail", Icons.mail, AppRoutes.gmail, _isGoogleLinked),
                   ],
                 ),
 
@@ -122,9 +152,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 SectionCard(
                   title: "Data Privacy",
                   children: [
-                    _tile(context, "Data Encryption", Icons.lock, AppRoutes.dataEncryption),
-                    _tile(context, "Clear History", Icons.history, AppRoutes.clearHistory),
-                    _tile(context, "Delete Account", Icons.delete, AppRoutes.deleteAccount),
+                    _tile(context, "Data Encryption", Icons.lock, AppRoutes.dataEncryption, true),
+                    _tile(context, "Clear History", Icons.history, AppRoutes.clearHistory, true),
+                    _tile(context, "Delete Account", Icons.delete, AppRoutes.deleteAccount, true),
                   ],
                 ),
 
@@ -132,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
 
                 SectionCard(
                   children: [
-                    _tile(context, "Feedback", Icons.warning_amber, AppRoutes.feedback),
+                    _tile(context, "Feedback", Icons.warning_amber, AppRoutes.feedback, true),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.logout, color: Colors.redAccent),
@@ -201,28 +231,29 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
       ),
     );
   }
-}
 
-Widget _tile(
-  BuildContext context,
-  String title,
-  IconData icon,
-  String? route,
-) {
-  return ListTile(
-    contentPadding: EdgeInsets.zero,
-    leading: Icon(icon, color: AppColors.primary),
-    title: Text(
-      title,
-      style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
-    ),
-    trailing: const Icon(
-      Icons.arrow_forward_ios,
-      size: 16,
-      color: AppColors.textSecondary,
-    ),
-    onTap: route == null
-        ? null
-        : () => Navigator.pushNamed(context, route),
-  );
+  Widget _tile(
+    BuildContext context,
+    String title,
+    IconData icon,
+    String? route,
+    bool isEnabled,
+  ) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(icon, color: isEnabled ? AppColors.primary : Colors.grey),
+      title: Text(
+        title,
+        style: TextStyle(color: isEnabled ? AppColors.textPrimary : Colors.grey, fontSize: 15),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        size: 16,
+        color: isEnabled ? AppColors.textSecondary : Colors.grey.withOpacity(0.5),
+      ),
+      onTap: (route == null || !isEnabled)
+          ? null
+          : () => Navigator.pushNamed(context, route),
+    );
+  }
 }

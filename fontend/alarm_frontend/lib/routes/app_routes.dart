@@ -19,7 +19,6 @@ class AppRoutes {
   // ── Profile tab sub-screens ────────────────────────────────────────────────
   static const String calendar       = '/calendar';
   static const String gmail          = '/gmail';
-  static const String message        = '/message';
   static const String dataEncryption = '/data-encryption';
   static const String clearHistory   = '/clear-history';
   static const String deleteAccount  = '/delete-account';

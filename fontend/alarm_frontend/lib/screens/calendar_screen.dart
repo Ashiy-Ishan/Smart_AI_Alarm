@@ -27,6 +27,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _fetchEvents();
   }
 
+  // fetch real events from google
   Future<void> _fetchEvents() async {
     setState(() => _isLoading = true);
     final events = await _syncService.fetchUpcomingEvents();
@@ -70,7 +71,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           children: [
             const SizedBox(height: 4),
 
-            // Month Label
+            // Today's month and year
             Text(
               DateFormat('MMMM yyyy').format(DateTime.now()),
               style: const TextStyle(
@@ -82,7 +83,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
             const SizedBox(height: 16),
 
-            // Calendar Card (Grid)
+            // interactive calendar grid
             CalendarGrid(
               month: _currentMonth,
               selectedDay: _selectedDay,
@@ -91,7 +92,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
             const SizedBox(height: 20),
 
-            // Upcoming Events Card
+            // dynamic events card
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -121,12 +122,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                     )
                   else
-                    ..._events.map((event) => _buildEventItem(event)).toList(),
+                    ..._events.map((event) => _buildEventItem(event)),
                 ],
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 100), // Space for 3-button nav
           ],
         ),
       ),
@@ -134,7 +135,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildEventItem(google_calendar.Event event) {
-    String timeStr = "";
+    String timeStr = "All Day";
     if (event.start?.dateTime != null) {
       timeStr = DateFormat('jm').format(event.start!.dateTime!.toLocal());
     } else if (event.start?.date != null) {
