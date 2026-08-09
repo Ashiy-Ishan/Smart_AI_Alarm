@@ -155,6 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
 
                 SectionCard(
                   children: [
+                    _tile(context, "Notification Control", Icons.notifications_active_outlined, AppRoutes.notificationControl, true),
                     _tile(context, "Terms & Conditions", Icons.description_outlined, AppRoutes.termsAndConditions, true),
                     _tile(context, "Feedback", Icons.warning_amber, AppRoutes.feedback, true),
                     ListTile(

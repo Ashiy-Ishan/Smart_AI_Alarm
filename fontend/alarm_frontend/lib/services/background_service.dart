@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:alarm_frontend/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:alarm_frontend/services/google_sync_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppBackgroundService {
   static Future<void> requestOptimizationPermission() async {
@@ -20,7 +22,7 @@ class AppBackgroundService {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'alarm_background_service',
       'Alarm Service',
-      description: 'Keeps the alarm system responsive in the background',
+      description: 'Keeps the alarm system and gmail scanner active',
       importance: Importance.low,
     );
 
@@ -36,8 +38,8 @@ class AppBackgroundService {
         autoStart: true,
         isForegroundMode: true,
         notificationChannelId: 'alarm_background_service',
-        initialNotificationTitle: 'Smart Alarm Running',
-        initialNotificationContent: 'Monitoring cloud triggers...',
+        initialNotificationTitle: 'Smart Alarm Scanner',
+        initialNotificationContent: 'Monitoring for important updates...',
         foregroundServiceNotificationId: 888,
       ),
       iosConfiguration: IosConfiguration(
@@ -73,7 +75,27 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  Timer.periodic(const Duration(seconds: 15), (timer) async {
+  // Background Loop
+  Timer.periodic(const Duration(minutes: 15), (timer) async {
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        final prefs = await SharedPreferences.getInstance();
+        final bool monitorMeetings = prefs.getBool('notif_meetings') ?? true;
+
+        if (monitorMeetings) {
+          try {
+            // Perform silent sync for professional gmails
+            await GoogleSyncService().fetchPriorityMeetingEmails();
+            service.invoke('update', {"status": "synced", "time": DateTime.now().toIso8601String()});
+          } catch (e) {
+            debugPrint("Background Gmail Scan Failed: $e");
+          }
+        }
+      }
+    }
+  });
+
+  Timer.periodic(const Duration(seconds: 30), (timer) async {
     service.invoke('update', {"status": "active"});
   });
 }

@@ -24,12 +24,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void initState() {
     super.initState();
+    _loadCachedData();
+  }
+
+  Future<void> _loadCachedData() async {
+    final cached = await _syncService.getCachedEvents();
+    if (cached.isNotEmpty && mounted) {
+      setState(() {
+        _events = cached;
+        _isLoading = false;
+      });
+    }
     _fetchEvents();
   }
 
   Future<void> _fetchEvents() async {
     if (!mounted) return;
-    setState(() => _isLoading = true);
+    if (_events.isEmpty) setState(() => _isLoading = true);
+    
     final events = await _syncService.fetchUpcomingEvents();
     if (mounted) {
       setState(() {
@@ -80,7 +92,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 children: [
                   const Text('Upcoming Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 14),
-                  if (_isLoading)
+                  if (_isLoading && _events.isEmpty)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   else if (_events.isEmpty)
                     const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("No upcoming events found.")))

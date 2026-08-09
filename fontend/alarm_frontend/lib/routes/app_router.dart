@@ -15,6 +15,7 @@ import 'package:alarm_frontend/screens/motion_log_screen.dart';
 import 'package:alarm_frontend/screens/set_alarm_screen.dart';
 import 'package:alarm_frontend/screens/splash_screen.dart';
 import 'package:alarm_frontend/screens/terms_conditions_screen.dart';
+import 'package:alarm_frontend/screens/notification_control_screen.dart';
 import 'package:alarm_frontend/screens/today_summary_screen.dart';
 import 'package:alarm_frontend/screens/verify_account_screen.dart';
 import 'package:alarm_frontend/screens/weekly_motion_report_screen.dart';
@@ -85,6 +86,9 @@ class AppRouter {
 
       case AppRoutes.termsAndConditions:
         return _slide(const TermsConditionsScreen());
+
+      case AppRoutes.notificationControl:
+        return _slide(const NotificationControlScreen());
 
       default:
         return _fade(const SplashScreen());
