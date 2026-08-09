@@ -4,10 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/services/weather_service.dart';
+import 'package:alarm_frontend/services/location_service.dart';
 import 'package:alarm_frontend/services/background_service.dart';
+import 'package:alarm_frontend/components/notification_history_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,12 +23,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
   final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
   final WeatherService _weatherService = WeatherService();
+  final LocationService _locationService = LocationService();
+  final TextEditingController _destinationController = TextEditingController();
 
   String temperature = "--°F";
   String weatherMain = "Loading...";
   String? _macAddress;
   String? _hiddenUid;
   StreamSubscription? _deviceSubscription;
+  bool _isGettingLocation = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -35,13 +41,52 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.initState();
     _loadWeather();
     _setupDeviceListener();
+    _loadSavedDestination();
     AppBackgroundService.requestOptimizationPermission();
   }
 
   @override
   void dispose() {
     _deviceSubscription?.cancel();
+    _destinationController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSavedDestination() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('destination_location') ?? "";
+    setState(() => _destinationController.text = saved);
+  }
+
+  Future<void> _saveDestination(String address, double lat, double lng) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('destination_location', address);
+    await prefs.setDouble('destination_lat', lat);
+    await prefs.setDouble('destination_lng', lng);
+    
+    setState(() => _destinationController.text = address);
+
+    if (_macAddress != null && _hiddenUid != null) {
+      await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).update({
+        'DestinationLocation': address,
+        'DestinationLat': lat,
+        'DestinationLng': lng,
+        'LocationUpdatedAt': DateTime.now().toUtc().toIso8601String(),
+      });
+    }
+  }
+
+  Future<void> _useCurrentLocation() async {
+    setState(() => _isGettingLocation = true);
+    final locInfo = await _locationService.getCurrentLocationInfo();
+    if (locInfo != null && mounted) {
+      await _saveDestination(
+        locInfo['address'],
+        locInfo['lat'],
+        locInfo['lng'],
+      );
+    }
+    if (mounted) setState(() => _isGettingLocation = false);
   }
 
   String _getHiddenUid(String email) {
@@ -134,6 +179,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                 const SizedBox(height: 20),
                 if (_macAddress != null) _buildLiveAlarmCard() else _buildStaticAlarmPlaceholder(),
                 const SizedBox(height: 20),
+                _buildDestinationCard(),
+                const SizedBox(height: 20),
                 _buildSummaryCard(),
                 const SizedBox(height: 20),
               ],
@@ -199,11 +246,88 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
           const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Alarm", style: TextStyle(fontSize: 20)),
-              Text("No Device Connected", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              const Text("Alarm", style: TextStyle(fontSize: 20)),
+              const Text("No Device Connected", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
             ],
           ),
           Switch(value: false, onChanged: null),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDestinationCard() {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Destination Location", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              if (_isGettingLocation)
+                const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary))
+              else
+                IconButton(
+                  onPressed: _useCurrentLocation,
+                  icon: const Icon(Icons.my_location, size: 18, color: AppColors.primary),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  tooltip: "Use Current Location",
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text("Used for AI commute time prediction", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+          const SizedBox(height: 12),
+          
+          GestureDetector(
+            onTap: () async {
+              final LocationSuggestion? result = await showSearch<LocationSuggestion?>(
+                context: context,
+                delegate: LocationSearchDelegate(_locationService),
+              );
+              if (result != null && mounted) {
+                _saveDestination(result.label, result.lat, result.lon);
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: theme.dividerColor),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_on_outlined, size: 20, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _destinationController.text.isEmpty 
+                        ? "Search for village, office or event..." 
+                        : _destinationController.text,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: _destinationController.text.isEmpty 
+                          ? theme.textTheme.bodyMedium?.color?.withOpacity(0.5) 
+                          : theme.textTheme.bodyLarge?.color,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -235,10 +359,13 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   }
 
   Widget _buildNotificationIcon() {
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
-      padding: const EdgeInsets.all(8),
-      child: const Icon(Icons.notifications_none, color: AppColors.primary, size: 30),
+    return GestureDetector(
+      onTap: () => NotificationHistoryModal.show(context),
+      child: Container(
+        decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.all(8),
+        child: const Icon(Icons.notifications_none, color: AppColors.primary, size: 30),
+      ),
     );
   }
 
@@ -281,21 +408,21 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Next Event", style: TextStyle(color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.bold)),
-          SizedBox(height: 10),
+          const Text("Next Event", style: TextStyle(color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
           Row(
             children: [
-              Icon(Icons.calendar_today, size: 22, color: AppColors.primary),
-              SizedBox(width: 8),
-              Text("9:30 AM", style: TextStyle(fontSize: 17)),
-              SizedBox(width: 10),
-              Text("•", style: TextStyle(color: AppColors.textSecondary, fontSize: 17)),
-              SizedBox(width: 10),
-              Text("Product Sync", style: TextStyle(fontSize: 17)),
+              const Icon(Icons.calendar_today, size: 22, color: AppColors.primary),
+              const SizedBox(width: 8),
+              const Text("9:30 AM", style: TextStyle(fontSize: 17)),
+              const SizedBox(width: 10),
+              const Text("•", style: TextStyle(color: AppColors.textSecondary, fontSize: 17)),
+              const SizedBox(width: 10),
+              const Text("Product Sync", style: TextStyle(fontSize: 17)),
             ],
           ),
-          SizedBox(height: 6),
-          Text("Tue, Nov 12 • 1hr 15m left", style: TextStyle(color: AppColors.primaryDark, fontSize: 15)),
+          const SizedBox(height: 6),
+          const Text("Tue, Nov 12 • 1hr 15m left", style: TextStyle(color: AppColors.primaryDark, fontSize: 15)),
         ],
       ),
     );
@@ -317,23 +444,133 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Today's Summary", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Icon(Icons.arrow_forward_ios, color: AppColors.textSecondary, size: 18),
+                const Text("Today's Summary", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                const Icon(Icons.arrow_forward_ios, color: AppColors.textSecondary, size: 18),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               children: [
-                Text("8h Sleep"),
-                SizedBox(width: 30),
-                Text("|", style: TextStyle(color: AppColors.textSecondary)),
-                SizedBox(width: 30),
-                Text("1 Active Event"),
+                const Text("8h Sleep"),
+                const SizedBox(width: 30),
+                const Text("|", style: TextStyle(color: AppColors.textSecondary)),
+                const SizedBox(width: 30),
+                const Text("1 Active Event"),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class LocationSearchDelegate extends SearchDelegate<LocationSuggestion?> {
+  final LocationService locationService;
+
+  LocationSearchDelegate(this.locationService);
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        elevation: 0,
+        iconTheme: IconThemeData(color: theme.textTheme.bodyLarge?.color),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+        border: InputBorder.none,
+      ),
+      textTheme: theme.textTheme.copyWith(
+        titleLarge: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 18),
+      ),
+    );
+  }
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      if (query.isNotEmpty)
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => query = "",
+        ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () => close(context, null),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) => const SizedBox.shrink();
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final theme = Theme.of(context);
+    if (query.length < 2) {
+      return Center(
+        child: Text(
+          "Start typing a village or city name",
+          style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+        ),
+      );
+    }
+
+    return FutureBuilder<List<LocationSuggestion>>(
+      future: locationService.getSuggestions(query),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              "Search error. Please check your connection.",
+              style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+            ),
+          );
+        }
+
+        final suggestions = snapshot.data ?? [];
+        if (suggestions.isEmpty) {
+          return Center(
+            child: Text(
+              "No locations found.",
+              style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+            ),
+          );
+        }
+
+        return ListView.separated(
+          itemCount: suggestions.length,
+          separatorBuilder: (context, index) => Divider(height: 1, color: theme.dividerColor),
+          itemBuilder: (context, index) {
+            final suggestion = suggestions[index];
+            return ListTile(
+              leading: const Icon(Icons.location_on_outlined, color: AppColors.primary),
+              title: Text(
+                suggestion.label.split(',').first,
+                style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                suggestion.label,
+                style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              onTap: () => close(context, suggestion),
+            );
+          },
+        );
+      },
     );
   }
 }

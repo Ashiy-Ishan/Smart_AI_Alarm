@@ -18,6 +18,7 @@ class AppRoutes {
   static const String deleteAccount  = '/delete-account';
   static const String feedback       = '/feedback';
   static const String termsAndConditions = '/terms-and-conditions';
+  static const String notificationControl = '/notification-control';
 
   static const String accuracyScore       = '/accuracy-score';
   static const String activityRecords     = '/activity-records';

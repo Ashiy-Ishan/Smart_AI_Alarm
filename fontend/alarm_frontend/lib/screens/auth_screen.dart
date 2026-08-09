@@ -207,7 +207,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 18),
           AuthTextField(
@@ -307,7 +307,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email Address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
           AuthTextField(
@@ -435,7 +435,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 28),
           PrimaryButton(
