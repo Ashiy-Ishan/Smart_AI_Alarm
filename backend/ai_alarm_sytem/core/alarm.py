@@ -11,15 +11,24 @@ from integrations.traffic import fetch_traffic
 from notifications.email import notify_buffer_change
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def _user_logs(user_id: str, limit: int = 50) -> list[dict]:
-    cursor = get_collections()[ALARM_LOGS].find(
-        {"user_id": user_id}, sort=[("created_at", -1)]
-    ).limit(limit)
-    docs = list(cursor)
-    for d in docs:
-        d["_id"] = str(d["_id"])
-    docs.reverse()
-    return docs
+    try:
+        cursor = get_collections()[ALARM_LOGS].find(
+            {"user_id": user_id}, sort=[("created_at", -1)]
+        ).limit(limit)
+        docs = list(cursor)
+        for d in docs:
+            d["_id"] = str(d["_id"])
+        docs.reverse()
+        return docs
+    except Exception as exc:
+        logger.warning("Database error fetching logs for user %s: %s", user_id, exc)
+        return []
 
 
 def create_alarm(
@@ -84,8 +93,12 @@ def create_alarm(
         "final_buffer_minutes": float(final_buffer),
         "calendar_context": calendar_ctx,
     }
-    result = get_collections()[ALARMS].insert_one(doc)
-    doc["_id"] = str(result.inserted_id)
+    try:
+        result = get_collections()[ALARMS].insert_one(doc)
+        doc["_id"] = str(result.inserted_id)
+    except Exception as exc:
+        logger.warning("Database error storing alarm for user %s: %s", user_id, exc)
+        doc["_id"] = "offline_alarm_id"
     return doc
 
 
@@ -119,5 +132,10 @@ def log_alarm_outcome(
         "buffer_minutes": float(buffer_minutes),
         "created_at": datetime.now(timezone.utc),
     }
-    result = get_collections()[ALARM_LOGS].insert_one(doc)
-    return str(result.inserted_id)
+    try:
+        result = get_collections()[ALARM_LOGS].insert_one(doc)
+        return str(result.inserted_id)
+    except Exception as exc:
+        logger.warning("Database error logging alarm outcome: %s", exc)
+        return "offline_log_id"
+

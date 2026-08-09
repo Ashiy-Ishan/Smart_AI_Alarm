@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     # Firebase Storage — auto-detected inside Cloud Functions
     # Set FIREBASE_STORAGE_BUCKET for local de
-    firebase_storage_bucket: str = Field(default="", alias="FIREBASE_STORAGE_BUCKET")
+    storage_bucket: str = Field(default="", alias="FIREBASE_STORAGE_BUCKET")
 
     # Shared HTTP timeout for all external APIs
     external_api_timeout_seconds: int = 5

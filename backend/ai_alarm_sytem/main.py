@@ -12,12 +12,13 @@ from config.settings import get_settings
 # Firebase initialization
 _settings = get_settings()
 _firebase_opts: dict = {}
-if _settings.firebase_storage_bucket:
-    _firebase_opts["storageBucket"] = _settings.firebase_storage_bucket
-firebase_admin.initialize_app(options=_firebase_opts or None)
+if _settings.storage_bucket:
+    _firebase_opts["storageBucket"] = _settings.storage_bucket
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(options=_firebase_opts or None)
 
-from db.collections import ensure_indexes
-ensure_indexes()
+#from db.collections import ensure_indexes
+#ensure_indexes()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -168,9 +169,14 @@ def calendar_status(user_id: str):
 def calendar_events(user_id: str):
     from integrations.calendar import get_upcoming_events
 
-    hours_ahead = min(max(int(flask.request.args.get("hours_ahead", 24)), 1), 168)
-    events = get_upcoming_events(user_id, hours_ahead=hours_ahead)
-    return _jsonify({"count": len(events), "events": events})
+    try:
+        hours_ahead = min(max(int(flask.request.args.get("hours_ahead", 24)), 1), 168)
+        events = get_upcoming_events(user_id, hours_ahead=hours_ahead)
+        return _jsonify({"count": len(events), "events": events})
+    except Exception as exc:
+        logger.error("Error fetching calendar events for user %s: %s", user_id, exc)
+        return _jsonify({"count": 0, "events": []})
+
 
 
 @_app.delete("/calendar/access/<user_id>")

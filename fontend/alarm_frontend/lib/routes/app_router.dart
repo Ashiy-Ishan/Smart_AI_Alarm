@@ -44,7 +44,10 @@ class AppRouter {
         return _slide(const TodaySummaryScreen());
 
       case AppRoutes.setAlarm:
-        return _slide(const StopAlarmScreen());
+        final alarmId = settings.arguments is String
+            ? settings.arguments! as String
+            : 'manual-alarm';
+        return _slide(StopAlarmScreen(alarmId: alarmId));
 
       case AppRoutes.calendar:
         return _slide(const CalendarScreen());
