@@ -6,14 +6,15 @@ class SleepAnalyticsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     const List<double> sleepValues = [6.0, 10.0, 5.0, 8.0, 9.0, 9.5, 10.5];
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,7 +25,6 @@ class SleepAnalyticsCard extends StatelessWidget {
               Text(
                 'Sleep Analytics',
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -44,7 +44,11 @@ class SleepAnalyticsCard extends StatelessWidget {
             height: 160,
             width: double.infinity,
             child: CustomPaint(
-              painter: _SleepChartPainter(sleepValues),
+              painter: _SleepChartPainter(
+                sleepValues, 
+                theme.dividerColor, 
+                theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textSecondary
+              ),
             ),
           ),
         ],
@@ -55,8 +59,10 @@ class SleepAnalyticsCard extends StatelessWidget {
 
 class _SleepChartPainter extends CustomPainter {
   final List<double> values;
+  final Color borderColor;
+  final Color textColor;
 
-  _SleepChartPainter(this.values);
+  _SleepChartPainter(this.values, this.borderColor, this.textColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -68,22 +74,19 @@ class _SleepChartPainter extends CustomPainter {
     final double widthInterval = (xMax - xMin) / 6;
 
     final paintAxes = Paint()
-      ..color = AppColors.border
+      ..color = borderColor
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
     final paintTicks = Paint()
-      ..color = AppColors.border
+      ..color = borderColor
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
-    // Draw Y axis line
     canvas.drawLine(Offset(xMin, yMin - 8), Offset(xMin, yMax), paintAxes);
 
-    // Draw X axis line
     canvas.drawLine(Offset(xMin, yMax), Offset(xMax + 8, yMax), paintAxes);
 
-    // Draw Y Ticks and Labels
     final textPainter = TextPainter(
       textDirection: TextDirection.ltr,
     );
@@ -95,8 +98,8 @@ class _SleepChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '$val',
-        style: const TextStyle(
-          color: AppColors.textSecondary,
+        style: TextStyle(
+          color: textColor,
           fontSize: 9,
         ),
       );
@@ -104,11 +107,10 @@ class _SleepChartPainter extends CustomPainter {
       textPainter.paint(canvas, Offset(xMin - 16, y - 5));
     }
 
-    // Draw "h" at the top of Y axis
-    textPainter.text = const TextSpan(
+    textPainter.text = TextSpan(
       text: 'h',
       style: TextStyle(
-        color: AppColors.textSecondary,
+        color: textColor,
         fontSize: 10,
         fontWeight: FontWeight.bold,
       ),
@@ -116,15 +118,14 @@ class _SleepChartPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(canvas, Offset(xMin - 12, yMin - 16));
 
-    // Draw X Ticks and Labels (Days 13 to 19)
     for (int i = 0; i < 7; i++) {
       final double x = xMin + i * widthInterval;
       canvas.drawLine(Offset(x, yMax), Offset(x, yMax + 4), paintTicks);
 
       textPainter.text = TextSpan(
         text: '${13 + i}',
-        style: const TextStyle(
-          color: AppColors.textSecondary,
+        style: TextStyle(
+          color: textColor,
           fontSize: 10,
         ),
       );
@@ -132,7 +133,6 @@ class _SleepChartPainter extends CustomPainter {
       textPainter.paint(canvas, Offset(x - 6, yMax + 8));
     }
 
-    // Generate spline curve points
     final List<Offset> points = [];
     for (int i = 0; i < values.length; i++) {
       final double x = xMin + i * widthInterval;
@@ -140,7 +140,6 @@ class _SleepChartPainter extends CustomPainter {
       points.add(Offset(x, y));
     }
 
-    // Draw Cubic Spline Path
     final Path path = Path();
     path.moveTo(points[0].dx, points[0].dy);
     for (int i = 0; i < points.length - 1; i++) {
@@ -150,7 +149,6 @@ class _SleepChartPainter extends CustomPainter {
       path.cubicTo(controlX, p1.dy, controlX, p2.dy, p2.dx, p2.dy);
     }
 
-    // Draw area gradient fill
     final Path fillPath = Path.from(path);
     fillPath.lineTo(points.last.dx, yMax);
     fillPath.lineTo(points.first.dx, yMax);
@@ -161,15 +159,14 @@ class _SleepChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          AppColors.primary.withValues(alpha: 0.35),
-          AppColors.primary.withValues(alpha: 0.0),
+          AppColors.primary.withOpacity(0.35),
+          AppColors.primary.withOpacity(0.0),
         ],
       ).createShader(Rect.fromLTRB(xMin, yMin, xMax, yMax))
       ..style = PaintingStyle.fill;
 
     canvas.drawPath(fillPath, fillPaint);
 
-    // Draw curve stroke line
     final strokePaint = Paint()
       ..color = AppColors.primary
       ..style = PaintingStyle.stroke

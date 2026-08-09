@@ -15,15 +15,16 @@ class PillToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           height: 40,
           decoration: BoxDecoration(
-            color: isActive ? AppColors.card : Colors.transparent,
+            color: isActive ? theme.cardColor : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: theme.dividerColor),
           ),
           alignment: Alignment.center,
           child: Text(
@@ -31,7 +32,9 @@ class PillToggleButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: isActive ? Colors.white : AppColors.textSecondary,
+              color: isActive 
+                ? theme.textTheme.bodyLarge?.color 
+                : theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
             ),
           ),
         ),

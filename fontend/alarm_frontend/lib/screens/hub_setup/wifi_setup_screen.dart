@@ -75,6 +75,7 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
           children: [
             const Text('Connect to Hub', style: TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 40),
+            
             const Text("Wi-Fi Name", style: TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600)),
             TextField(
               controller: _ssidController,
@@ -89,7 +90,9 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
                 ),
               ),
             ),
+            
             const SizedBox(height: 32),
+            
             const Text("Password", style: TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600)),
             TextField(
               controller: _passwordController,
@@ -101,7 +104,9 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.border)),
               ),
             ),
+            
             const Spacer(),
+            
             PrimaryButton(
               text: 'Send to Device',
               isLoading: _isLoading,
@@ -139,16 +144,17 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
       final rtdb = FirebaseDatabase.instance.ref();
       await rtdb.child('Users').child(hiddenUid).child('Devices').child(macAddress).set({
         "AlarmTime": "07:00",
-        "AlarmEnabled": true, // New: master switch for alarm
+        "AlarmEnabled": true,
         "Humidity": 0.0,
         "LightStatus": "INIT",
         "MotionDetected": 0,
-        "RelayEnabled": true, // New: enables hardware relay
+        "RelayEnabled": true,
         "RelayStatus": "OFF",
         "Temperature": 0.0,
         "UserStatus": "idle",
         "SoundLevel": 5,
-        "SelectedTone": 0
+        "SelectedTone": 0,
+        "FactoryReset": false
       });
 
       if (mounted) {

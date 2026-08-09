@@ -16,17 +16,9 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   int _selectedDay = DateTime.now().day;
-
-  final DateTime _currentMonth = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-  );
-
-  List<Map<String, dynamic>> _events = [];
-
+  final DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
+  List<google_calendar.Event> _events = [];
   bool _isLoading = true;
-
-  String? _errorMessage;
 
   @override
   void initState() {
@@ -35,42 +27,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> _fetchEvents() async {
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) {
-        throw Exception('User is not logged in');
-      }
-
-      final response = await ApiService.get(
-        '/calendar/events/${user.uid}?hours_ahead=168',
-      );
-
-      final List<dynamic> eventData = response['events'] ?? [];
-
-      if (!mounted) return;
-
+    setState(() => _isLoading = true);
+    final events = await _syncService.fetchUpcomingEvents();
+    if (mounted) {
       setState(() {
-        _events = eventData
-            .map((event) => Map<String, dynamic>.from(event))
-            .toList();
-
-        _isLoading = false;
-      });
-    } catch (e) {
-      debugPrint('Calendar backend error: $e');
-
-      if (!mounted) return;
-
-      setState(() {
-        _errorMessage = 'Unable to load calendar events.';
+        _events = events;
         _isLoading = false;
       });
     }
@@ -78,24 +39,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text('Calendar', style: AppTextStyles.heading),
         titleSpacing: 0,
         actions: [
-          IconButton(
-            onPressed: _fetchEvents,
-            icon: const Icon(Icons.refresh, color: AppColors.primary, size: 26),
-          ),
+          IconButton(onPressed: _fetchEvents, icon: const Icon(Icons.refresh, color: AppColors.primary, size: 26)),
         ],
       ),
       body: RefreshIndicator(
@@ -105,18 +62,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 4),
-
-            Text(
-              DateFormat('MMMM yyyy').format(DateTime.now()),
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-
+            Text(DateFormat('MMMM yyyy').format(DateTime.now()), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             const SizedBox(height: 16),
-
             CalendarGrid(
               month: _currentMonth,
               selectedDay: _selectedDay,
@@ -126,109 +73,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 });
               },
             ),
-
             const SizedBox(height: 20),
-
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border),
-              ),
+              decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: theme.dividerColor)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Upcoming Events',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
+                  const Text('Upcoming Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 14),
 
                   if (_isLoading)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    )
-                  else if (_errorMessage != null)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Text(
-                          _errorMessage!,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    )
+                    const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   else if (_events.isEmpty)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text(
-                          'No upcoming events found.',
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                      ),
-                    )
+                    const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("No upcoming events found.", style: TextStyle(color: AppColors.textSecondary))))
                   else
-                    ..._events.map(_buildEventItem),
+                    ..._events.map((event) => _buildEventItem(event)),
                 ],
               ),
             ),
-
-            const SizedBox(height: 24),
+            const SizedBox(height: 100),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildEventItem(Map<String, dynamic> event) {
-    String timeText = 'All Day';
-
-    final dynamic start = event['start'];
-
-    if (start != null) {
-      try {
-        DateTime? dateTime;
-
-        if (start is String) {
-          dateTime = DateTime.tryParse(start);
-        } else if (start is Map) {
-          final dynamic dateTimeValue = start['dateTime'];
-
-          final dynamic dateValue = start['date'];
-
-          if (dateTimeValue != null) {
-            dateTime = DateTime.tryParse(dateTimeValue.toString());
-          } else if (dateValue != null) {
-            timeText = 'All Day';
-          }
-        }
-
-        if (dateTime != null) {
-          timeText = DateFormat('jm').format(dateTime.toLocal());
-        }
-      } catch (e) {
-        debugPrint('Calendar event parsing error: $e');
-      }
+  Widget _buildEventItem(google_calendar.Event event) {
+    String timeStr = "All Day";
+    if (event.start?.dateTime != null) {
+      timeStr = DateFormat('jm').format(event.start!.dateTime!.toLocal());
     }
-
-    return UpcomingEventItem(
-      icon: Icons.calendar_today,
-      title: event['summary']?.toString() ?? 'No Title',
-      time: timeText,
-    );
+    return UpcomingEventItem(icon: Icons.calendar_today, title: event.summary ?? "No Title", time: timeStr);
   }
 }

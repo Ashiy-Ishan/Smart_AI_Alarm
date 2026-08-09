@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' as ble;
 import 'package:alarm_frontend/utils/app_colors.dart';
@@ -15,42 +14,28 @@ class BluetoothScanScreen extends StatefulWidget {
 class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
   final custom.BluetoothService _bleService = custom.BluetoothService();
   bool _isScanning = false;
-  StreamSubscription<bool>? _scanningSubscription;
 
   @override
   void initState() {
     super.initState();
-    _scanningSubscription = ble.FlutterBluePlus.isScanning.listen((scanning) {
-      if (mounted) setState(() => _isScanning = scanning);
-    });
-    unawaited(_startScan());
+    _startScan();
   }
 
-  @override
-  void dispose() {
-    _scanningSubscription?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _startScan() async {
-    final hasPermission = await _bleService.requestPermissions();
-    if (!mounted) return;
+  void _startScan() async {
+    bool hasPermission = await _bleService.requestPermissions();
     if (hasPermission) {
       setState(() => _isScanning = true);
-      try {
-        await ble.FlutterBluePlus.stopScan();
-        await ble.FlutterBluePlus.startScan(
-          timeout: const Duration(seconds: 15),
-          androidUsesFineLocation: true,
-        );
-      } catch (error) {
-        if (mounted) {
-          setState(() => _isScanning = false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Bluetooth scan failed: $error')),
-          );
-        }
-      }
+      
+      await ble.FlutterBluePlus.stopScan();
+      
+      await ble.FlutterBluePlus.startScan(
+        timeout: const Duration(seconds: 15),
+        androidUsesFineLocation: true,
+      );
+
+      ble.FlutterBluePlus.isScanning.listen((scanning) {
+        if (mounted) setState(() => _isScanning = scanning);
+      });
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -78,8 +63,7 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
               stream: ble.FlutterBluePlus.scanResults,
               initialData: const [],
               builder: (c, snapshot) {
-                // Filter for "Alarm" devices
-                final alarmDevices = (snapshot.data ?? const <ble.ScanResult>[])
+                final alarmDevices = snapshot.data!
                     .where((r) {
                       final name = r.device.platformName.toLowerCase();
                       final localName = r.advertisementData.advName.toLowerCase();
@@ -93,7 +77,6 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
                       padding: const EdgeInsets.all(32.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: const [
                           Icon(Icons.search_off, size: 64, color: AppColors.textSecondary),
                           SizedBox(height: 16),
@@ -151,11 +134,14 @@ class _BluetoothScanScreenState extends State<BluetoothScanScreen> {
                               onTap: () async {
                                 bool connected = await _bleService.connectToDevice(r.device);
                                 if (connected && mounted) {
-                                  Navigator.of(this.context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => WifiSetupScreen(device: r.device),
-                                    ),
-                                  );
+                                  if (context.mounted) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => WifiSetupScreen(device: r.device),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                             ),

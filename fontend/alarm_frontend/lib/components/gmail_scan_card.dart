@@ -14,6 +14,7 @@ class GmailScanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (_) => const EmailScreen()),
@@ -21,9 +22,9 @@ class GmailScanCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.dividerColor),
         ),
         child: Row(
           children: [
@@ -33,6 +34,7 @@ class GmailScanCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.grey.shade300),
               ),
               child: const Center(
                 child: Text(
@@ -53,7 +55,6 @@ class GmailScanCard extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
@@ -61,14 +62,17 @@ class GmailScanCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    style: TextStyle(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                      fontSize: 12
+                    ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppColors.textSecondary,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
               size: 18,
             ),
           ],

@@ -18,50 +18,47 @@ class _InsightScreenState extends State<InsightScreen> with AutomaticKeepAliveCl
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          children: const [
-            SizedBox(height: 16),
+          children: [
+            const SizedBox(height: 16),
 
-            // Header Section
-            Text(
+            const Text(
               'Insights',
               style: TextStyle(
-                color: Colors.white,
                 fontSize: 34,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.2,
               ),
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Text(
               'Last 7 days',
               style: TextStyle(
-                color: AppColors.textSecondary,
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-            // Sleep Analytics Card
-            SleepAnalyticsCard(),
+            const SleepAnalyticsCard(),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            // Habit Learning Card
-            HabitLearningCard(),
+            const HabitLearningCard(),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            // Accuracy Score Card
-            AccuracyScoreCard(),
+            const AccuracyScoreCard(),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),

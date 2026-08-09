@@ -3,7 +3,7 @@ import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/components/primary_button.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,18 +20,15 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkAuthStatus();
   }
 
+  // fast redirect if already logged in
   void _checkAuthStatus() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    // Wait until UserProvider is initialized or max 3 seconds
     int attempts = 0;
-    while (!userProvider.isInitialized && attempts < 30) {
+    while (!userProvider.isInitialized && attempts < 10) {
       await Future.delayed(const Duration(milliseconds: 100));
       attempts++;
     }
-
-    // Give another 1s for splash to look nice
-    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
@@ -42,37 +39,42 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    // black screen during sub-second redirect
+    if (userProvider.isInitialized && userProvider.isAuthenticated) {
+      return Scaffold(backgroundColor: theme.scaffoldBackgroundColor);
+    }
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(), // Prevent manual scroll on splash
+              physics: const NeverScrollableScrollPhysics(),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Top Spacing
                       const SizedBox.shrink(),
-
-                      // Center Content Group
+                      
+                      // App Logo (SVG)
                       Column(
                         children: [
-                          // Dynamic Lottie size based on screen height
-                          SizedBox(
-                            height: constraints.maxHeight * 0.35,
-                            child: Lottie.asset(
-                              'assets/lotties/alarm.json',
+                          Container(
+                            height: constraints.maxHeight * 0.25,
+                            padding: const EdgeInsets.all(16),
+                            child: SvgPicture.asset(
+                              'assets/icon/icon.svg',
                               fit: BoxFit.contain,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
                           const Text(
                             'Smarter Wake-Ups,\nBetter Days.',
                             textAlign: TextAlign.center,
@@ -86,26 +88,22 @@ class _SplashScreenState extends State<SplashScreen> {
                         ],
                       ),
 
-                      // Bottom Actions Group
                       Column(
                         children: [
                           PrimaryButton(
                             text: 'Get Started',
-                            onPressed: () {
-                              Navigator.pushNamed(context, AppRoutes.auth);
-                            },
+                            onPressed: () => Navigator.pushNamed(context, AppRoutes.auth),
                           ),
                           const SizedBox(height: 32),
-                          const Text(
+                          Text(
                             'SUSL POWERED',
                             style: TextStyle(
-                              color: AppColors.textSecondary,
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
                               fontSize: 12,
                               letterSpacing: 2.0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          // Added extra padding for different system nav bars
                           SizedBox(height: MediaQuery.of(context).padding.bottom > 0 ? 10 : 20),
                         ],
                       ),

@@ -13,12 +13,13 @@ class HubMotionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Text(
           time,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
             fontSize: 13,
           ),
         ),
@@ -35,7 +36,6 @@ class HubMotionRow extends StatelessWidget {
         Text(
           event,
           style: const TextStyle(
-            color: AppColors.textPrimary,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 
 class ActivitySectionCard extends StatelessWidget {
   final String title;
@@ -13,12 +12,13 @@ class ActivitySectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +26,6 @@ class ActivitySectionCard extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: AppColors.textPrimary,
               fontWeight: FontWeight.w700,
               fontSize: 15,
             ),

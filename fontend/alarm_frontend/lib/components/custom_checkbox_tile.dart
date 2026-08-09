@@ -23,6 +23,7 @@ class CustomCheckboxTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => onChanged(!isChecked),
       child: Padding(
@@ -35,11 +36,11 @@ class CustomCheckboxTile extends StatelessWidget {
               height: size,
               decoration: BoxDecoration(
                 color: isChecked
-                    ? AppColors.primary.withValues(alpha: 0.2)
+                    ? AppColors.primary.withOpacity(0.2)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(
-                  color: isChecked ? AppColors.primary : AppColors.border,
+                  color: isChecked ? AppColors.primary : theme.dividerColor,
                   width: 1.5,
                 ),
               ),
@@ -51,7 +52,9 @@ class CustomCheckboxTile extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: isChecked ? AppColors.textPrimary : AppColors.textSecondary,
+                color: isChecked 
+                  ? theme.textTheme.bodyLarge?.color 
+                  : theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                 fontSize: fontSize,
               ),
             ),

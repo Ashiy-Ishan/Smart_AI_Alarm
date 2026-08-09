@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:alarm_frontend/firebase_options.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
+import 'package:alarm_frontend/providers/theme_provider.dart'; // added theme provider
 import 'package:alarm_frontend/routes/app_router.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
@@ -13,12 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter/services.dart'; // Added for SystemChrome
-
+import 'package:flutter/services.dart';
 import 'package:alarm_frontend/services/notification_service.dart';
+import 'package:alarm_frontend/services/background_service.dart';
 
-// Background message handler
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -27,7 +26,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Set System UI Overlay for Edge-to-Edge look
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,
     statusBarColor: Colors.transparent,
@@ -38,17 +36,20 @@ void main() async {
     await dotenv.load(fileName: ".env");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     
-    // Set up background messaging handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     
-    // Initialize notifications
     await NotificationService().initialize();
+
+    await AppBackgroundService.initializeService();
   } catch (e) {
-    debugPrint("Initialization failed: $e");
+    debugPrint("App init failed: $e");
   }
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()), // added
+      ],
       child: const MyApp(),
     ),
   );
@@ -64,7 +65,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   StreamSubscription? _alarmSubscription;
-  StreamSubscription<User?>? _authSubscription;
   String? _currentMac;
   bool _isAlarmShowing = false;
 
@@ -82,20 +82,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _setupAlarmListener() {
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) async {
+    FirebaseAuth.instance.authStateChanges().listen((user) async {
       _alarmSubscription?.cancel();
-      _alarmSubscription = null;
       if (user != null && user.email != null) {
         final hiddenUid = _getHiddenUid(user.email!);
         
-        // 1. Find the user's device MAC
         final devicesSnapshot = await FirebaseDatabase.instance.ref().child('Users').child(hiddenUid).child('Devices').get();
         if (devicesSnapshot.exists) {
           final devices = devicesSnapshot.value as Map<dynamic, dynamic>;
           if (devices.isNotEmpty) {
             _currentMac = devices.keys.first.toString();
             
-            // 2. Listen to AlarmStatus for this MAC
             _alarmSubscription = FirebaseDatabase.instance
                 .ref()
                 .child('Users')
@@ -114,14 +111,11 @@ class _MyAppState extends State<MyApp> {
             });
           }
         }
-      } else if (_isAlarmShowing) {
-        _hideAlarmOverlay();
       }
     });
   }
 
   void _showAlarmOverlay(String uid, String mac) {
-    if (_navigatorKey.currentState == null) return;
     _isAlarmShowing = true;
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
@@ -132,28 +126,26 @@ class _MyAppState extends State<MyApp> {
 
   void _hideAlarmOverlay() {
     _isAlarmShowing = false;
-    final navigator = _navigatorKey.currentState;
-    if (navigator?.canPop() ?? false) navigator!.pop();
+    if (_navigatorKey.currentState?.canPop() ?? false) {
+      _navigatorKey.currentState?.pop();
+    }
   }
 
   @override
   void dispose() {
     _alarmSubscription?.cancel();
-    _authSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       navigatorKey: _navigatorKey,
       title: 'AI Alarm App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: AppColors.background,
-        useMaterial3: true,
-        textTheme: GoogleFonts.lexendDecaTextTheme(),
-      ),
+      theme: themeProvider.currentTheme, // using dynamic theme
       initialRoute: AppRoutes.splash,
       onGenerateRoute: AppRouter.onGenerateRoute,
     );

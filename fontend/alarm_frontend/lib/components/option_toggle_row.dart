@@ -15,12 +15,13 @@ class OptionToggleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+            style: const TextStyle(fontSize: 14),
           ),
         ),
         Transform.scale(
@@ -28,10 +29,9 @@ class OptionToggleRow extends StatelessWidget {
           child: Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.black,
+            activeColor: Colors.black,
             activeTrackColor: AppColors.primary,
-            inactiveThumbColor: AppColors.textSecondary,
-            inactiveTrackColor: AppColors.border,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ),
       ],

@@ -20,6 +20,7 @@ class WeeklyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Row(
@@ -36,7 +37,7 @@ class WeeklyBarChart extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isHighlighted
                         ? AppColors.primary
-                        : AppColors.primary.withValues(alpha: 0.45),
+                        : AppColors.primary.withOpacity(0.45),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -50,8 +51,8 @@ class WeeklyBarChart extends StatelessWidget {
           children: items
               .map((d) => Text(
             d.label,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
               fontSize: 11,
             ),
           ))

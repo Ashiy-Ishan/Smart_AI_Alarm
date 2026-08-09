@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 
 class AiInsightCard extends StatelessWidget {
   final String title;
@@ -13,13 +12,14 @@ class AiInsightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +27,6 @@ class AiInsightCard extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -35,8 +34,8 @@ class AiInsightCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             content,
-            style: const TextStyle(
-              color: Color(0xFFC5C6CA),
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
               fontSize: 14,
               height: 1.45,
               fontWeight: FontWeight.w500,

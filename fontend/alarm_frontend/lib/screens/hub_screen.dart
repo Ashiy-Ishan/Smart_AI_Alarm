@@ -72,13 +72,13 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     if (!_isInitialized) {
-      return const Scaffold(
-        backgroundColor: AppColors.background,
-        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: const Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -87,8 +87,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: 16, 
-                  right: 16, 
+                  left: 16, right: 16, 
                   top: MediaQuery.of(context).padding.top + 16,
                   bottom: MediaQuery.of(context).padding.bottom + 100,
                 ),
@@ -104,41 +103,22 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
   Widget _buildNoDeviceUI() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Icon(Icons.bluetooth_disabled, size: 80, color: AppColors.textSecondary),
         const SizedBox(height: 24),
-        const Text(
-          "No Hub Connected",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const Text("No Hub Connected", textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
-        const Text(
-          "Link your Bedside Hub to see live\nenvironment and activity stats.",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        ),
+        const Text("Link your Bedside Hub to see live\nenvironment and activity stats.", textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
         const SizedBox(height: 32),
         TextButton(
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
-            if (mounted) unawaited(_findUserDevice());
+            _findUserDevice();
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.primary),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: const Text(
-              "Setup Bedside Hub",
-              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
-            ),
+            decoration: BoxDecoration(border: Border.all(color: AppColors.primary), borderRadius: BorderRadius.circular(30)),
+            child: const Text("Setup Bedside Hub", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
           ),
         ),
       ],
@@ -175,14 +155,11 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
                     Text('MAC: $_macAddress', style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
                   ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.refresh, color: AppColors.primary, size: 20),
-                  onPressed: _findUserDevice,
-                ),
+                IconButton(icon: const Icon(Icons.refresh, color: AppColors.primary, size: 20), onPressed: _findUserDevice),
               ],
             ),
             const SizedBox(height: 24),
-            const Text('Environment', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+            const Text('Environment', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -194,23 +171,18 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
               ],
             ),
             const SizedBox(height: 20),
-            
             GestureDetector(
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MotionLogScreen())),
               child: Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.border),
-                ),
+                decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(14), border: Border.all(color: Theme.of(context).dividerColor)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Live Activity', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+                        const Text('Live Activity', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                         Text(userStatus.toUpperCase(), style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -221,9 +193,8 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
               ),
             ),
             const SizedBox(height: 20),
-            const Text('Hardware Configuration', style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+            const Text('Hardware Configuration', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
-            
             HubDeviceControlCard(
               icon: Icons.power,
               title: 'Master Relay',
@@ -232,14 +203,9 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
               onChanged: (v) => _updateDevice('RelayEnabled', v > 0.5),
               trailing: Transform.scale(
                 scale: 0.85,
-                child: Switch(
-                  value: relayEnabled,
-                  onChanged: (v) => _updateDevice('RelayEnabled', v),
-                  activeTrackColor: AppColors.primary,
-                ),
+                child: Switch(value: relayEnabled, onChanged: (v) => _updateDevice('RelayEnabled', v), activeTrackColor: AppColors.primary),
               ),
             ),
-
             const SizedBox(height: 12),
             HubDeviceControlCard(
               icon: Icons.volume_up_outlined,
@@ -255,11 +221,7 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
                 onPressed: () => _showFactoryResetWarning(context),
                 icon: const Icon(Icons.settings_backup_restore, color: Colors.orangeAccent, size: 18),
                 label: const Text("FACTORY RESET & UNBIND", style: TextStyle(color: Colors.orangeAccent, fontSize: 12)),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.orangeAccent),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
+                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.orangeAccent), padding: const EdgeInsets.symmetric(vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
               ),
             ),
           ],
@@ -279,53 +241,37 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
       context: context,
       barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
-        builder: (context, _) {
+        builder: (context, setDialogState) {
           return AlertDialog(
-            backgroundColor: AppColors.card,
+            backgroundColor: Theme.of(context).cardColor,
             title: const Text("Factory Reset Warning", style: TextStyle(color: Colors.orangeAccent)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "This will wipe all hardware settings and delete your data from the cloud.",
-                  style: TextStyle(color: AppColors.textSecondary),
-                ),
+                const Text("This will wipe all hardware settings and delete your data from the cloud.", style: TextStyle(color: AppColors.textSecondary)),
                 const SizedBox(height: 20),
-                Text(
-                  "Resetting in: $_countdown seconds",
-                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text("Resetting in: $_countdown seconds", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ],
             ),
             actions: [
-              TextButton(
-                onPressed: () {
-                  _cancelReset();
-                  Navigator.pop(ctx);
-                },
-                child: const Text("CANCEL", style: TextStyle(color: AppColors.primary)),
-              ),
+              TextButton(onPressed: () { _cancelReset(); Navigator.pop(ctx); }, child: const Text("CANCEL", style: TextStyle(color: AppColors.primary))),
             ],
           );
         },
       ),
     );
-
-    _startResetCountdown();
+    _startResetCountdown(context);
   }
 
-  void _startResetCountdown() {
+  void _startResetCountdown(BuildContext context) {
     _countdown = 15;
     _updateDevice('FactoryReset', true);
-
     _resetTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_countdown > 0) {
-        if (mounted) {
-          setState(() => _countdown--);
-        }
+        if (mounted) setState(() => _countdown--);
       } else {
         timer.cancel();
-        unawaited(_verifyAndExecuteReset());
+        _verifyAndExecuteReset(context);
       }
     });
   }
@@ -333,30 +279,22 @@ class _HubScreenState extends State<HubScreen> with AutomaticKeepAliveClientMixi
   void _cancelReset() {
     _resetTimer?.cancel();
     _updateDevice('FactoryReset', false);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Reset Canceled")),
-      );
-    }
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Reset Canceled")));
   }
 
-  Future<void> _verifyAndExecuteReset() async {
+  void _verifyAndExecuteReset(BuildContext context) async {
     if (_macAddress == null || _hiddenUid == null) return;
-
     final snapshot = await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).child('FactoryReset').get();
-    
     if (snapshot.exists && snapshot.value == true) {
       try {
         await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).remove();
         if (mounted) {
-          Navigator.of(context, rootNavigator: true).pop(); // Close dialog
+          Navigator.of(context, rootNavigator: true).pop();
           setState(() => _macAddress = null);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Device factory reset and unlinked successfully.")),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Device unlinked successfully.")));
         }
       } catch (e) {
-        debugPrint("Reset Error: $e");
+        print("Reset Error: $e");
       }
     }
   }

@@ -21,6 +21,7 @@ class CalendarGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final daysInMonth = _daysInMonth(month);
     final firstWeekday = _firstWeekdayOfMonth(month);
     final totalCells = firstWeekday + daysInMonth;
@@ -29,13 +30,12 @@ class CalendarGrid extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         children: [
-          // Weekday headers
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: const ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -44,7 +44,7 @@ class CalendarGrid extends StatelessWidget {
               child: Center(
                 child: Text(
                   d,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -56,7 +56,6 @@ class CalendarGrid extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Calendar grid
           ...List.generate(rows, (rowIdx) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 6),
@@ -84,7 +83,7 @@ class CalendarGrid extends StatelessWidget {
                       child: Text(
                         '$day',
                         style: TextStyle(
-                          color: isSelected ? Colors.black : AppColors.textPrimary,
+                          color: isSelected ? Colors.black : theme.textTheme.bodyLarge?.color,
                           fontSize: 14,
                           fontWeight: isSelected
                               ? FontWeight.bold

@@ -24,6 +24,7 @@ class AuthTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
       validator: validator,
@@ -31,13 +32,12 @@ class AuthTextField extends StatelessWidget {
       keyboardType: keyboardType,
       cursorColor: AppColors.primary,
       style: const TextStyle(
-        color: AppColors.textPrimary,
         fontSize: 15,
       ),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTextStyles.subHeading.copyWith(
-          color: const Color(0x99B8B8B8),
+          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
         ),
         prefixIcon: Icon(
           prefixIcon,
@@ -45,15 +45,15 @@ class AuthTextField extends StatelessWidget {
         ),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: AppColors.card,
+        fillColor: theme.cardColor,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: AppColors.border,
+          borderSide: BorderSide(
+            color: theme.dividerColor,
             width: 1,
           ),
         ),
