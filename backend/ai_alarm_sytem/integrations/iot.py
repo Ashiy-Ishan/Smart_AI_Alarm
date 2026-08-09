@@ -60,20 +60,29 @@ def store_sensor_reading(user_id: str, payload: dict) -> dict:
         "motion_detected": _coerce_bool(payload.get("motion_detected")),
         "light_level": _coerce_light_level(payload.get("light_level"), settings.default_light_level),
     }
-    result = get_collections()[IOT_SENSOR_LOGS].insert_one(doc)
-    doc["_id"] = str(result.inserted_id)
+    try:
+        result = get_collections()[IOT_SENSOR_LOGS].insert_one(doc)
+        doc["_id"] = str(result.inserted_id)
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).warning("Database error storing sensor reading: %s", exc)
+        doc["_id"] = "offline_id"
     return doc
 
 #latest readings
 def get_latest_reading(user_id: str) -> dict:
     """Return the most recent sensor reading, or configured defaults if none exist."""
     settings = get_settings()
-    doc = get_collections()[IOT_SENSOR_LOGS].find_one(
-        {"user_id": user_id}, sort=[("timestamp", -1)]
-    )
-    if doc:
-        doc["_id"] = str(doc["_id"])
-        return doc
+    try:
+        doc = get_collections()[IOT_SENSOR_LOGS].find_one(
+            {"user_id": user_id}, sort=[("timestamp", -1)]
+        )
+        if doc:
+            doc["_id"] = str(doc["_id"])
+            return doc
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).warning("Database error getting latest sensor reading for user %s: %s", user_id, exc)
     return {
         "user_id": user_id,
         "timestamp": datetime.now(timezone.utc),
@@ -86,11 +95,17 @@ def get_latest_reading(user_id: str) -> dict:
 #get recent readings
 def get_recent_readings(user_id: str, limit: int = 300) -> list[dict]:
     """Return recent sensor readings in ascending time order."""
-    cursor = get_collections()[IOT_SENSOR_LOGS].find(
-        {"user_id": user_id}, sort=[("timestamp", -1)]
-    ).limit(limit)
-    docs = list(cursor)
-    for d in docs:
-        d["_id"] = str(d["_id"])
-    docs.reverse()
-    return docs
+    try:
+        cursor = get_collections()[IOT_SENSOR_LOGS].find(
+            {"user_id": user_id}, sort=[("timestamp", -1)]
+        ).limit(limit)
+        docs = list(cursor)
+        for d in docs:
+            d["_id"] = str(d["_id"])
+        docs.reverse()
+        return docs
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).warning("Database error getting recent sensor readings for user %s: %s", user_id, exc)
+        return []
+

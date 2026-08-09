@@ -15,15 +15,22 @@ logger = logging.getLogger(__name__)
 # OAuth credential storage 
 
 def _get_creds(user_id: str) -> dict | None:
-    return get_collections()[CALENDAR_CREDENTIALS].find_one({"user_id": user_id})
+    try:
+        return get_collections()[CALENDAR_CREDENTIALS].find_one({"user_id": user_id})
+    except Exception as exc:
+        logger.warning("Database error while fetching calendar creds for user %s: %s", user_id, exc)
+        return None
 
 
 def _save_creds(user_id: str, creds: dict) -> None:
-    creds["user_id"] = user_id
-    creds["updated_at"] = datetime.now(timezone.utc)
-    get_collections()[CALENDAR_CREDENTIALS].update_one(
-        {"user_id": user_id}, {"$set": creds}, upsert=True
-    )
+    try:
+        creds["user_id"] = user_id
+        creds["updated_at"] = datetime.now(timezone.utc)
+        get_collections()[CALENDAR_CREDENTIALS].update_one(
+            {"user_id": user_id}, {"$set": creds}, upsert=True
+        )
+    except Exception as exc:
+        logger.error("Database error while saving calendar creds for user %s: %s", user_id, exc)
 
 
 def _is_expired(creds: dict) -> bool:
@@ -85,11 +92,14 @@ def get_authorization_url(user_id: str) -> str:
     settings = get_settings()
     state = secrets.token_urlsafe(32)
     expires = (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat()
-    get_collections()[CALENDAR_CREDENTIALS].update_one(
-        {"user_id": user_id},
-        {"$set": {"oauth_state": state, "oauth_state_expires_at": expires}},
-        upsert=True,
-    )
+    try:
+        get_collections()[CALENDAR_CREDENTIALS].update_one(
+            {"user_id": user_id},
+            {"$set": {"oauth_state": state, "oauth_state_expires_at": expires}},
+            upsert=True,
+        )
+    except Exception as exc:
+        logger.error("Database error saving OAuth state for user %s: %s", user_id, exc)
     return (
         "https://accounts.google.com/o/oauth2/v2/auth"
         f"?client_id={settings.google_oauth_client_id}"
@@ -164,22 +174,29 @@ def revoke_access(user_id: str) -> tuple[bool, str]:
         )
     except Exception as exc:
         logger.warning("Token revocation request failed (credentials will still be removed): %s", exc)
-    get_collections()[CALENDAR_CREDENTIALS].delete_one({"user_id": user_id})
+    try:
+        get_collections()[CALENDAR_CREDENTIALS].delete_one({"user_id": user_id})
+    except Exception as exc:
+        logger.error("Database error while deleting creds for user %s: %s", user_id, exc)
     return True, "Calendar access revoked"
 
 
 def get_integration_status(user_id: str) -> dict:
-    creds = _get_creds(user_id)
-    if not creds or not creds.get("access_token"):
-        return {"connected": False, "token_expired": False, "message": "Calendar not connected"}
-    if _is_expired(creds):
-        return {"connected": True, "token_expired": True, "message": "Token expired — reconnect"}
-    return {
-        "connected": True,
-        "token_expired": False,
-        "updated_at": creds.get("updated_at"),
-        "message": "Calendar connected and active",
-    }
+    try:
+        creds = _get_creds(user_id)
+        if not creds or not creds.get("access_token"):
+            return {"connected": False, "token_expired": False, "message": "Calendar not connected"}
+        if _is_expired(creds):
+            return {"connected": True, "token_expired": True, "message": "Token expired — reconnect"}
+        return {
+            "connected": True,
+            "token_expired": False,
+            "updated_at": creds.get("updated_at"),
+            "message": "Calendar connected and active",
+        }
+    except Exception as exc:
+        logger.warning("Error checking integration status for user %s: %s", user_id, exc)
+        return {"connected": False, "token_expired": False, "message": "Calendar status unavailable"}
 
 
 # Calendar event helpers 
@@ -262,20 +279,27 @@ def _calendar_request(user_id: str, params: dict) -> list[dict]:
 # Cache helpers 
 
 def _read_cache(user_id: str) -> list[dict] | None:
-    doc = get_collections()[CALENDAR_EVENTS_CACHE].find_one({
-        "user_id": user_id,
-        "expires_at": {"$gt": datetime.now(timezone.utc)},
-    })
-    return doc.get("events") if doc else None
+    try:
+        doc = get_collections()[CALENDAR_EVENTS_CACHE].find_one({
+            "user_id": user_id,
+            "expires_at": {"$gt": datetime.now(timezone.utc)},
+        })
+        return doc.get("events") if doc else None
+    except Exception as exc:
+        logger.warning("Failed to read calendar cache for user %s: %s", user_id, exc)
+        return None
 
 
 def _write_cache(user_id: str, events: list[dict], ttl_minutes: int) -> None:
-    expires = datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)
-    get_collections()[CALENDAR_EVENTS_CACHE].update_one(
-        {"user_id": user_id},
-        {"$set": {"events": events, "cached_at": datetime.now(timezone.utc), "expires_at": expires}},
-        upsert=True,
-    )
+    try:
+        expires = datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)
+        get_collections()[CALENDAR_EVENTS_CACHE].update_one(
+            {"user_id": user_id},
+            {"$set": {"events": events, "cached_at": datetime.now(timezone.utc), "expires_at": expires}},
+            upsert=True,
+        )
+    except Exception as exc:
+        logger.warning("Failed to write calendar cache for user %s: %s", user_id, exc)
 
 
 # Public API 
@@ -302,15 +326,19 @@ def get_busy_events(user_id: str, reference_time: datetime, window_minutes: int)
 
 def get_upcoming_events(user_id: str, hours_ahead: int = 24) -> list[dict]:
     """Return upcoming calendar events for a user (includes location field)."""
-    start = datetime.now(timezone.utc)
-    items = _calendar_request(user_id, {
-        "timeMin": start.isoformat(),
-        "timeMax": (start + timedelta(hours=hours_ahead)).isoformat(),
-        "singleEvents": "true",
-        "orderBy": "startTime",
-        "maxResults": 10,
-    })
-    return _build_events(items, include_location=True)
+    try:
+        start = datetime.now(timezone.utc)
+        items = _calendar_request(user_id, {
+            "timeMin": start.isoformat(),
+            "timeMax": (start + timedelta(hours=hours_ahead)).isoformat(),
+            "singleEvents": "true",
+            "orderBy": "startTime",
+            "maxResults": 10,
+        })
+        return _build_events(items, include_location=True)
+    except Exception as exc:
+        logger.error("Failed to fetch upcoming events for user %s: %s", user_id, exc)
+        return []
 
 
 def adjust_buffer_for_calendar(
@@ -345,5 +373,9 @@ def adjust_buffer_for_calendar(
 
 
 def clear_cache(user_id: str | None = None) -> None:
-    col = get_collections()[CALENDAR_EVENTS_CACHE]
-    col.delete_many({"user_id": user_id} if user_id else {})
+    try:
+        col = get_collections()[CALENDAR_EVENTS_CACHE]
+        col.delete_many({"user_id": user_id} if user_id else {})
+    except Exception as exc:
+        logger.warning("Failed to clear calendar cache: %s", exc)
+

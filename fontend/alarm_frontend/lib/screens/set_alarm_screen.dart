@@ -3,8 +3,11 @@ import 'package:alarm_frontend/components/primary_button.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:alarm_frontend/services/api_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class StopAlarmScreen extends StatelessWidget {
+class StopAlarmScreen extends StatefulWidget {
+  final String alarmId;
   final String timeText;
   final String dateText;
   final VoidCallback? onSnooze;
@@ -12,11 +15,67 @@ class StopAlarmScreen extends StatelessWidget {
 
   const StopAlarmScreen({
     super.key,
+    required this.alarmId,
     this.timeText = '06:18',
     this.dateText = 'Nov 12 Monday',
     this.onSnooze,
     this.onStop,
   });
+
+  @override
+  State<StopAlarmScreen> createState() => _StopAlarmScreenState();
+}
+
+class _StopAlarmScreenState extends State<StopAlarmScreen> {
+  int _snoozeCount = 0;
+
+  Future<void> _sendAlarmOutcome() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('User is not logged in')));
+
+      return;
+    }
+
+    try {
+      await ApiService.post('/alarms/outcome', {
+        'user_id': user.uid,
+        'alarm_id': widget.alarmId,
+        'trigger_time': DateTime.now().toUtc().toIso8601String(),
+
+        'snooze_count': _snoozeCount,
+        'unlock_delay': 0.0,
+        'success': 1,
+
+        'weather_severity': 0.0,
+        'traffic_condition': 0.0,
+        'room_temp': 27.0,
+
+        'alarm_type': 'custom',
+        'is_holiday': 0,
+        'buffer_minutes': 0.0,
+      });
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Alarm outcome saved to backend')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save alarm outcome: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +109,7 @@ class StopAlarmScreen extends StatelessWidget {
                   const SizedBox(height: 25),
 
                   Text(
-                    timeText,
+                    widget.timeText,
                     style: AppTextStyles.heading.copyWith(
                       fontSize: 84,
                       fontWeight: FontWeight.w700,
@@ -62,7 +121,7 @@ class StopAlarmScreen extends StatelessWidget {
                   const SizedBox(height: 12),
 
                   Text(
-                    dateText,
+                    widget.dateText,
                     style: AppTextStyles.heading.copyWith(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -102,13 +161,21 @@ class StopAlarmScreen extends StatelessWidget {
 
                   PrimaryButton(
                     text: 'Snooze',
-                    onPressed:
-                        onSnooze ??
-                        () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Alarm snoozed')),
-                          );
-                        },
+                    onPressed: () {
+                      setState(() {
+                        _snoozeCount++;
+                      });
+
+                      if (widget.onSnooze != null) {
+                        widget.onSnooze!();
+                      }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Alarm snoozed $_snoozeCount time(s)'),
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 55),
@@ -117,11 +184,13 @@ class StopAlarmScreen extends StatelessWidget {
                     width: 190,
                     height: 60,
                     child: OutlinedButton(
-                      onPressed:
-                          onStop ??
-                          () {
-                            Navigator.pop(context);
-                          },
+                      onPressed: () async {
+                        if (widget.onStop != null) {
+                          widget.onStop!();
+                        }
+
+                        await _sendAlarmOutcome();
+                      },
                       style: OutlinedButton.styleFrom(
                         backgroundColor: const Color(0xFF23262F),
                         side: const BorderSide(

@@ -1,10 +1,10 @@
-import 'package:alarm_frontend/services/google_sync_service.dart';
+import 'package:alarm_frontend/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/calendar_grid.dart';
 import 'package:alarm_frontend/components/upcoming_event_item.dart';
-import 'package:googleapis/calendar/v3.dart' as google_calendar;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -15,7 +15,6 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  final GoogleSyncService _syncService = GoogleSyncService();
   int _selectedDay = DateTime.now().day;
   final DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
   List<google_calendar.Event> _events = [];
@@ -68,7 +67,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
             CalendarGrid(
               month: _currentMonth,
               selectedDay: _selectedDay,
-              onDaySelected: (day) => setState(() => _selectedDay = day),
+              onDaySelected: (day) {
+                setState(() {
+                  _selectedDay = day;
+                });
+              },
             ),
             const SizedBox(height: 20),
             Container(
@@ -79,6 +82,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 children: [
                   const Text('Upcoming Events', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 14),
+
                   if (_isLoading)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   else if (_events.isEmpty)

@@ -2,8 +2,7 @@ from __future__ import annotations
 import smtplib
 from email.mime.text import MIMEText
 
-from bson import ObjectId
-
+import importlib
 from config.settings import get_settings
 from db.collections import get_collections, USERS
 
@@ -11,11 +10,24 @@ from db.collections import get_collections, USERS
 def _resolve_email(user_id: str) -> str | None:
     if "@" in user_id:
         return user_id
-    users = get_collections()[USERS]
-    doc = users.find_one({"user_id": user_id})
-    if not doc and ObjectId.is_valid(user_id):
-        doc = users.find_one({"_id": ObjectId(user_id)})
-    return str(doc["email"]) if doc and doc.get("email") else None
+    try:
+        users = get_collections()[USERS]
+        doc = users.find_one({"user_id": user_id})
+        if not doc:
+            try:
+                object_id_cls = getattr(importlib.import_module("bson.objectid"), "ObjectId", None)
+                if object_id_cls and object_id_cls.is_valid(user_id):
+                    doc = users.find_one({"_id": object_id_cls(user_id)})
+            except Exception:
+                pass
+        return str(doc["email"]) if doc and doc.get("email") else None
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).warning("Database error resolving email for user %s: %s", user_id, exc)
+        return None
+
+
+
 
 
 def send_email(to_email: str, subject: str, body: str) -> bool:
