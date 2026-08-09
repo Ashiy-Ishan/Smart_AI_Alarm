@@ -379,7 +379,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 'I agree to ',
                 style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
               ),
-              const Text('terms', style: AppTextStyles.link),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, AppRoutes.termsAndConditions),
+                child: const Text('terms and condition', style: AppTextStyles.link),
+              ),
             ],
           ),
           const SizedBox(height: 28),
