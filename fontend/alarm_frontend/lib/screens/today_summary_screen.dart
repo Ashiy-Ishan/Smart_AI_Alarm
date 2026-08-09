@@ -35,28 +35,16 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   Future<void> _loadSensorSummary() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) {
-        throw Exception('User is not logged in');
-      }
-
+      if (user == null) throw Exception('User is not logged in');
       final response = await ApiService.get('/iot/sensor/${user.uid}/latest');
-
       if (!mounted) return;
-
       setState(() {
-        if (response != null) {
-          _sensorData = Map<String, dynamic>.from(response);
-        }
-
+        if (response != null) _sensorData = Map<String, dynamic>.from(response);
         _sensorError = null;
         _isLoadingSensor = false;
       });
     } catch (e) {
-      debugPrint('Today summary backend error: $e');
-
       if (!mounted) return;
-
       setState(() {
         _sensorError = 'Unable to load sensor summary';
         _isLoadingSensor = false;
@@ -67,22 +55,14 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: theme.textTheme.bodyLarge?.color),
-        title: const Text(
-          "Today’s Summary",
-          style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text("Today’s Summary", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -92,240 +72,62 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(color: theme.dividerColor),
-
                 const SizedBox(height: 40),
-
-                const Text(
-                  "Today’s Events",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
+                const Text("Today’s Events", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 15),
-
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return EventCard(event: events[index]);
-                  },
+                  itemBuilder: (context, index) => EventCard(event: events[index]),
                 ),
-
                 const SizedBox(height: 20),
-
                 Divider(color: theme.dividerColor),
-
                 const SizedBox(height: 20),
-
-                const Text(
-                  "Activity Summary",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                  const SizedBox(height: 15),
-
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: _isLoadingSensor
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primary,
-                            ),
-                          )
-                        : _sensorError != null
-                        ? Text(
-                            _sensorError!,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                            ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Icons.thermostat,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    '${_sensorData?['temperature'] ?? '--'}°C',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Temperature',
-                                    style: TextStyle(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Icons.water_drop_outlined,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    '${_sensorData?['humidity'] ?? '--'}%',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Humidity',
-                                    style: TextStyle(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Icons.directions_walk,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    _sensorData?['motion'] == 1 ||
-                                            _sensorData?['motion'] == true
-                                        ? 'Detected'
-                                        : 'Still',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Motion',
-                                    style: TextStyle(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                const Text("Activity Summary", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 15),
-
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border),
-                  ),
+                  decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: theme.dividerColor)),
+                  child: _isLoadingSensor
+                      ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                      : _sensorError != null
+                      ? Text(_sensorError!)
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(children: [const Icon(Icons.thermostat, color: AppColors.primary), const SizedBox(height: 5), Text('${_sensorData?['temperature'] ?? '--'}°C', style: const TextStyle(fontWeight: FontWeight.bold)), const Text('Temp')]),
+                            Column(children: [const Icon(Icons.water_drop_outlined, color: AppColors.primary), const SizedBox(height: 5), Text('${_sensorData?['humidity'] ?? '--'}%', style: const TextStyle(fontWeight: FontWeight.bold)), const Text('Humidity')]),
+                            Column(children: [const Icon(Icons.directions_walk, color: AppColors.primary), const SizedBox(height: 5), Text(_sensorData?['motion'] == 1 ? 'Detected' : 'Still', style: const TextStyle(fontWeight: FontWeight.bold)), const Text('Motion')]),
+                          ],
+                        ),
+                ),
+                const SizedBox(height: 15),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: theme.dividerColor)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Column(
-                        children: [
-                          const Icon(
-                            Icons.directions_walk,
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(height: 5),
-                          const Text(
-                            "4,867",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Steps",
-                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          const Text(
-                            "37 min",
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Movement",
-                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          const Text(
-                            "230",
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Cal",
-                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
+                      Column(children: [const Icon(Icons.directions_walk, color: AppColors.primary), const SizedBox(height: 5), const Text("4,867", style: TextStyle(fontWeight: FontWeight.bold)), const Text("Steps")]),
+                      Column(children: [const Text("37 min", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)), const Text("Movement")]),
+                      Column(children: [const Text("230", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)), const Text("Cal")]),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 Divider(color: theme.dividerColor),
-
                 const SizedBox(height: 20),
-
-                const Text(
-                  "Health Insights",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
+                const Text("Health Insights", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
-
                 Container(height: 4, width: 40, color: AppColors.primary),
-
                 const SizedBox(height: 20),
-
                 Container(
                   padding: const EdgeInsets.all(16),
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: const Text(
-                    "Sleep quality improved today",
-                  ),
+                  decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: theme.dividerColor)),
+                  child: const Text("Sleep quality improved today"),
                 ),
-
                 const SizedBox(height: 20),
               ],
             ),
