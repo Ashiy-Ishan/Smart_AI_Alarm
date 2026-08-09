@@ -5,10 +5,7 @@ import 'package:alarm_frontend/models/accuracy_metric_model.dart';
 class AccuracyMetricsCard extends StatelessWidget {
   final List<AccuracyMetricModel> items;
 
-  const AccuracyMetricsCard({
-    super.key,
-    required this.items,
-  });
+  const AccuracyMetricsCard({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +23,13 @@ class AccuracyMetricsCard extends StatelessWidget {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 child: Row(
                   children: [
-                    Icon(
-                      item.icon,
-                      color: AppColors.primary,
-                      size: 22,
-                    ),
+                    Icon(item.icon, color: AppColors.primary, size: 22),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(

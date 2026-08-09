@@ -5,11 +5,7 @@ class HubMotionRow extends StatelessWidget {
   final String time;
   final String event;
 
-  const HubMotionRow({
-    super.key,
-    required this.time,
-    required this.event,
-  });
+  const HubMotionRow({super.key, required this.time, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +15,9 @@ class HubMotionRow extends StatelessWidget {
         Text(
           time,
           style: TextStyle(
-            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+            color:
+                theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                AppColors.textSecondary,
             fontSize: 13,
           ),
         ),
@@ -35,10 +33,7 @@ class HubMotionRow extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           event,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
         ),
       ],
     );

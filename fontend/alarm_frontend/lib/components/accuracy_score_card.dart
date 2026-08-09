@@ -29,10 +29,7 @@ class AccuracyScoreCard extends StatelessWidget {
               children: [
                 const Text(
                   'Accuracy Score',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Icon(
                   Icons.chevron_right,
@@ -84,7 +81,11 @@ class AccuracyScoreCard extends StatelessWidget {
                     Text(
                       'Predictive Model',
                       style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -152,7 +153,11 @@ class _GaugePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    canvas.drawLine(Offset(centerX, centerY), Offset(needleX, needleY), needlePaint);
+    canvas.drawLine(
+      Offset(centerX, centerY),
+      Offset(needleX, needleY),
+      needlePaint,
+    );
 
     final pinPaint = Paint()
       ..color = AppColors.primary

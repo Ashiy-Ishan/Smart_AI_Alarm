@@ -64,17 +64,23 @@ class _HomeScreenState extends State<HomeScreen>
     if (email.isEmpty) return;
 
     _hiddenUid = _getHiddenUid(email);
-    
-    _deviceSubscription = _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').onValue.listen((event) {
-      if (event.snapshot.exists && mounted) {
-        final devices = event.snapshot.value as Map<dynamic, dynamic>;
-        if (devices.isNotEmpty) {
-          setState(() => _macAddress = devices.keys.first.toString());
-        }
-      } else if (mounted) {
-        setState(() => _macAddress = null);
-      }
-    });
+
+    _deviceSubscription = _rtdb
+        .ref()
+        .child('Users')
+        .child(_hiddenUid!)
+        .child('Devices')
+        .onValue
+        .listen((event) {
+          if (event.snapshot.exists && mounted) {
+            final devices = event.snapshot.value as Map<dynamic, dynamic>;
+            if (devices.isNotEmpty) {
+              setState(() => _macAddress = devices.keys.first.toString());
+            }
+          } else if (mounted) {
+            setState(() => _macAddress = null);
+          }
+        });
   }
 
   Future<void> _loadWeather() async {
@@ -118,7 +124,9 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     final userProvider = Provider.of<UserProvider>(context);
     final String fullName = userProvider.user?.fullName ?? "";
-    final String firstName = fullName.isNotEmpty ? fullName.split(' ').first : "User";
+    final String firstName = fullName.isNotEmpty
+        ? fullName.split(' ').first
+        : "User";
     final (greeting, secondaryGreeting, lottieAsset) = _getTimeBasedData();
 
     return Scaffold(
@@ -127,37 +135,53 @@ class _HomeScreenState extends State<HomeScreen>
         physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.only(
-            left: 20, right: 20, 
+            left: 20,
+            right: 20,
             top: MediaQuery.of(context).padding.top + 10,
             bottom: MediaQuery.of(context).padding.bottom + 80,
           ),
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("$greeting,\n$firstName", style: const TextStyle(fontSize: 26, height: 1.2, fontWeight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        IconButton(onPressed: _loadWeather, icon: const Icon(Icons.refresh, color: AppColors.primary)),
-                        _buildNotificationIcon(),
-                      ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "$greeting,\n$firstName",
+                    style: const TextStyle(
+                      fontSize: 26,
+                      height: 1.2,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                _buildWeatherSection(lottieAsset, secondaryGreeting, firstName),
-                const SizedBox(height: 30),
-                _buildNextEventCard(),
-                const SizedBox(height: 20),
-                if (_macAddress != null) _buildLiveAlarmCard() else _buildStaticAlarmPlaceholder(),
-                const SizedBox(height: 20),
-                _buildSummaryCard(),
-                const SizedBox(height: 20),
-              ],
-            ),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: _loadWeather,
+                        icon: const Icon(
+                          Icons.refresh,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      _buildNotificationIcon(),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _buildWeatherSection(lottieAsset, secondaryGreeting, firstName),
+              const SizedBox(height: 30),
+              _buildNextEventCard(),
+              const SizedBox(height: 20),
+              if (_macAddress != null)
+                _buildLiveAlarmCard()
+              else
+                _buildStaticAlarmPlaceholder(),
+              const SizedBox(height: 20),
+              _buildSummaryCard(),
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),
@@ -184,7 +208,11 @@ class _HomeScreenState extends State<HomeScreen>
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: alarmEnabled ? AppColors.primary : Theme.of(context).dividerColor),
+            border: Border.all(
+              color: alarmEnabled
+                  ? AppColors.primary
+                  : Theme.of(context).dividerColor,
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,7 +230,13 @@ class _HomeScreenState extends State<HomeScreen>
                   const SizedBox(height: 4),
                   GestureDetector(
                     onTap: () => _pickTime(context, alarmTime),
-                    child: Text(alarmTime, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      alarmTime,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const Text(
                     "Mon - Sun",
@@ -237,7 +271,10 @@ class _HomeScreenState extends State<HomeScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Alarm", style: TextStyle(fontSize: 20)),
-              Text("No Device Connected", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              Text(
+                "No Device Connected",
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              ),
             ],
           ),
           Switch(value: false, onChanged: null),
@@ -257,7 +294,11 @@ class _HomeScreenState extends State<HomeScreen>
       initialTime: initialTime,
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary, primary: AppColors.primary, surface: Theme.of(context).cardColor),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: AppColors.primary,
+            primary: AppColors.primary,
+            surface: Theme.of(context).cardColor,
+          ),
         ),
         child: child!,
       ),
@@ -283,7 +324,10 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildNotificationIcon() {
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
       padding: const EdgeInsets.all(8),
       child: const Icon(
         Icons.notifications_none,
@@ -303,7 +347,12 @@ class _HomeScreenState extends State<HomeScreen>
         Center(
           child: SizedBox(
             height: 150,
-            child: Lottie.asset(asset, fit: BoxFit.contain, errorBuilder: (_, _, _) => Lottie.asset('assets/lotties/home.json')),
+            child: Lottie.asset(
+              asset,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) =>
+                  Lottie.asset('assets/lotties/home.json'),
+            ),
           ),
         ),
         const SizedBox(height: 10),
@@ -322,8 +371,20 @@ class _HomeScreenState extends State<HomeScreen>
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(temperature, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-                Text(weatherMain, style: const TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                Text(
+                  temperature,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  weatherMain,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                  ),
+                ),
               ],
             ),
           ],
@@ -392,8 +453,15 @@ class _HomeScreenState extends State<HomeScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Today's Summary", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Icon(Icons.arrow_forward_ios, color: AppColors.textSecondary, size: 18),
+                Text(
+                  "Today's Summary",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.textSecondary,
+                  size: 18,
+                ),
               ],
             ),
             SizedBox(height: 10),

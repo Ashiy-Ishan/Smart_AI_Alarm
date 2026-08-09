@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class AccuracyMetricModel {
   final IconData icon;
   final String label;

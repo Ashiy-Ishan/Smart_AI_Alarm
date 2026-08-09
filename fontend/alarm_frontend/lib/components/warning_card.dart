@@ -39,7 +39,9 @@ class WarningCard extends StatelessWidget {
           Text(
             description,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
               fontSize: 13,
               height: 1.5,
             ),

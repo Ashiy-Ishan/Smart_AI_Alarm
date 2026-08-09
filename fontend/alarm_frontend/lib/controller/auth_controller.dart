@@ -15,16 +15,20 @@ class AuthController {
     try {
       final googleSignIn = GoogleSignIn.instance;
       await googleSignIn.initialize();
-      
+
       final googleUser = await googleSignIn.authenticate();
       if (googleUser == null) return null;
 
       await googleUser.authorizationClient.authorizeScopes(_requiredScopes);
 
       final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
 
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       return userCredential.user;
     } catch (e) {
       Logger().e(e);
@@ -33,12 +37,13 @@ class AuthController {
   }
 
   static Future<User?> signUpWithEmailAndPassword(
-      String email, String password, String fullName) async {
+    String email,
+    String password,
+    String fullName,
+  ) async {
     try {
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
       if (userCredential.user != null) {
         await userCredential.user!.updateDisplayName(fullName);
         await userCredential.user!.reload();
@@ -50,12 +55,13 @@ class AuthController {
     }
   }
 
-  static Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  static Future<User?> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
       return userCredential.user;
     } catch (e) {
       Logger().e(e);

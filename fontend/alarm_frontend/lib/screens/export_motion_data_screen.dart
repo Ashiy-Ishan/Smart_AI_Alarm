@@ -67,7 +67,7 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
@@ -87,11 +87,16 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: const Text(
                         'Last 7 Days',
@@ -111,16 +116,14 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
 
                 const Text(
                   'Format',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 10),
                 ExportFormatSelector(
                   formats: const ['CSV', 'JSON'],
                   selectedFormat: _selectedFormat,
-                  onFormatChanged: (format) => setState(() => _selectedFormat = format),
+                  onFormatChanged: (format) =>
+                      setState(() => _selectedFormat = format),
                 ),
 
                 const SizedBox(height: 20),
@@ -129,10 +132,7 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
 
                 const Text(
                   'Options',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 10),
                 OptionToggleRow(
@@ -176,7 +176,11 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                              color:
+                                  theme.textTheme.bodyMedium?.color?.withValues(
+                                    alpha: 0.5,
+                                  ) ??
+                                  AppColors.textSecondary,
                             ),
                           )
                         : Text(

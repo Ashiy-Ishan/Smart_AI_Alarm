@@ -16,7 +16,8 @@ class ScheduleScreen extends StatefulWidget {
   State<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAliveClientMixin {
+class _ScheduleScreenState extends State<ScheduleScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -34,7 +35,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAlive
   Future<void> _fetchData() async {
     if (!mounted) return;
     setState(() => _isLoading = true);
-    
+
     final results = await Future.wait([
       _syncService.fetchUpcomingEvents(),
       _syncService.fetchLatestEmails(),
@@ -53,7 +54,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAlive
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -76,15 +77,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAlive
                       Text(
                         DateFormat('EEE, MMM d').format(DateTime.now()),
                         style: TextStyle(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                          fontSize: 13
+                          color:
+                              theme.textTheme.bodyMedium?.color?.withValues(
+                                alpha: 0.7,
+                              ) ??
+                              AppColors.textSecondary,
+                          fontSize: 13,
                         ),
                       ),
                     ],
                   ),
                   IconButton(
                     onPressed: _fetchData,
-                    icon: const Icon(Icons.refresh, color: AppColors.primary, size: 26),
+                    icon: const Icon(
+                      Icons.refresh,
+                      color: AppColors.primary,
+                      size: 26,
+                    ),
                   ),
                 ],
               ),
@@ -93,23 +102,35 @@ class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAlive
 
               const Text(
                 'Gmail Priority Scan',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
 
               const SizedBox(height: 12),
 
               if (_isLoading)
-                const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: CircularProgressIndicator(),
+                  ),
+                )
               else if (_emails.isEmpty)
-                const GmailScanCard(title: 'No Emails', subtitle: 'You are all caught up!')
+                const GmailScanCard(
+                  title: 'No Emails',
+                  subtitle: 'You are all caught up!',
+                )
               else
                 ..._emails.take(2).map((msg) {
                   String from = "Unknown";
                   if (msg.payload?.headers != null) {
-                    from = msg.payload!.headers!.firstWhere((h) => h.name == 'From', orElse: () => google_gmail.MessagePartHeader()).value ?? "Unknown";
+                    from =
+                        msg.payload!.headers!
+                            .firstWhere(
+                              (h) => h.name == 'From',
+                              orElse: () => google_gmail.MessagePartHeader(),
+                            )
+                            .value ??
+                        "Unknown";
                   }
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
@@ -124,10 +145,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAlive
 
               const Text(
                 'Synced Agenda',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
 
               const SizedBox(height: 12),
@@ -135,12 +153,28 @@ class _ScheduleScreenState extends State<ScheduleScreen> with AutomaticKeepAlive
               if (_isLoading)
                 const SizedBox.shrink()
               else if (_events.isEmpty)
-                Center(child: Padding(padding: const EdgeInsets.all(40), child: Text("No events scheduled", style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textSecondary))))
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Text(
+                      "No events scheduled",
+                      style: TextStyle(
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.6,
+                            ) ??
+                            AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                )
               else
                 ..._events.map((event) {
                   String time = "All Day";
                   if (event.start?.dateTime != null) {
-                    time = DateFormat('HH:mm').format(event.start!.dateTime!.toLocal());
+                    time = DateFormat(
+                      'HH:mm',
+                    ).format(event.start!.dateTime!.toLocal());
                   }
                   return AgendaTimelineItem(
                     agenda: AgendaModel(

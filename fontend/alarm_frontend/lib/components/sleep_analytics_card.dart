@@ -24,10 +24,7 @@ class SleepAnalyticsCard extends StatelessWidget {
             children: const [
               Text(
                 'Sleep Analytics',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
                 '49h 12m Avg',
@@ -45,9 +42,10 @@ class SleepAnalyticsCard extends StatelessWidget {
             width: double.infinity,
             child: CustomPaint(
               painter: _SleepChartPainter(
-                sleepValues, 
-                theme.dividerColor, 
-                theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textSecondary
+                sleepValues,
+                theme.dividerColor,
+                theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ??
+                    AppColors.textSecondary,
               ),
             ),
           ),
@@ -87,9 +85,7 @@ class _SleepChartPainter extends CustomPainter {
 
     canvas.drawLine(Offset(xMin, yMax), Offset(xMax + 8, yMax), paintAxes);
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     const int maxSleepVal = 16;
     for (int val = 2; val <= maxSleepVal; val += 2) {
@@ -98,10 +94,7 @@ class _SleepChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '$val',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 9,
-        ),
+        style: TextStyle(color: textColor, fontSize: 9),
       );
       textPainter.layout();
       textPainter.paint(canvas, Offset(xMin - 16, y - 5));
@@ -124,10 +117,7 @@ class _SleepChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '${13 + i}',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 10,
-        ),
+        style: TextStyle(color: textColor, fontSize: 10),
       );
       textPainter.layout();
       textPainter.paint(canvas, Offset(x - 6, yMax + 8));
@@ -159,8 +149,8 @@ class _SleepChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          AppColors.primary.withOpacity(0.35),
-          AppColors.primary.withOpacity(0.0),
+          AppColors.primary.withValues(alpha: 0.35),
+          AppColors.primary.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTRB(xMin, yMin, xMax, yMax))
       ..style = PaintingStyle.fill;

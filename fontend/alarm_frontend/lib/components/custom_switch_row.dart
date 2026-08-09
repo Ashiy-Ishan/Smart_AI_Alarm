@@ -22,17 +22,16 @@ class CustomSwitchRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14),
-          ),
+          Text(label, style: const TextStyle(fontSize: 14)),
           if (badge != null) ...[
             const SizedBox(width: 8),
             Text(
               badge!,
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                fontSize: 12
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+                fontSize: 12,
               ),
             ),
           ],

@@ -5,10 +5,7 @@ import 'package:alarm_frontend/models/agenda_model.dart';
 class AgendaTimelineItem extends StatelessWidget {
   final AgendaModel agenda;
 
-  const AgendaTimelineItem({
-    super.key,
-    required this.agenda,
-  });
+  const AgendaTimelineItem({super.key, required this.agenda});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +20,10 @@ class AgendaTimelineItem extends StatelessWidget {
             child: Text(
               agenda.time,
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                fontSize: 13
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+                fontSize: 13,
               ),
             ),
           ),
@@ -60,8 +59,12 @@ class AgendaTimelineItem extends StatelessWidget {
                   Text(
                     agenda.subtitle,
                     style: TextStyle(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                      fontSize: 12
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ) ??
+                          AppColors.textSecondary,
+                      fontSize: 12,
                     ),
                   ),
                 ],

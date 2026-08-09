@@ -19,18 +19,9 @@ class IconLabelRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: iconColor ?? AppColors.primary,
-            size: 20,
-          ),
+          Icon(icon, color: iconColor ?? AppColors.primary, size: 20),
           const SizedBox(width: 14),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-          ),
+          Text(label, style: const TextStyle(fontSize: 14)),
         ],
       ),
     );

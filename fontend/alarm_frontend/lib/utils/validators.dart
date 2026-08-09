@@ -16,18 +16,15 @@ class Validators {
 
     return null;
   }
-  
+
   static String? validateRequired(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
     }
     return null;
   }
-  
-  static String? validateConfirmPassword(
-    String? value,
-    String password,
-  ) {
+
+  static String? validateConfirmPassword(String? value, String password) {
     if (value == null || value.trim().isEmpty) {
       return 'Confirm Password is required';
     }

@@ -6,19 +6,16 @@ class GmailScanCard extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const GmailScanCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const GmailScanCard({super.key, required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
-      onTap: () => Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(builder: (_) => const EmailScreen()),
-      ),
+      onTap: () => Navigator.of(
+        context,
+        rootNavigator: true,
+      ).push(MaterialPageRoute(builder: (_) => const EmailScreen())),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
@@ -63,8 +60,12 @@ class GmailScanCard extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                      fontSize: 12
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ) ??
+                          AppColors.textSecondary,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -72,7 +73,9 @@ class GmailScanCard extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                  AppColors.textSecondary,
               size: 18,
             ),
           ],

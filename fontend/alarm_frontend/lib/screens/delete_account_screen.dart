@@ -39,13 +39,23 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         title: const Text("Confirm Final Deletion"),
         content: Text(
           "Are you sure? This will permanently delete your account and all associated data.",
-          style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary),
+          style: TextStyle(
+            color:
+                theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8) ??
+                AppColors.textSecondary,
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("CANCEL")),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text("CANCEL"),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text("DELETE", style: TextStyle(color: Colors.redAccent)),
+            child: const Text(
+              "DELETE",
+              style: TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
@@ -54,9 +64,15 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     if (confirm == true && mounted) {
       setState(() => _isDeleting = true);
       try {
-        await Provider.of<UserProvider>(context, listen: false).deleteAccount(context);
+        await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).deleteAccount(context);
         if (mounted) {
-          Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(AppRoutes.splash, (route) => false);
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushNamedAndRemoveUntil(AppRoutes.splash, (route) => false);
         }
       } catch (e) {
         if (mounted) setState(() => _isDeleting = false);
@@ -86,8 +102,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
           WarningCard(
             title: 'Delete Your Account',
-            description: 'This action is permanent.\nAll your data will be erased.',
-            borderColor: Colors.redAccent.withOpacity(0.3),
+            description:
+                'This action is permanent.\nAll your data will be erased.',
+            borderColor: Colors.redAccent.withValues(alpha: 0.3),
           ),
 
           const SizedBox(height: 24),
@@ -108,7 +125,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                       label: item['label'] as String,
                     ),
                     if (i != _dataItems.length - 1)
-                      Divider(height: 1, color: theme.dividerColor, indent: 16, endIndent: 16),
+                      Divider(
+                        height: 1,
+                        color: theme.dividerColor,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
                   ],
                 );
               }),
@@ -119,7 +141,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
           Text(
             "Type 'DELETE' to confirm:",
-            style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 14, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: theme.textTheme.bodyLarge?.color,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 8),
 
@@ -129,16 +155,26 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: _deleteController.text == 'DELETE' ? Colors.redAccent : theme.dividerColor,
+                color: _deleteController.text == 'DELETE'
+                    ? Colors.redAccent
+                    : theme.dividerColor,
               ),
             ),
             child: TextField(
               controller: _deleteController,
               onChanged: (_) => setState(() {}),
-              style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 1.2),
+              style: TextStyle(
+                color: theme.textTheme.bodyLarge?.color,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.2,
+              ),
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 15,
+                ),
               ),
             ),
           ),
@@ -161,12 +197,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                       elevation: 0,
                     ),
                     child: Text(
-                      'Cancel', 
+                      'Cancel',
                       style: TextStyle(
-                        color: theme.textTheme.bodyLarge?.color, 
-                        fontSize: 16, 
-                        fontWeight: FontWeight.w600
-                      )
+                        color: theme.textTheme.bodyLarge?.color,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -176,15 +212,35 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 child: SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _canDelete && !_isDeleting ? _onDeleteAccount : null,
+                    onPressed: _canDelete && !_isDeleting
+                        ? _onDeleteAccount
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _canDelete ? Colors.redAccent : Colors.redAccent.withOpacity(0.4),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      backgroundColor: _canDelete
+                          ? Colors.redAccent
+                          : Colors.redAccent.withValues(alpha: 0.4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                       elevation: 0,
                     ),
                     child: _isDeleting
-                        ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Delete Account', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'Delete Account',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ),

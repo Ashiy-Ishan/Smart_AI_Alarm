@@ -28,33 +28,40 @@ class KeyStatusCard extends StatelessWidget {
         children: [
           const Text(
             'Key Status',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Row(
             children: [
-              Text('On-Device Keys: ',
-                  style: TextStyle(
-                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                    fontSize: 13
-                  )),
-              const Text('System Managed',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  )),
+              Text(
+                'On-Device Keys: ',
+                style: TextStyle(
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 13,
+                ),
+              ),
+              const Text(
+                'System Managed',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 14),
           Text(
             'your keys for use on multiple devices.',
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-              fontSize: 13
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
+              fontSize: 13,
             ),
           ),
           const SizedBox(height: 14),
@@ -72,11 +79,18 @@ class KeyStatusCard extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Enter New Passphrase',
                 hintStyle: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary, 
-                  fontSize: 13
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.5,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 13,
                 ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
               ),
             ),
           ),
@@ -97,21 +111,21 @@ class KeyStatusCard extends StatelessWidget {
                 ),
                 child: isUpdating
                     ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primary,
-                  ),
-                )
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      )
                     : const Text(
-                  'Update Passphrase',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                        'Update Passphrase',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -119,7 +133,9 @@ class KeyStatusCard extends StatelessWidget {
           Text(
             'Important: Keep this safe.\nPassphrase cannot be recovered.',
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                  AppColors.textSecondary,
               fontSize: 12,
               height: 1.5,
             ),

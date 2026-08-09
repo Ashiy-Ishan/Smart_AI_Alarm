@@ -71,7 +71,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     setState(() => isLoading = true);
     try {
-      await Provider.of<UserProvider>(context, listen: false).signInWithEmailAndPassword(
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).signInWithEmailAndPassword(
         email: user.email,
         password: user.password,
         context: context,
@@ -79,8 +82,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (!mounted) return;
 
-      Navigator.of(context, rootNavigator: true)
-          .pushReplacementNamed(AppRoutes.main);
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushReplacementNamed(AppRoutes.main);
     } catch (e) {
     } finally {
       if (mounted) {
@@ -115,7 +120,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     setState(() => isLoading = true);
     try {
-      await Provider.of<UserProvider>(context, listen: false).signUpWithEmailAndPassword(
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).signUpWithEmailAndPassword(
         email: user.email,
         password: user.password,
         fullName: user.fullName,
@@ -124,8 +132,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (!mounted) return;
 
-      Navigator.of(context, rootNavigator: true)
-          .pushReplacementNamed(AppRoutes.verifyAccount);
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushReplacementNamed(AppRoutes.verifyAccount);
     } catch (e) {
     } finally {
       if (mounted) {
@@ -143,11 +153,11 @@ class _AuthScreenState extends State<AuthScreen> {
 
     setState(() => isLoading = true);
     try {
-      await Provider.of<UserProvider>(context, listen: false).sendPasswordResetEmail(
-        email: user.email,
-        context: context,
-      );
-      
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).sendPasswordResetEmail(email: user.email, context: context);
+
       if (mounted) {
         switchPage(AuthPageModel.login());
       }
@@ -238,7 +248,10 @@ class _AuthScreenState extends State<AuthScreen> {
               onTap: () => switchPage(AuthPageModel.resetPassword()),
               child: Text(
                 'Forgot Password ?',
-                style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 15),
+                style: TextStyle(
+                  color: theme.textTheme.bodyLarge?.color,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
@@ -269,7 +282,10 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 Text(
                   "Don't have an account ? ",
-                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
+                  style: TextStyle(
+                    color: theme.textTheme.bodyLarge?.color,
+                    fontSize: 16,
+                  ),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.signup()),
@@ -377,7 +393,10 @@ class _AuthScreenState extends State<AuthScreen> {
               const SizedBox(width: 12),
               Text(
                 'I agree to ',
-                style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
+                style: TextStyle(
+                  color: theme.textTheme.bodyLarge?.color,
+                  fontSize: 16,
+                ),
               ),
               const Text('terms', style: AppTextStyles.link),
             ],
@@ -395,7 +414,10 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 Text(
                   'Already have an account? ',
-                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 16),
+                  style: TextStyle(
+                    color: theme.textTheme.bodyLarge?.color,
+                    fontSize: 16,
+                  ),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.login()),

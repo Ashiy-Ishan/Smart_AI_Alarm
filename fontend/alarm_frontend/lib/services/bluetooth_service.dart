@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' as ble;
+import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BluetoothService {
@@ -24,8 +25,8 @@ class BluetoothService {
         Permission.bluetoothConnect,
         Permission.location,
       ].request();
-      return statuses[Permission.bluetoothScan]!.isGranted && 
-             statuses[Permission.bluetoothConnect]!.isGranted;
+      return statuses[Permission.bluetoothScan]!.isGranted &&
+          statuses[Permission.bluetoothConnect]!.isGranted;
     }
     return true;
   }
@@ -34,17 +35,20 @@ class BluetoothService {
     try {
       await device.connect(autoConnect: false, license: ble.License.nonprofit);
       connectedDevice = device;
-      
+
       await Future.delayed(const Duration(milliseconds: 500));
       List<ble.BluetoothService> services = await device.discoverServices();
-      
+
       for (var service in services) {
-        if (service.uuid.toString().toLowerCase() == SERVICE_UUID.toLowerCase()) {
+        if (service.uuid.toString().toLowerCase() ==
+            SERVICE_UUID.toLowerCase()) {
           for (var char in service.characteristics) {
-            if (char.uuid.toString().toLowerCase() == CHARACTERISTIC_UUID.toLowerCase()) {
+            if (char.uuid.toString().toLowerCase() ==
+                CHARACTERISTIC_UUID.toLowerCase()) {
               writeCharacteristic = char;
             }
-            if (char.uuid.toString().toLowerCase() == MAC_READ_UUID.toLowerCase()) {
+            if (char.uuid.toString().toLowerCase() ==
+                MAC_READ_UUID.toLowerCase()) {
               readMacCharacteristic = char;
             }
           }
@@ -62,13 +66,17 @@ class BluetoothService {
         List<int> value = await readMacCharacteristic!.read();
         return utf8.decode(value).trim();
       } catch (e) {
-        print('mac read error: $e');
+        Logger().e('mac read error: $e');
       }
     }
     return connectedDevice?.remoteId.toString();
   }
 
-  Future<bool> sendProvisioningData(String ssid, String password, String uid) async {
+  Future<bool> sendProvisioningData(
+    String ssid,
+    String password,
+    String uid,
+  ) async {
     if (writeCharacteristic != null) {
       try {
         String payload = "$ssid,$password,$uid";

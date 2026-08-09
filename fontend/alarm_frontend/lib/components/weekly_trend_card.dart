@@ -4,11 +4,7 @@ class WeeklyTrendCard extends StatelessWidget {
   final String label;
   final String trend;
 
-  const WeeklyTrendCard({
-    super.key,
-    required this.label,
-    required this.trend,
-  });
+  const WeeklyTrendCard({super.key, required this.label, required this.trend});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +26,7 @@ class WeeklyTrendCard extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 4),
           const Text(

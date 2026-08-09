@@ -31,20 +31,22 @@ class BottomNavBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.brightness == Brightness.dark 
-            ? const Color(0xFF1A1D24) 
+        color: theme.brightness == Brightness.dark
+            ? const Color(0xFF1A1D24)
             : Colors.white,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
-        boxShadow: theme.brightness == Brightness.light ? [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          )
-        ] : null,
+        boxShadow: theme.brightness == Brightness.light
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ]
+            : null,
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
@@ -60,7 +62,7 @@ class BottomNavBar extends StatelessWidget {
               children: List.generate(navItems.length, (index) {
                 final bool isSelected = currentIndex == index;
                 final item = navItems[index];
-                
+
                 return GestureDetector(
                   onTap: () => onTap(index),
                   behavior: HitTestBehavior.opaque,
@@ -80,8 +82,8 @@ class BottomNavBar extends StatelessWidget {
                               duration: const Duration(milliseconds: 200),
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: isSelected 
-                                    ? AppColors.primary.withOpacity(0.1) 
+                                color: isSelected
+                                    ? AppColors.primary.withValues(alpha: 0.1)
                                     : Colors.transparent,
                                 shape: BoxShape.circle,
                               ),
@@ -90,7 +92,9 @@ class BottomNavBar extends StatelessWidget {
                                 size: 24,
                                 color: isSelected
                                     ? AppColors.primary
-                                    : theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                                    : theme.textTheme.bodyMedium?.color
+                                              ?.withValues(alpha: 0.5) ??
+                                          AppColors.textSecondary,
                               ),
                             ),
                           );
@@ -101,10 +105,15 @@ class BottomNavBar extends StatelessWidget {
                         item.label,
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w500,
                           color: isSelected
                               ? AppColors.primary
-                              : theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textSecondary,
+                              : theme.textTheme.bodyMedium?.color?.withValues(
+                                      alpha: 0.6,
+                                    ) ??
+                                    AppColors.textSecondary,
                         ),
                       ),
                     ],

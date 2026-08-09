@@ -5,11 +5,7 @@ class InfoCard extends StatelessWidget {
   final String title;
   final String description;
 
-  const InfoCard({
-    super.key,
-    required this.title,
-    required this.description,
-  });
+  const InfoCard({super.key, required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +23,15 @@ class InfoCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Text(
             description,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
               fontSize: 13,
               height: 1.5,
             ),

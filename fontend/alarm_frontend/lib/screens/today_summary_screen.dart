@@ -76,10 +76,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
         iconTheme: IconThemeData(color: theme.textTheme.bodyLarge?.color),
         title: const Text(
           "Today’s Summary",
-          style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
       ),
 
@@ -97,10 +94,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
                 const Text(
                   "Today’s Events",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 15),
@@ -122,110 +116,108 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
                 const Text(
                   "Activity Summary",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
 
-                  const SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: _isLoadingSensor
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primary,
-                            ),
-                          )
-                        : _sensorError != null
-                        ? Text(
-                            _sensorError!,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                            ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Icons.thermostat,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    '${_sensorData?['temperature'] ?? '--'}°C',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Temperature',
-                                    style: TextStyle(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Icons.water_drop_outlined,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    '${_sensorData?['humidity'] ?? '--'}%',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Humidity',
-                                    style: TextStyle(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Icons.directions_walk,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    _sensorData?['motion'] == 1 ||
-                                            _sensorData?['motion'] == true
-                                        ? 'Detected'
-                                        : 'Still',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Motion',
-                                    style: TextStyle(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.card,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: _isLoadingSensor
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
                           ),
+                        )
+                      : _sensorError != null
+                      ? Text(
+                          _sensorError!,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                const Icon(
+                                  Icons.thermostat,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  '${_sensorData?['temperature'] ?? '--'}°C',
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Text(
+                                  'Temperature',
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            Column(
+                              children: [
+                                const Icon(
+                                  Icons.water_drop_outlined,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  '${_sensorData?['humidity'] ?? '--'}%',
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Text(
+                                  'Humidity',
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            Column(
+                              children: [
+                                const Icon(
+                                  Icons.directions_walk,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  _sensorData?['motion'] == 1 ||
+                                          _sensorData?['motion'] == true
+                                      ? 'Detected'
+                                      : 'Still',
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Text(
+                                  'Motion',
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                ),
                 const SizedBox(height: 15),
 
                 Container(
@@ -247,13 +239,17 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                           const SizedBox(height: 5),
                           const Text(
                             "4,867",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(
                             "Steps",
-                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
+                            style: TextStyle(
+                              color:
+                                  theme.textTheme.bodyMedium?.color?.withValues(
+                                    alpha: 0.7,
+                                  ) ??
+                                  AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
@@ -269,7 +265,13 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                           ),
                           Text(
                             "Movement",
-                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
+                            style: TextStyle(
+                              color:
+                                  theme.textTheme.bodyMedium?.color?.withValues(
+                                    alpha: 0.7,
+                                  ) ??
+                                  AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
@@ -285,7 +287,13 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                           ),
                           Text(
                             "Cal",
-                            style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary),
+                            style: TextStyle(
+                              color:
+                                  theme.textTheme.bodyMedium?.color?.withValues(
+                                    alpha: 0.7,
+                                  ) ??
+                                  AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
@@ -301,10 +309,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
                 const Text(
                   "Health Insights",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 10),
@@ -321,9 +326,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: const Text(
-                    "Sleep quality improved today",
-                  ),
+                  child: const Text("Sleep quality improved today"),
                 ),
 
                 const SizedBox(height: 20),

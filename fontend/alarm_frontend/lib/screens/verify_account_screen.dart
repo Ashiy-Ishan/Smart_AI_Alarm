@@ -10,11 +10,7 @@ class VerifyAccountScreen extends StatefulWidget {
   final VoidCallback? onContinue;
   final VoidCallback? onResend;
 
-  const VerifyAccountScreen({
-    super.key,
-    this.onContinue,
-    this.onResend,
-  });
+  const VerifyAccountScreen({super.key, this.onContinue, this.onResend});
 
   @override
   State<VerifyAccountScreen> createState() => _VerifyAccountScreenState();
@@ -118,11 +114,9 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
 
     _startResendTimer();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Verification code resent'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Verification code resent')));
   }
 
   @override
@@ -236,17 +230,11 @@ class _CodeBox extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: Color(0xCCD9B56D),
-              width: 1.4,
-            ),
+            borderSide: const BorderSide(color: Color(0xCCD9B56D), width: 1.4),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
-              width: 1.8,
-            ),
+            borderSide: const BorderSide(color: AppColors.primary, width: 1.8),
           ),
         ),
       ),

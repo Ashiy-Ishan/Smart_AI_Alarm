@@ -51,7 +51,11 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color, size: 24),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: theme.textTheme.bodyLarge?.color,
+                    size: 24,
+                  ),
                   onPressed: () => Navigator.of(context).pop(),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -62,10 +66,7 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
 
               const Text(
                 'Accuracy Score',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
 
               Expanded(
@@ -87,10 +88,7 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
 
                     const SizedBox(height: 14),
 
-                    const WeeklyTrendCard(
-                      label: 'Weekly Trend :',
-                      trend: 'Up',
-                    ),
+                    const WeeklyTrendCard(label: 'Weekly Trend :', trend: 'Up'),
 
                     const SizedBox(height: 14),
 
@@ -114,7 +112,10 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.cardColor,
-                          side: BorderSide(color: theme.dividerColor, width: 1.5),
+                          side: BorderSide(
+                            color: theme.dividerColor,
+                            width: 1.5,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -139,7 +140,10 @@ class _AccuracyScoreScreenState extends State<AccuracyScoreScreen> {
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.cardColor,
-                          side: BorderSide(color: theme.dividerColor, width: 1.5),
+                          side: BorderSide(
+                            color: theme.dividerColor,
+                            width: 1.5,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),

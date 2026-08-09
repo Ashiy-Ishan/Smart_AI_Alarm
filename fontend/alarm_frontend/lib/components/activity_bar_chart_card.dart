@@ -31,8 +31,10 @@ class ActivityBarChartCard extends StatelessWidget {
           Text(
             dateText,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-              fontSize: 13
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
+              fontSize: 13,
             ),
           ),
           const SizedBox(height: 12),
@@ -60,15 +62,23 @@ class ActivityBarChartCard extends StatelessWidget {
               Text(
                 startTime,
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                  fontSize: 12
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 12,
                 ),
               ),
               Text(
                 endTime,
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                  fontSize: 12
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 12,
                 ),
               ),
             ],

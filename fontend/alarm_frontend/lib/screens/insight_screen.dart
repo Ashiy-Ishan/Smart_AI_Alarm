@@ -11,7 +11,8 @@ class InsightScreen extends StatefulWidget {
   State<InsightScreen> createState() => _InsightScreenState();
 }
 
-class _InsightScreenState extends State<InsightScreen> with AutomaticKeepAliveClientMixin {
+class _InsightScreenState extends State<InsightScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -40,7 +41,9 @@ class _InsightScreenState extends State<InsightScreen> with AutomaticKeepAliveCl
             Text(
               'Last 7 days',
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),

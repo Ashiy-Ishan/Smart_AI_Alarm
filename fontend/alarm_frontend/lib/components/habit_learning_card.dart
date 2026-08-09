@@ -22,10 +22,7 @@ class HabitLearningCard extends StatelessWidget {
         children: [
           const Text(
             'Habit Learning',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Row(
@@ -34,7 +31,11 @@ class HabitLearningCard extends StatelessWidget {
               Text(
                 'User Predict: 21m Avg',
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -58,7 +59,9 @@ class HabitLearningCard extends StatelessWidget {
                 userValues: userValues,
                 aiValues: aiValues,
                 borderColor: theme.dividerColor,
-                textColor: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textSecondary,
+                textColor:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ??
+                    AppColors.textSecondary,
               ),
             ),
           ),
@@ -101,7 +104,7 @@ class _HabitChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final paintGrid = Paint()
-      ..color = borderColor.withOpacity(0.35)
+      ..color = borderColor.withValues(alpha: 0.35)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -109,9 +112,7 @@ class _HabitChartPainter extends CustomPainter {
 
     canvas.drawLine(Offset(xMin, yMax), Offset(xMax + 8, yMax), paintAxes);
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     const List<int> yLabels = [12, 18, 24, 30];
     const double maxVal = 30.0;
@@ -121,10 +122,7 @@ class _HabitChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '$val',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 9,
-        ),
+        style: TextStyle(color: textColor, fontSize: 9),
       );
       textPainter.layout();
       textPainter.paint(canvas, Offset(xMin - 16, y - 5));
@@ -138,10 +136,7 @@ class _HabitChartPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '${13 + i}',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 10,
-        ),
+        style: TextStyle(color: textColor, fontSize: 10),
       );
       textPainter.layout();
       textPainter.paint(canvas, Offset(x - 6, yMax + 8));
@@ -178,8 +173,8 @@ class _HabitChartPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            color.withOpacity(opacity),
-            color.withOpacity(0.0),
+            color.withValues(alpha: opacity),
+            color.withValues(alpha: 0.0),
           ],
         ).createShader(Rect.fromLTRB(xMin, yMin, xMax, yMax))
         ..style = PaintingStyle.fill;
@@ -197,15 +192,11 @@ class _HabitChartPainter extends CustomPainter {
 
     drawCurve(
       data: userValues,
-      color: textColor.withOpacity(0.8),
+      color: textColor.withValues(alpha: 0.8),
       opacity: 0.18,
     );
 
-    drawCurve(
-      data: aiValues,
-      color: AppColors.primary,
-      opacity: 0.28,
-    );
+    drawCurve(data: aiValues, color: AppColors.primary, opacity: 0.28);
   }
 
   @override

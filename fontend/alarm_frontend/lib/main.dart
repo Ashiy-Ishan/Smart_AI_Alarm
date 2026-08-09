@@ -25,19 +25,23 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-    statusBarColor: Colors.transparent,
-  ));
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ),
+  );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   try {
     await dotenv.load(fileName: ".env");
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    
+
     await NotificationService().initialize();
 
     await AppBackgroundService.initializeService();
@@ -75,9 +79,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   String _getHiddenUid(String email) {
-    String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String prefix = email
+        .split('@')
+        .first
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toLowerCase();
     String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
+    String suffix = hash.length > 4
+        ? hash.substring(hash.length - 4)
+        : hash.padLeft(4, '0');
     return "user_${prefix}_$suffix";
   }
 
@@ -86,13 +96,18 @@ class _MyAppState extends State<MyApp> {
       _alarmSubscription?.cancel();
       if (user != null && user.email != null) {
         final hiddenUid = _getHiddenUid(user.email!);
-        
-        final devicesSnapshot = await FirebaseDatabase.instance.ref().child('Users').child(hiddenUid).child('Devices').get();
+
+        final devicesSnapshot = await FirebaseDatabase.instance
+            .ref()
+            .child('Users')
+            .child(hiddenUid)
+            .child('Devices')
+            .get();
         if (devicesSnapshot.exists) {
           final devices = devicesSnapshot.value as Map<dynamic, dynamic>;
           if (devices.isNotEmpty) {
             _currentMac = devices.keys.first.toString();
-            
+
             _alarmSubscription = FirebaseDatabase.instance
                 .ref()
                 .child('Users')
@@ -102,13 +117,13 @@ class _MyAppState extends State<MyApp> {
                 .child('AlarmStatus')
                 .onValue
                 .listen((event) {
-              final status = event.snapshot.value?.toString();
-              if (status == 'RINGING' && !_isAlarmShowing) {
-                _showAlarmOverlay(hiddenUid, _currentMac!);
-              } else if (status != 'RINGING' && _isAlarmShowing) {
-                _hideAlarmOverlay();
-              }
-            });
+                  final status = event.snapshot.value?.toString();
+                  if (status == 'RINGING' && !_isAlarmShowing) {
+                    _showAlarmOverlay(hiddenUid, _currentMac!);
+                  } else if (status != 'RINGING' && _isAlarmShowing) {
+                    _hideAlarmOverlay();
+                  }
+                });
           }
         }
       }

@@ -30,7 +30,11 @@ class _GmailScreenState extends State<GmailScreen> {
     setState(() => _isLoading = true);
     try {
       final emails = await _syncService.fetchLatestEmails();
-      if (mounted) setState(() { _emails = emails; _isLoading = false; });
+      if (mounted)
+        setState(() {
+          _emails = emails;
+          _isLoading = false;
+        });
     } catch (_) {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -39,16 +43,25 @@ class _GmailScreenState extends State<GmailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final userEmail = FirebaseAuth.instance.currentUser?.email ?? 'Unknown User';
+    final userEmail =
+        FirebaseAuth.instance.currentUser?.email ?? 'Unknown User';
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: theme.brightness == Brightness.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      value: theme.brightness == Brightness.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           backgroundColor: theme.scaffoldBackgroundColor,
           elevation: 0,
-          leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color), onPressed: () => Navigator.pop(context)),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -60,21 +73,39 @@ class _GmailScreenState extends State<GmailScreen> {
         body: RefreshIndicator(
           onRefresh: _fetchEmails,
           color: AppColors.primary,
-          child: _isLoading 
-            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-            : ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  SyncStatusCard(statusText: 'Synced ${_emails.length} unread emails'),
-                  const SizedBox(height: 20),
-                  const Text('Recent Unread Messages', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 12),
-                  if (_emails.isEmpty)
-                    const Center(child: Padding(padding: EdgeInsets.all(40), child: Text("No unread emails found.", style: TextStyle(color: AppColors.textSecondary))))
-                  else
-                    ..._emails.map(_buildEmailTile),
-                ],
-              ),
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                )
+              : ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    SyncStatusCard(
+                      statusText: 'Synced ${_emails.length} unread emails',
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Recent Unread Messages',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (_emails.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(40),
+                          child: Text(
+                            "No unread emails found.",
+                            style: TextStyle(color: AppColors.textSecondary),
+                          ),
+                        ),
+                      )
+                    else
+                      ..._emails.map(_buildEmailTile),
+                  ],
+                ),
         ),
       ),
     );
@@ -92,15 +123,39 @@ class _GmailScreenState extends State<GmailScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(14), border: Border.all(color: Theme.of(context).dividerColor)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Theme.of(context).dividerColor),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(from, style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+          Text(
+            from,
+            style: const TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(subject, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15), maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text(
+            subject,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           const SizedBox(height: 4),
-          Text(msg.snippet ?? "", style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+          Text(
+            msg.snippet ?? "",
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );

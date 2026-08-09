@@ -3,9 +3,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 class GoogleSyncService {
   static final GoogleSyncService _instance = GoogleSyncService._internal();
+  static final Logger _logger = Logger();
   factory GoogleSyncService() => _instance;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
@@ -21,8 +23,12 @@ class GoogleSyncService {
       await _googleSignIn.initialize();
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
       _isInitialized = true;
-    } catch (e) {
-      print('Google Init Error: $e');
+    } catch (error, stackTrace) {
+      _logger.e(
+        'Failed to initialize Google Sign-In',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -38,17 +44,15 @@ class GoogleSyncService {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return false;
 
-      // if logged in with google, we prioritize that account
-      bool isGoogleAuth = user.providerData.any((p) => p.providerId == 'google.com');
-      
       await _ensureInitialized();
       _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-      
+
       if (_cachedAccount == null) return false;
 
       // verify that we have the required permissions
-      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      return authz != null && authz.accessToken != null;
+      final authorization = await _cachedAccount!.authorizationClient
+          .authorizationForScopes(_scopes);
+      return authorization != null;
     } catch (e) {
       return false;
     }
@@ -61,7 +65,7 @@ class GoogleSyncService {
 
       // try silent restoration
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
-      
+
       // show account picker only if totally necessary
       _cachedAccount ??= await _googleSignIn.authenticate();
 
@@ -71,8 +75,12 @@ class GoogleSyncService {
       }
 
       return _cachedAccount;
-    } catch (e) {
-      print('Link Error: $e');
+    } catch (error, stackTrace) {
+      _logger.e(
+        'Failed to link Google account',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -82,8 +90,12 @@ class GoogleSyncService {
     try {
       await _googleSignIn.signOut();
       _cachedAccount = null;
-    } catch (e) {
-      print('Unlink Error: $e');
+    } catch (error, stackTrace) {
+      _logger.e(
+        'Failed to unlink Google account',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -96,36 +108,41 @@ class GoogleSyncService {
       if (_cachedAccount == null) return null;
 
       // get access silently
-      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
+      final authz = await _cachedAccount!.authorizationClient
+          .authorizationForScopes(_scopes);
+      if (authz == null) return null;
 
-      // if expired, try to refresh silently or return null
-      if (authz == null || authz.accessToken == null) {
-        // we avoid authenticate() here to prevent unexpected popups during sync
-        return null;
-      }
-
-      final String? token = authz.accessToken;
-      if (token == null) return null;
-
-      return GoogleAuthenticatedClient(token);
-    } catch (e) {
-      print('Auth Client Error: $e');
+      return GoogleAuthenticatedClient(authz.accessToken);
+    } catch (error, stackTrace) {
+      _logger.e(
+        'Failed to create an authenticated Google client',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
 
   // api calls
   Future<List<Event>> fetchUpcomingEvents() async {
+    return fetchEvents(timeMin: DateTime.now().toUtc(), maxResults: 15);
+  }
+
+  Future<List<Event>> fetchEvents({
+    required DateTime timeMin,
+    DateTime? timeMax,
+    int maxResults = 250,
+  }) async {
     try {
       final client = await _getAuthenticatedClient();
       if (client == null) return [];
 
       final calendar = CalendarApi(client);
-      final now = DateTime.now().toUtc();
       final events = await calendar.events.list(
         'primary',
-        timeMin: now,
-        maxResults: 15,
+        timeMin: timeMin.toUtc(),
+        timeMax: timeMax?.toUtc(),
+        maxResults: maxResults,
         orderBy: 'startTime',
         singleEvents: true,
       );
@@ -142,7 +159,11 @@ class GoogleSyncService {
       if (client == null) return [];
 
       final gmail = GmailApi(client);
-      final response = await gmail.users.messages.list('me', maxResults: 10, q: 'is:unread');
+      final response = await gmail.users.messages.list(
+        'me',
+        maxResults: 10,
+        q: 'is:unread',
+      );
 
       List<Message> emails = [];
       if (response.messages != null) {
