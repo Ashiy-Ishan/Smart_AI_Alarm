@@ -17,7 +17,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
   final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
   final WeatherService _weatherService = WeatherService();
 
@@ -45,9 +46,15 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   }
 
   String _getHiddenUid(String email) {
-    String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String prefix = email
+        .split('@')
+        .first
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toLowerCase();
     String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
+    String suffix = hash.length > 4
+        ? hash.substring(hash.length - 4)
+        : hash.padLeft(4, '0');
     return "user_${prefix}_$suffix";
   }
 
@@ -89,11 +96,23 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   (String greeting, String secondary, String asset) _getTimeBasedData() {
     final hour = DateTime.now().hour;
     if (hour >= 5 && hour < 12) {
-      return ("Good Morning", "Have a great morning", "assets/lotties/morning.json");
+      return (
+        "Good Morning",
+        "Have a great morning",
+        "assets/lotties/morning.json",
+      );
     } else if (hour >= 12 && hour < 17) {
-      return ("Good Afternoon", "Have a productive afternoon", "assets/lotties/day.json");
+      return (
+        "Good Afternoon",
+        "Have a productive afternoon",
+        "assets/lotties/day.json",
+      );
     } else if (hour >= 17 && hour < 21) {
-      return ("Good Evening", "Enjoy your evening", "assets/lotties/night.json");
+      return (
+        "Good Evening",
+        "Enjoy your evening",
+        "assets/lotties/night.json",
+      );
     } else {
       return ("Good Night", "Get some good rest", "assets/lotties/night.json");
     }
@@ -164,14 +183,22 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             ],
           ),
         ),
+      ),
     );
   }
 
   Widget _buildLiveAlarmCard() {
     return StreamBuilder(
-      stream: _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).onValue,
+      stream: _rtdb
+          .ref()
+          .child('Users')
+          .child(_hiddenUid!)
+          .child('Devices')
+          .child(_macAddress!)
+          .onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-        final data = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
+        final data =
+            snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
         final String alarmTime = data['AlarmTime'] ?? "07:00";
         final bool alarmEnabled = data['AlarmEnabled'] ?? false;
 
@@ -192,7 +219,13 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Bedside Alarm", style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                  const Text(
+                    "Bedside Alarm",
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   GestureDetector(
                     onTap: () => _pickTime(context, alarmTime),
@@ -204,7 +237,10 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       ),
                     ),
                   ),
-                  const Text("Mon - Sun", style: TextStyle(color: Colors.white38, fontSize: 11)),
+                  const Text(
+                    "Mon - Sun",
+                    style: TextStyle(color: Colors.white38, fontSize: 11),
+                  ),
                 ],
               ),
               Switch(
@@ -248,7 +284,10 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
   Future<void> _pickTime(BuildContext context, String currentTime) async {
     final parts = currentTime.split(':');
-    final initialTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+    final initialTime = TimeOfDay(
+      hour: int.parse(parts[0]),
+      minute: int.parse(parts[1]),
+    );
     final picked = await showTimePicker(
       context: context,
       initialTime: initialTime,
@@ -264,14 +303,21 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
       ),
     );
     if (picked != null) {
-      final formatted = "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}";
+      final formatted =
+          "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}";
       _updateDevice('AlarmTime', formatted);
     }
   }
 
   void _updateDevice(String key, dynamic value) {
     if (_macAddress != null && _hiddenUid != null) {
-      _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).update({key: value});
+      _rtdb
+          .ref()
+          .child('Users')
+          .child(_hiddenUid!)
+          .child('Devices')
+          .child(_macAddress!)
+          .update({key: value});
     }
   }
 
@@ -282,11 +328,19 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(8),
-      child: const Icon(Icons.notifications_none, color: AppColors.primary, size: 30),
+      child: const Icon(
+        Icons.notifications_none,
+        color: AppColors.primary,
+        size: 30,
+      ),
     );
   }
 
-  Widget _buildWeatherSection(String asset, String secondaryGreeting, String name) {
+  Widget _buildWeatherSection(
+    String asset,
+    String secondaryGreeting,
+    String name,
+  ) {
     return Column(
       children: [
         Center(
@@ -305,7 +359,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text("$secondaryGreeting,\n$name", style: const TextStyle(color: AppColors.textSecondary, fontSize: 15, fontWeight: FontWeight.w500)),
+            Text(
+              "$secondaryGreeting,\n$name",
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -342,7 +403,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Next Event", style: TextStyle(color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            "Next Event",
+            style: TextStyle(
+              color: AppColors.primary,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           SizedBox(height: 10),
           Row(
             children: [
@@ -350,13 +418,19 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               SizedBox(width: 8),
               Text("9:30 AM", style: TextStyle(fontSize: 17)),
               SizedBox(width: 10),
-              Text("•", style: TextStyle(color: AppColors.textSecondary, fontSize: 17)),
+              Text(
+                "•",
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 17),
+              ),
               SizedBox(width: 10),
               Text("Product Sync", style: TextStyle(fontSize: 17)),
             ],
           ),
           SizedBox(height: 6),
-          Text("Tue, Nov 12 • 1hr 15m left", style: TextStyle(color: AppColors.primaryDark, fontSize: 15)),
+          Text(
+            "Tue, Nov 12 • 1hr 15m left",
+            style: TextStyle(color: AppColors.primaryDark, fontSize: 15),
+          ),
         ],
       ),
     );
