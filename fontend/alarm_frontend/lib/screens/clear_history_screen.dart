@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/primary_button.dart';
 import 'package:alarm_frontend/components/info_card.dart';
@@ -39,7 +38,9 @@ class _ClearHistoryScreenState extends State<ClearHistoryScreen> {
     if (mounted) {
       setState(() {
         _isClearing = false;
-        for (int i = 0; i < _checked.length; i++) _checked[i] = false;
+        for (int i = 0; i < _checked.length; i++) {
+          _checked[i] = false;
+        }
       });
     }
   }

@@ -4,7 +4,6 @@ import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/providers/theme_provider.dart'; // added theme provider
 import 'package:alarm_frontend/routes/app_router.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/screens/alarm/alarm_ringing_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -12,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:alarm_frontend/services/notification_service.dart';

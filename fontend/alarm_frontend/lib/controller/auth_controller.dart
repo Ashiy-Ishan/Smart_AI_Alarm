@@ -17,11 +17,10 @@ class AuthController {
       await googleSignIn.initialize();
 
       final googleUser = await googleSignIn.authenticate();
-      if (googleUser == null) return null;
 
       await googleUser.authorizationClient.authorizeScopes(_requiredScopes);
 
-      final googleAuth = await googleUser.authentication;
+      final googleAuth = googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );

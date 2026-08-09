@@ -209,10 +209,11 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Setup Failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

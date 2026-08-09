@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/components/accuracy_ring_gauge.dart';
 import 'package:alarm_frontend/components/accuracy_metrics_card.dart';
 import 'package:alarm_frontend/components/weekly_trend_card.dart';

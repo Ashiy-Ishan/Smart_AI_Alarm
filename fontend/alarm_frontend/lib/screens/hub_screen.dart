@@ -177,10 +177,11 @@ class _HubScreenState extends State<HubScreen>
           .child(_macAddress!)
           .onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return const Center(
             child: Text("Sync Error", style: TextStyle(color: Colors.red)),
           );
+        }
         final data =
             snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
 
@@ -435,10 +436,11 @@ class _HubScreenState extends State<HubScreen>
   void _cancelReset() {
     _resetTimer?.cancel();
     _updateDevice('FactoryReset', false);
-    if (mounted)
+    if (mounted) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Reset Canceled")));
+    }
   }
 
   void _verifyAndExecuteReset(BuildContext context) async {

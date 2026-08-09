@@ -86,7 +86,6 @@ class _AuthScreenState extends State<AuthScreen> {
         context,
         rootNavigator: true,
       ).pushReplacementNamed(AppRoutes.main);
-    } catch (e) {
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -136,7 +135,6 @@ class _AuthScreenState extends State<AuthScreen> {
         context,
         rootNavigator: true,
       ).pushReplacementNamed(AppRoutes.verifyAccount);
-    } catch (e) {
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -161,7 +159,6 @@ class _AuthScreenState extends State<AuthScreen> {
       if (mounted) {
         switchPage(AuthPageModel.login());
       }
-    } catch (e) {
     } finally {
       if (mounted) {
         setState(() => isLoading = false);

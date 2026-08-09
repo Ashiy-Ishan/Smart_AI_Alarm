@@ -16,7 +16,9 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   int _selectedDay = DateTime.now().day;
-  final DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
+  late DateTime _selectedDate;
+  late DateTime _currentMonth;
+  final GoogleSyncService _syncService = GoogleSyncService();
   List<google_calendar.Event> _events = [];
   bool _isLoading = true;
 
@@ -31,8 +33,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Future<void> _fetchEvents() async {
     setState(() => _isLoading = true);
-    final events = await _syncService.fetchUpcomingEvents();
-    if (mounted) {
+    try {
+      final monthStart = DateTime(_currentMonth.year, _currentMonth.month);
+      final nextMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
+      final events = await _syncService.fetchEvents(
+        timeMin: monthStart,
+        timeMax: nextMonth,
+      );
+      if (!mounted ||
+          _currentMonth.year != monthStart.year ||
+          _currentMonth.month != monthStart.month) {
+        return;
+      }
       setState(() {
         _events = events;
         _isLoading = false;
@@ -54,6 +66,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       _selectedDate = nextMonth.year == now.year && nextMonth.month == now.month
           ? DateTime(now.year, now.month, now.day)
           : nextMonth;
+      _selectedDay = _selectedDate.day;
       _events = [];
     });
     _fetchEvents();
@@ -174,6 +187,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
               onDaySelected: (day) {
                 setState(() {
                   _selectedDay = day;
+                  _selectedDate = DateTime(
+                    _currentMonth.year,
+                    _currentMonth.month,
+                    day,
+                  );
                 });
               },
             ),
@@ -197,12 +215,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  if (_isLoading)
-                    const Center(child: CircularProgressIndicator(color: AppColors.primary))
-                  else if (_events.isEmpty)
-                    const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("No upcoming events found.", style: TextStyle(color: AppColors.textSecondary))))
-                  else
-                    ..._events.map((event) => _buildEventItem(event)),
+                  _eventsContent(),
                 ],
               ),
             ),

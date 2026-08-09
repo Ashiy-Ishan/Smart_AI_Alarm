@@ -41,7 +41,7 @@ class CustomSwitchRow extends StatelessWidget {
             child: Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: Colors.black,
+              activeThumbColor: Colors.black,
               activeTrackColor: AppColors.primary,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/security_overview_card.dart';
 import 'package:alarm_frontend/components/custom_checkbox_tile.dart';

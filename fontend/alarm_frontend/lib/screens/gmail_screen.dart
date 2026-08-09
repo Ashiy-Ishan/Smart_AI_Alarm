@@ -30,11 +30,12 @@ class _GmailScreenState extends State<GmailScreen> {
     setState(() => _isLoading = true);
     try {
       final emails = await _syncService.fetchLatestEmails();
-      if (mounted)
+      if (mounted) {
         setState(() {
           _emails = emails;
           _isLoading = false;
         });
+      }
     } catch (_) {
       if (mounted) setState(() => _isLoading = false);
     }
