@@ -15,9 +15,8 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  final GoogleSyncService _syncService = GoogleSyncService();
-  late DateTime _selectedDate;
-  late DateTime _currentMonth;
+  int _selectedDay = DateTime.now().day;
+  final DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
   List<google_calendar.Event> _events = [];
   bool _isLoading = true;
 
@@ -31,14 +30,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> _fetchEvents() async {
-    if (mounted) setState(() => _isLoading = true);
-    final month = _currentMonth;
-    try {
-      final events = await _syncService.fetchEvents(
-        timeMin: month,
-        timeMax: DateTime(month.year, month.month + 1),
-      );
-      if (!mounted || month != _currentMonth) return;
+    setState(() => _isLoading = true);
+    final events = await _syncService.fetchUpcomingEvents();
+    if (mounted) {
       setState(() {
         _events = events;
         _isLoading = false;
@@ -176,14 +170,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
             const SizedBox(height: 8),
             CalendarGrid(
               month: _currentMonth,
-              selectedDay: _selectedDate.day,
+              selectedDay: _selectedDay,
               onDaySelected: (day) {
                 setState(() {
-                  _selectedDate = DateTime(
-                    _currentMonth.year,
-                    _currentMonth.month,
-                    day,
-                  );
+                  _selectedDay = day;
                 });
               },
             ),
@@ -206,7 +196,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  _eventsContent(),
+
+                  if (_isLoading)
+                    const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                  else if (_events.isEmpty)
+                    const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("No upcoming events found.", style: TextStyle(color: AppColors.textSecondary))))
+                  else
+                    ..._events.map((event) => _buildEventItem(event)),
                 ],
               ),
             ),

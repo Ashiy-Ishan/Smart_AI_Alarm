@@ -35,28 +35,16 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   Future<void> _loadSensorSummary() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) {
-        throw Exception('User is not logged in');
-      }
-
+      if (user == null) throw Exception('User is not logged in');
       final response = await ApiService.get('/iot/sensor/${user.uid}/latest');
-
       if (!mounted) return;
-
       setState(() {
-        if (response != null) {
-          _sensorData = Map<String, dynamic>.from(response);
-        }
-
+        if (response != null) _sensorData = Map<String, dynamic>.from(response);
         _sensorError = null;
         _isLoadingSensor = false;
       });
     } catch (e) {
-      debugPrint('Today summary backend error: $e');
-
       if (!mounted) return;
-
       setState(() {
         _sensorError = 'Unable to load sensor summary';
         _isLoadingSensor = false;
@@ -67,7 +55,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -79,7 +66,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -89,7 +75,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Divider(color: theme.dividerColor),
-
                 const SizedBox(height: 40),
 
                 const Text(
@@ -98,20 +83,15 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                 ),
 
                 const SizedBox(height: 15),
-
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return EventCard(event: events[index]);
-                  },
+                  itemBuilder: (context, index) =>
+                      EventCard(event: events[index]),
                 ),
-
                 const SizedBox(height: 20),
-
                 Divider(color: theme.dividerColor),
-
                 const SizedBox(height: 20),
 
                 const Text(
@@ -219,13 +199,12 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                         ),
                 ),
                 const SizedBox(height: 15),
-
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: theme.cardColor,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: theme.dividerColor),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -300,11 +279,8 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 Divider(color: theme.dividerColor),
-
                 const SizedBox(height: 20),
 
                 const Text(
@@ -313,11 +289,8 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                 ),
 
                 const SizedBox(height: 10),
-
                 Container(height: 4, width: 40, color: AppColors.primary),
-
                 const SizedBox(height: 20),
-
                 Container(
                   padding: const EdgeInsets.all(16),
                   width: double.infinity,
@@ -328,7 +301,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                   ),
                   child: const Text("Sleep quality improved today"),
                 ),
-
                 const SizedBox(height: 20),
               ],
             ),
