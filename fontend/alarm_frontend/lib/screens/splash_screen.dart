@@ -3,7 +3,7 @@ import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/components/primary_button.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkAuthStatus();
   }
 
+  // fast redirect if already logged in
   void _checkAuthStatus() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
@@ -40,6 +41,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    // black screen during sub-second redirect
     if (userProvider.isInitialized && userProvider.isAuthenticated) {
       return Scaffold(backgroundColor: theme.scaffoldBackgroundColor);
     }
@@ -52,25 +55,26 @@ class _SplashScreenState extends State<SplashScreen> {
             return SingleChildScrollView(
               physics: const NeverScrollableScrollPhysics(),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox.shrink(),
+                      
+                      // App Logo (SVG)
                       Column(
                         children: [
-                          SizedBox(
-                            height: constraints.maxHeight * 0.35,
-                            child: Lottie.asset(
-                              'assets/lotties/alarm.json',
+                          Container(
+                            height: constraints.maxHeight * 0.25,
+                            padding: const EdgeInsets.all(16),
+                            child: SvgPicture.asset(
+                              'assets/icon/icon.svg',
                               fit: BoxFit.contain,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
                           const Text(
                             'Smarter Wake-Ups,\nBetter Days.',
                             textAlign: TextAlign.center,
@@ -83,13 +87,12 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                         ],
                       ),
+
                       Column(
                         children: [
                           PrimaryButton(
                             text: 'Get Started',
-                            onPressed: () {
-                              Navigator.pushNamed(context, AppRoutes.auth);
-                            },
+                            onPressed: () => Navigator.pushNamed(context, AppRoutes.auth),
                           ),
                           const SizedBox(height: 32),
                           Text(
