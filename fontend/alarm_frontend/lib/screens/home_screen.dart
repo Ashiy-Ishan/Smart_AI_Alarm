@@ -8,6 +8,7 @@ import 'package:alarm_frontend/services/background_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
   final FirebaseDatabase _rtdb = FirebaseDatabase.instance;
   final WeatherService _weatherService = WeatherService();
+  final TextEditingController _destinationController = TextEditingController();
 
   String temperature = "--°F";
   String weatherMain = "Loading...";
@@ -35,13 +37,36 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.initState();
     _loadWeather();
     _setupDeviceListener();
+    _loadSavedDestination();
     AppBackgroundService.requestOptimizationPermission();
   }
 
   @override
   void dispose() {
     _deviceSubscription?.cancel();
+    _destinationController.dispose();
     super.dispose();
+  }
+
+  // Load saved destination from local storage
+  Future<void> _loadSavedDestination() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('destination_location') ?? "";
+    setState(() => _destinationController.text = saved);
+  }
+
+  // Save destination to local storage and update hardware in cloud
+  Future<void> _saveDestination(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('destination_location', value);
+    
+    if (_macAddress != null && _hiddenUid != null) {
+      // Send to RTDB for hardware/backend sync
+      await _rtdb.ref().child('Users').child(_hiddenUid!).child('Devices').child(_macAddress!).update({
+        'DestinationLocation': value,
+        'LocationUpdatedAt': DateTime.now().toUtc().toIso8601String(),
+      });
+    }
   }
 
   String _getHiddenUid(String email) {
@@ -134,6 +159,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                 const SizedBox(height: 20),
                 if (_macAddress != null) _buildLiveAlarmCard() else _buildStaticAlarmPlaceholder(),
                 const SizedBox(height: 20),
+                _buildDestinationCard(),
+                const SizedBox(height: 20),
                 _buildSummaryCard(),
                 const SizedBox(height: 20),
               ],
@@ -204,6 +231,46 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             ],
           ),
           Switch(value: false, onChanged: null),
+        ],
+      ),
+    );
+  }
+
+  // New Destination Location Card
+  Widget _buildDestinationCard() {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Destination Location", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const SizedBox(height: 4),
+          const Text("Used for AI commute time prediction", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: theme.dividerColor),
+            ),
+            child: TextField(
+              controller: _destinationController,
+              onSubmitted: _saveDestination,
+              style: const TextStyle(fontSize: 14),
+              decoration: const InputDecoration(
+                hintText: "Enter office or event address...",
+                prefixIcon: Icon(Icons.location_on_outlined, size: 20, color: AppColors.primary),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              ),
+            ),
+          ),
         ],
       ),
     );
