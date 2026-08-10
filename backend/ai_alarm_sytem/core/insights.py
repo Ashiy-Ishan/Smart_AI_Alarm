@@ -136,10 +136,63 @@ def create_sleep_session(
         ),
     }
 
-    result = (
-        get_collections()[SLEEP_SESSIONS]
-        .insert_one(doc)
+    logger.info(
+        (
+            "Saving sleep session | "
+            "user=%s | "
+            "start=%s | "
+            "end=%s | "
+            "duration=%.2f hours"
+        ),
+        user_id,
+        sleep_start,
+        sleep_end,
+        duration_hours,
     )
+
+    try:
+        collections = get_collections()
+
+        logger.info(
+            "Mongo collections loaded for sleep session"
+        )
+
+        collection = collections[
+            SLEEP_SESSIONS
+        ]
+
+        logger.info(
+            "Writing sleep session to MongoDB..."
+        )
+
+        result = collection.insert_one(
+            doc
+        )
+
+        logger.info(
+            (
+                "Sleep session successfully saved | "
+                "user=%s | id=%s"
+            ),
+            user_id,
+            result.inserted_id,
+        )
+
+    except Exception as exc:
+        logger.exception(
+            (
+                "MongoDB error while saving "
+                "sleep session for user %s"
+            ),
+            user_id,
+        )
+
+        raise RuntimeError(
+            (
+                "Sleep session database error: "
+                f"{exc}"
+            )
+        ) from exc
 
     doc["_id"] = str(
         result.inserted_id

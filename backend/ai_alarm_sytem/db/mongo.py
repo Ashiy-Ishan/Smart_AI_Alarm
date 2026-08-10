@@ -22,8 +22,9 @@ def get_mongo_client() -> MongoClient:
                         "Falling back to local MongoDB connection."
                     )
                     uri = "mongodb://localhost:27017"
-                _client = MongoClient(uri, serverSelectionTimeoutMS=3000)
+                _client = MongoClient(uri, serverSelectionTimeoutMS=3000,connectTimeoutMS=5000,
+                    socketTimeoutMS=5000,)
     return _client
 
 def get_database() -> Database:
-    return get_mongo_client()[get_settings().mongo_db_name]
+    return get_mongo_client()[get_settings().mongo_db_name]

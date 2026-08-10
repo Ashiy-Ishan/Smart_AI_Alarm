@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 from datetime import datetime, timezone
-
+from io import BytesIO
 import firebase_admin
 import flask
 from firebase_functions import https_fn, scheduler_fn
@@ -142,7 +142,7 @@ def alarm_outcome_route():
             {
                 "error": str(exc),
             }
-        ), 500,
+        ), 500
 
 
 @_app.post("/alarms/<user_id>/retrain")
@@ -284,8 +284,24 @@ def iot_latest(user_id: str):
 
 @https_fn.on_request(memory=MemoryOption.MB_512)
 def api(req: https_fn.Request) -> https_fn.Response:
-    """Single HTTP entry point — all routes handled internally by Flask."""
-    with _app.request_context(req.environ):
+    """
+    Single HTTP entry point — all routes handled internally by Flask.
+
+    Cache the original Firebase request body and give the internal
+    Flask app its own copy of the request stream.
+    """
+
+    # Read and cache the original request body.
+    body = req.get_data(cache=True)
+
+    # Copy the request environment.
+    environ = req.environ.copy()
+
+    # Give the nested Flask app its own readable request body.
+    environ["wsgi.input"] = BytesIO(body)
+    environ["CONTENT_LENGTH"] = str(len(body))
+
+    with _app.request_context(environ):
         return _app.full_dispatch_request()
 
 

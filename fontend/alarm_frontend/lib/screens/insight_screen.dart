@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/screens/sleep_tracking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
@@ -68,6 +69,19 @@ class _InsightScreenState extends State<InsightScreen>
     }
   }
 
+  Future<void> _openSleepTracking() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SleepTrackingScreen()),
+    );
+
+    // When the user comes back from Sleep Tracking,
+    // reload the Insights data.
+    if (!mounted) return;
+
+    await _loadInsights();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -132,6 +146,32 @@ class _InsightScreenState extends State<InsightScreen>
                 )
               else if (_insights != null) ...[
                 SleepAnalyticsCard(sleep: _insights!.sleep),
+
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: ElevatedButton.icon(
+                    onPressed: _openSleepTracking,
+                    icon: const Icon(Icons.bedtime_outlined),
+                    label: const Text(
+                      'Track Sleep',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
 
                 const SizedBox(height: 16),
 
