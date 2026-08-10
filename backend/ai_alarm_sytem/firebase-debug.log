@@ -115,3 +115,1703 @@ specVersion: v1alpha1
 
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
+[debug] [2026-08-10T16:23:21.625Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:23:21.847Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:23:23.187Z] Customer code is not Node
+[debug] [2026-08-10T16:23:23.210Z] Validating python source
+[debug] [2026-08-10T16:23:23.211Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:23:23.328Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:23:23.382Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:23:23.829Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:23:23.842Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:23:23.843Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:23:26] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:23:26,723 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:23:26] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:23:26.743Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:23:26] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:23:26,765 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:23:26] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:26:28.977Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:26:30.001Z] Customer code is not Node
+[debug] [2026-08-10T16:26:30.004Z] Validating python source
+[debug] [2026-08-10T16:26:30.004Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:26:30.041Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:26:30.065Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:26:30.112Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:26:30.297Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:26:30.311Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:26:30.311Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[debug] [2026-08-10T16:26:31.183Z] Customer code is not Node
+[debug] [2026-08-10T16:26:31.187Z] Validating python source
+[debug] [2026-08-10T16:26:31.187Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:26:31.215Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:26:31.223Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:26:31.543Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:26:31.682Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:26:31.683Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:26:32,167 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:26:32.167Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:26:32,180 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:26:32.315Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py changed, reloading triggers"}}
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:26:32,779 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:26:32.779Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:26:32,790 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:26:32] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:26:33.325Z] Customer code is not Node
+[debug] [2026-08-10T16:26:33.325Z] Validating python source
+[debug] [2026-08-10T16:26:33.325Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:26:33.327Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:26:33.331Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:26:33.504Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:26:33.515Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:26:33.515Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:26:34] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:26:34,496 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:26:34] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:26:34.495Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:26:34] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:26:34,504 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:26:34] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:32:06.571Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\main.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\main.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:32:07.661Z] Customer code is not Node
+[debug] [2026-08-10T16:32:07.668Z] Validating python source
+[debug] [2026-08-10T16:32:07.669Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:32:07.736Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:32:07.776Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:32:08.147Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:32:08.160Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:32:08.160Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:32:10] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:32:10,828 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:32:10] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:32:10.821Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:32:10] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:32:10,849 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:32:10] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:36:07.591Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:36:08.837Z] Customer code is not Node
+[debug] [2026-08-10T16:36:08.850Z] Validating python source
+[debug] [2026-08-10T16:36:08.851Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:36:08.981Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:36:09.024Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:36:09.313Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:36:09.324Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:36:09.325Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:11] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:36:11,691 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:11] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:36:11.701Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:11] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:36:11,736 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:11] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:36:15.348Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:36:16.360Z] Customer code is not Node
+[debug] [2026-08-10T16:36:16.361Z] Validating python source
+[debug] [2026-08-10T16:36:16.361Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:36:16.366Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:36:16.380Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:36:16.529Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:36:16.928Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:36:16.962Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:36:16.962Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[debug] [2026-08-10T16:36:17.532Z] Customer code is not Node
+[debug] [2026-08-10T16:36:17.541Z] Validating python source
+[debug] [2026-08-10T16:36:17.541Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:36:17.545Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:36:17.562Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:36:17.900Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:36:17.926Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8081"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:36:17.926Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[error] 
+ * Running on http://127.0.0.1:8081
+Press CTRL+C to quit
+
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8081
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:36:19,843 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:36:19.853Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:36:19,847 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:36:19.862Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:36:19,873 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/quitquitquit HTTP/1.1" 200 -
+127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:36:19,874 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:19] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:36:21.477Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:36:22.486Z] Customer code is not Node
+[debug] [2026-08-10T16:36:22.487Z] Validating python source
+[debug] [2026-08-10T16:36:22.487Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:36:22.488Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:36:22.512Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:36:22.796Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:36:22.817Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:36:22.818Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:23] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:36:23,989 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:23] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:36:23.992Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:36:23] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:36:23,997 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:36:23] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:37:07.632Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:37:08.647Z] Customer code is not Node
+[debug] [2026-08-10T16:37:08.648Z] Validating python source
+[debug] [2026-08-10T16:37:08.648Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:37:08.650Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:37:08.668Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:37:08.930Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:37:08.948Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:37:08.948Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:37:10] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:37:10,516 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:37:10] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:37:10.518Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:37:10] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:37:10,523 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:37:10] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:22.691Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:40:23.712Z] Customer code is not Node
+[debug] [2026-08-10T16:40:23.713Z] Validating python source
+[debug] [2026-08-10T16:40:23.713Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:40:23.718Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:40:23.734Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:40:23.945Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:40:23.957Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:40:23.957Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:25] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:40:25,532 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:25] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:40:25.529Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:25] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:40:25,539 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:25] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:30.585Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:40:31.593Z] Customer code is not Node
+[debug] [2026-08-10T16:40:31.594Z] Validating python source
+[debug] [2026-08-10T16:40:31.594Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:40:31.595Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:40:31.605Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:40:31.811Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:40:31.827Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:40:31.828Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:32] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:40:32,765 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:32] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:40:32.762Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:32] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:40:32,770 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:32] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:36.159Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:40:37.161Z] Customer code is not Node
+[debug] [2026-08-10T16:40:37.161Z] Validating python source
+[debug] [2026-08-10T16:40:37.166Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:40:37.168Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:40:37.183Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:40:37.404Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:40:37.422Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:40:37.422Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[error] 
+ * Running on http://127.0.0.1:8082
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:38] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:40:38,861 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:38] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:40:38.858Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:38] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:40:38,868 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:38] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:39.005Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:40:40.013Z] Customer code is not Node
+[debug] [2026-08-10T16:40:40.013Z] Validating python source
+[debug] [2026-08-10T16:40:40.014Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:40:40.015Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:40:40.027Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:40:40.222Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:40:40.236Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:40:40.237Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:40] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:40:40,928 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:40] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:40:40.925Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:40] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:40:40,934 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:40] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:45.651Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:40:46.659Z] Customer code is not Node
+[debug] [2026-08-10T16:40:46.660Z] Validating python source
+[debug] [2026-08-10T16:40:46.660Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:40:46.661Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:40:46.670Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:40:46.820Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:40:46.831Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:40:46.832Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:47] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:40:47.956Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 2026-08-10 16:40:47,958 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:47] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:47] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:40:47,976 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:47] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:49.076Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:40:50.086Z] Customer code is not Node
+[debug] [2026-08-10T16:40:50.087Z] Validating python source
+[debug] [2026-08-10T16:40:50.087Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:40:50.090Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:40:50.105Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:40:50.329Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:40:50.338Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:40:50.338Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:51] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:40:51,126 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:51] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:40:51.123Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:40:51] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:40:51,132 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:40:51] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:40:59.053Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:41:00.059Z] Customer code is not Node
+[debug] [2026-08-10T16:41:00.059Z] Validating python source
+[debug] [2026-08-10T16:41:00.060Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:41:00.061Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:41:00.071Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:41:00.253Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:41:00.266Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:41:00.266Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:41:01] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:41:01,356 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:41:01] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:41:01.353Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:41:01] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:41:01,361 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:41:01] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:43:30.729Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:43:31.465Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:43:32.481Z] Customer code is not Node
+[debug] [2026-08-10T16:43:32.482Z] Validating python source
+[debug] [2026-08-10T16:43:32.482Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:43:32.485Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:43:32.501Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:43:32.821Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:43:32.859Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:43:32.859Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:35] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:43:35,075 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:35] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:43:35.084Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:35] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:43:35,098 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:35] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:43:52.221Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:43:53.231Z] Customer code is not Node
+[debug] [2026-08-10T16:43:53.231Z] Validating python source
+[debug] [2026-08-10T16:43:53.231Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:43:53.232Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:43:53.251Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:43:53.511Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:43:53.535Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:43:53.536Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[debug] [2026-08-10T16:43:53.905Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:43:54.908Z] Customer code is not Node
+[debug] [2026-08-10T16:43:54.910Z] Validating python source
+[debug] [2026-08-10T16:43:54.911Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:43:54.924Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:43:54.969Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[debug] [2026-08-10T16:43:55.155Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:43:55.754Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:55] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:43:55,781 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:55] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:43:55.786Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[debug] [2026-08-10T16:43:55.799Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:43:55.799Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:55] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:43:55,802 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:55] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:43:55.879Z] Failed to call quitquitquit. This often means the server failed to start fetch failed {}
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:43:56.173Z] Customer code is not Node
+[debug] [2026-08-10T16:43:56.174Z] Validating python source
+[debug] [2026-08-10T16:43:56.174Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:43:56.190Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:43:56.242Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:43:57.056Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:43:57.081Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8082"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:43:57.081Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[error] 2026-08-10 16:43:57,777 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/functions.yaml HTTP/1.1" 200 -
+127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:43:57.785Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[debug] [2026-08-10T16:43:57.790Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 2026-08-10 16:43:57,782 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:43:57,798 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:43:57,799 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:43:57] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8082
+
+[error] Press CTRL+C to quit
+
+[debug] [2026-08-10T16:45:00.852Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:45:01.867Z] Customer code is not Node
+[debug] [2026-08-10T16:45:01.867Z] Validating python source
+[debug] [2026-08-10T16:45:01.867Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:45:01.869Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:45:01.886Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:45:02.211Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:45:02.232Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8083"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:45:02.232Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[debug] [2026-08-10T16:45:03.310Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8083
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:03] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:45:03,627 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:03] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:45:03.629Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:03] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:45:03,633 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:03] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:45:04.316Z] Customer code is not Node
+[debug] [2026-08-10T16:45:04.317Z] Validating python source
+[debug] [2026-08-10T16:45:04.317Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:45:04.320Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:45:04.346Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:45:04.558Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:45:04.580Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8083"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:45:04.581Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[debug] [2026-08-10T16:45:05.105Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8083
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:05] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:45:05,785 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:05] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:45:05.786Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:05] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:45:05,791 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:05] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:45:06.107Z] Customer code is not Node
+[debug] [2026-08-10T16:45:06.107Z] Validating python source
+[debug] [2026-08-10T16:45:06.107Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:45:06.109Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:45:06.120Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:45:06.298Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:45:06.306Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8083"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:45:06.306Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8083
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:07] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:45:07,256 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:07] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:45:07.256Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:07] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:45:07,263 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:07] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:45:40.401Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:45:41.409Z] Customer code is not Node
+[debug] [2026-08-10T16:45:41.410Z] Validating python source
+[debug] [2026-08-10T16:45:41.410Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:45:41.411Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:45:41.421Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:45:41.632Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:45:41.646Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8083"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:45:41.646Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8083
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:42] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:45:42,704 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:42] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:45:42.708Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:45:42] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:45:42,721 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:45:42] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:46:18.949Z] File C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\core\model.py changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\core\\model.py changed, reloading triggers"}}
+[debug] [2026-08-10T16:46:19.955Z] Customer code is not Node
+[debug] [2026-08-10T16:46:19.956Z] Validating python source
+[debug] [2026-08-10T16:46:19.956Z] Building python source
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:46:19.960Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-10T16:46:19.978Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2026-08-10T16:46:20.202Z] stdout: C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Lib\site-packages\firebase_functions
+
+[debug] [2026-08-10T16:46:20.217Z] Running admin server with args: ["python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""] and env: {"GCLOUD_PROJECT":"smart-ai-alarm-2f71d","K_REVISION":"1","PORT":"80","GOOGLE_CLOUD_QUOTA_PROJECT":"smart-ai-alarm-2f71d","FUNCTIONS_EMULATOR":"true","TZ":"UTC","FIREBASE_DEBUG_MODE":"true","FIREBASE_DEBUG_FEATURES":"{\"skipTokenVerification\":true,\"enableCors\":true}","FIREBASE_EMULATOR_HUB":"127.0.0.1:4400","CLOUD_EVENTARC_EMULATOR_HOST":"http://127.0.0.1:9299","CLOUD_TASKS_EMULATOR_HOST":"127.0.0.1:9499","FIREBASE_CONFIG":"{\"storageBucket\":\"smart-ai-alarm-2f71d.firebasestorage.app\",\"databaseURL\":\"https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app\",\"projectId\":\"smart-ai-alarm-2f71d\"}","GOOGLE_APPLICATION_CREDENTIALS":"C:\\Users\\USER\\AppData\\Roaming\\firebase\\dilanithathsarani2003_gmail_com_application_default_credentials.json","ADMIN_PORT":"8083"} in C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem
+[debug] [2026-08-10T16:46:20.217Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","python.exe","\"C:\\Users\\USER\\Desktop\\Smart_AI_Alarm\\backend\\ai_alarm_sytem\\venv\\Lib\\site-packages\\firebase_functions\\private\\serving.py\""]
+[info]  * Serving Flask app 'serving'
+ * Debug mode: off
+
+[error] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8083
+
+[error] Press CTRL+C to quit
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:46:21] "GET /__/functions.yaml HTTP/1.1" 200 -
+2026-08-10 16:46:21,392 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:46:21] "GET /__/functions.yaml HTTP/1.1" 200 -
+
+[debug] [2026-08-10T16:46:21.392Z] Got response from /__/functions.yaml endpoints:
+  api:
+    availableMemoryMb: 512
+    concurrency: null
+    entryPoint: api
+    httpsTrigger: {}
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+  daily_retrain:
+    availableMemoryMb: 1024
+    concurrency: null
+    entryPoint: daily_retrain
+    ingressSettings: null
+    labels: {}
+    maxInstances: null
+    minInstances: null
+    platform: gcfv2
+    scheduleTrigger:
+      retryConfig: {}
+      schedule: 0 2 * * *
+      timeZone: Asia/Colombo
+    secretEnvironmentVariables: []
+    serviceAccountEmail: null
+    timeoutSeconds: null
+params: []
+requiredAPIs:
+- api: cloudscheduler.googleapis.com
+  reason: Needed for scheduled functions.
+specVersion: v1alpha1
+
+[error] 127.0.0.1 - - [10/Aug/2026 16:46:21] "GET /__/quitquitquit HTTP/1.1" 200 -
+2026-08-10 16:46:21,398 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:46:21] "GET /__/quitquitquit HTTP/1.1" 200 -
+
+[info] +  functions: Loaded functions definitions from source: api, daily_retrain. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api, daily_retrain."}}
+[debug] [2026-08-10T16:48:17.283Z] [work-queue] {"queuedWork":["/smart-ai-alarm-2f71d/us-central1/api/health-2026-08-10T16:48:17.281Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T16:48:17.290Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/smart-ai-alarm-2f71d/us-central1/api/health-2026-08-10T16:48:17.281Z"],"workRunningCount":1}
+[debug] [2026-08-10T16:48:17.292Z] Accepted request GET /smart-ai-alarm-2f71d/us-central1/api/health --> us-central1-api
+[debug] [2026-08-10T16:48:17.311Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-08-10T16:48:17.313Z] [functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/health, mapping to path=/health {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/health, mapping to path=/health"}}
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-08-10T16:48:17.413Z] Running command with virtualenv: command="C:\Users\USER\Desktop\Smart_AI_Alarm\backend\ai_alarm_sytem\venv\Scripts\activate.bat", args=["&&","functions-framework"]
+[debug] [2026-08-10T16:48:17.447Z] [worker-pool] addWorker(us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(us-central1-api)"}}
+[debug] [2026-08-10T16:48:17.452Z] [worker-pool] Adding worker with key us-central1-api, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key us-central1-api, total=1"}}
+[info] >   * Serving Flask app 'api' {"user":" * Serving Flask app 'api'\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m  * Serving Flask app 'api'\r"}}
+[info] >   * Debug mode: off {"user":" * Debug mode: off\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m  * Debug mode: off\r"}}
+[info] >  2026-08-10 16:48:19,116 INFO werkzeug: WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead. {"user":"2026-08-10 16:48:19,116 INFO werkzeug: \u001b[31m\u001b[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.\u001b[0m\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 16:48:19,116 INFO werkzeug: \u001b[31m\u001b[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.\u001b[0m\r"}}
+[info] >   * Running on http://127.0.0.1:8614 {"user":" * Running on http://127.0.0.1:8614\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m  * Running on http://127.0.0.1:8614\r"}}
+[info] >  2026-08-10 16:48:19,117 INFO werkzeug: Press CTRL+C to quit {"user":"2026-08-10 16:48:19,117 INFO werkzeug: \u001b[33mPress CTRL+C to quit\u001b[0m\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 16:48:19,117 INFO werkzeug: \u001b[33mPress CTRL+C to quit\u001b[0m\r"}}
+[info] >  2026-08-10 16:48:19,147 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:48:19] "GET /__/health HTTP/1.1" 404 - {"user":"2026-08-10 16:48:19,147 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:48:19] \"\u001b[33mGET /__/health HTTP/1.1\u001b[0m\" 404 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 16:48:19,147 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:48:19] \"\u001b[33mGET /__/health HTTP/1.1\u001b[0m\" 404 -\r"}}
+[debug] [2026-08-10T16:48:19.149Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE"}}
+[debug] [2026-08-10T16:48:19.150Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-08-10T16:48:19.152Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY"}}
+[info] >  2026-08-10 16:48:19,164 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:48:19] "GET /health HTTP/1.1" 200 - {"user":"2026-08-10 16:48:19,164 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:48:19] \"GET /health HTTP/1.1\" 200 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 16:48:19,164 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 16:48:19] \"GET /health HTTP/1.1\" 200 -\r"}}
+[debug] [2026-08-10T16:48:19.170Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 18.2753ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 18.2753ms"}}
+[debug] [2026-08-10T16:48:19.171Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE"}}
+[debug] [2026-08-10T16:48:19.171Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-08-10T16:48:19.172Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-08-10T16:48:19.172Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T16:48:19.347Z] Functions emulator received unknown request at path /favicon.ico
+[debug] [2026-08-10T17:26:17.073Z] [work-queue] {"queuedWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy-2026-08-10T17:26:17.047Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:26:17.141Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy-2026-08-10T17:26:17.047Z"],"workRunningCount":1}
+[debug] [2026-08-10T17:26:17.148Z] Accepted request GET /smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy --> us-central1-api
+[debug] [2026-08-10T17:26:19.953Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-08-10T17:26:20.099Z] [functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy"}}
+[debug] [2026-08-10T17:26:20.122Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-08-10T17:26:20.235Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY"}}
+[info] >  2026-08-10 17:26:29,476 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:29] "GET /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy HTTP/1.1" 200 - {"user":"2026-08-10 17:26:29,476 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:29] \"GET /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy HTTP/1.1\" 200 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 17:26:29,476 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:29] \"GET /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy HTTP/1.1\" 200 -\r"}}
+[debug] [2026-08-10T17:26:29.489Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 9255.0513ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 9255.0513ms"}}
+[debug] [2026-08-10T17:26:29.492Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE"}}
+[debug] [2026-08-10T17:26:29.492Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-08-10T17:26:29.492Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-08-10T17:26:29.492Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:26:42.742Z] [work-queue] {"queuedWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain-2026-08-10T17:26:42.742Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:26:42.743Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain-2026-08-10T17:26:42.742Z"],"workRunningCount":1}
+[debug] [2026-08-10T17:26:42.743Z] Accepted request POST /smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain --> us-central1-api
+[debug] [2026-08-10T17:26:42.744Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-08-10T17:26:42.744Z] [functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain"}}
+[debug] [2026-08-10T17:26:42.745Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-08-10T17:26:42.747Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY"}}
+[info] >  2026-08-10 17:26:43,233 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:43] "POST /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain HTTP/1.1" 200 - {"user":"2026-08-10 17:26:43,233 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:43] \"POST /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain HTTP/1.1\" 200 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 17:26:43,233 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:43] \"POST /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain HTTP/1.1\" 200 -\r"}}
+[debug] [2026-08-10T17:26:43.238Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 490.9505ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 490.9505ms"}}
+[debug] [2026-08-10T17:26:43.239Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE"}}
+[debug] [2026-08-10T17:26:43.239Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-08-10T17:26:43.239Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-08-10T17:26:43.240Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:26:49.078Z] [work-queue] {"queuedWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain-2026-08-10T17:26:49.078Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:26:49.078Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain-2026-08-10T17:26:49.078Z"],"workRunningCount":1}
+[debug] [2026-08-10T17:26:49.078Z] Accepted request POST /smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain --> us-central1-api
+[debug] [2026-08-10T17:26:49.081Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-08-10T17:26:49.082Z] [functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain"}}
+[debug] [2026-08-10T17:26:49.082Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-08-10T17:26:49.083Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY"}}
+[info] >  2026-08-10 17:26:49,228 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:49] "POST /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain HTTP/1.1" 200 - {"user":"2026-08-10 17:26:49,228 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:49] \"POST /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain HTTP/1.1\" 200 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 17:26:49,228 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:26:49] \"POST /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/retrain HTTP/1.1\" 200 -\r"}}
+[debug] [2026-08-10T17:26:49.230Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 147.133ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 147.133ms"}}
+[debug] [2026-08-10T17:26:49.231Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE"}}
+[debug] [2026-08-10T17:26:49.231Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-08-10T17:26:49.232Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-08-10T17:26:49.232Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:29:13.308Z] [work-queue] {"queuedWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy-2026-08-10T17:29:13.295Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-08-10T17:29:13.404Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy-2026-08-10T17:29:13.295Z"],"workRunningCount":1}
+[debug] [2026-08-10T17:29:13.406Z] Accepted request GET /smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy --> us-central1-api
+[debug] [2026-08-10T17:29:13.478Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-08-10T17:29:13.488Z] [functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/smart-ai-alarm-2f71d/us-central1/api/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy, mapping to path=/alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy"}}
+[debug] [2026-08-10T17:29:13.491Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-08-10T17:29:13.529Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: BUSY"}}
+[info] >  2026-08-10 17:29:14,142 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:29:14] "GET /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy HTTP/1.1" 200 - {"user":"2026-08-10 17:29:14,142 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:29:14] \"GET /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy HTTP/1.1\" 200 -\r","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"\u001b[90m> \u001b[39m 2026-08-10 17:29:14,142 INFO werkzeug: 127.0.0.1 - - [10/Aug/2026 17:29:14] \"GET /alarms/9Z2y3pOLNLews9bbsF8fGsZLYpX2/accuracy HTTP/1.1\" 200 -\r"}}
+[debug] [2026-08-10T17:29:14.161Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 634.0429ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 634.0429ms"}}
+[debug] [2026-08-10T17:29:14.164Z] [worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-8c2acb95-2a51-4faa-9595-b083cf1e33f0]: IDLE"}}
+[debug] [2026-08-10T17:29:14.164Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-08-10T17:29:14.164Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-08-10T17:29:14.164Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}

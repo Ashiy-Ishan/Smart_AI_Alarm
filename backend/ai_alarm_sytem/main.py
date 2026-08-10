@@ -129,6 +129,34 @@ def retrain_route(user_id: str):
     except Exception as exc:
         return flask.jsonify({"error": str(exc)}), 500
 
+@_app.get("/alarms/<user_id>/accuracy")
+def accuracy_route(user_id: str):
+    from core.model import get_model_metadata
+
+    try:
+        metadata = get_model_metadata(user_id)
+
+        if metadata is None:
+            return _jsonify({
+                "trained": False,
+                "user_id": user_id,
+                "sample_count": 0,
+                "message": "No model has been trained yet.",
+                "trained_at": None,
+            })
+
+        return _jsonify(metadata)
+
+    except Exception as exc:
+        logger.exception(
+            "Failed to get accuracy for user %s",
+            user_id,
+        )
+
+        return flask.jsonify({
+            "error": str(exc)
+        }), 500
+
 
 # Calendar routes
 
