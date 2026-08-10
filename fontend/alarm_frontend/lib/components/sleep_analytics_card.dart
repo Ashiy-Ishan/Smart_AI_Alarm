@@ -1,13 +1,26 @@
+import 'package:alarm_frontend/models/sleep_insight_model.dart';
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
 class SleepAnalyticsCard extends StatelessWidget {
-  const SleepAnalyticsCard({super.key});
+  final SleepInsightModel sleep;
+  const SleepAnalyticsCard({super.key, required this.sleep});
+
+  String _formatAverageSleep() {
+    final average = sleep.averageSleepHours;
+    if (average == null) {
+      return '--';
+    }
+    final hours = average.floor();
+    final minutes = ((average - hours) * 60).round();
+    return '${hours}h ${minutes.toString().padLeft(2, '0')}m Avg';
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const List<double> sleepValues = [6.0, 10.0, 5.0, 8.0, 9.0, 9.5, 10.5];
+
+    final values = sleep.daily.map((item) => item.hours).toList();
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -21,13 +34,13 @@ class SleepAnalyticsCard extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Sleep Analytics',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                '49h 12m Avg',
+                sleep.available ? _formatAverageSleep() : '--',
                 style: TextStyle(
                   color: AppColors.primary,
                   fontSize: 16,
@@ -36,19 +49,63 @@ class SleepAnalyticsCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 160,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: _SleepChartPainter(
-                sleepValues,
-                theme.dividerColor,
-                theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ??
-                    AppColors.textSecondary,
+
+          const SizedBox(height: 8),
+
+          if (!sleep.available)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                child: Text(
+                  sleep.message ?? 'No sleep data available yet.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(
+                      alpha: 0.7,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else ...[
+            Row(
+              children: [
+                Text(
+                  '${sleep.sessionCount} sessions',
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(
+                      alpha: 0.7,
+                    ),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Trend: ${sleep.trend}',
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(
+                      alpha: 0.7,
+                    ),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 160,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _SleepChartPainter(
+                  values,
+                  theme.dividerColor,
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ??
+                      AppColors.textSecondary,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -69,7 +126,10 @@ class _SleepChartPainter extends CustomPainter {
     final double yMin = 16;
     final double yMax = size.height - 24;
 
-    final double widthInterval = (xMax - xMin) / 6;
+    final int pointCount = values.length;
+    final double widthInterval = pointCount > 1
+        ? (xMax - xMin) / (pointCount - 1)
+        : 0;
 
     final paintAxes = Paint()
       ..color = borderColor
@@ -87,7 +147,7 @@ class _SleepChartPainter extends CustomPainter {
 
     final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
-    const int maxSleepVal = 16;
+    const double maxSleepVal = 12.0;
     for (int val = 2; val <= maxSleepVal; val += 2) {
       final double y = yMax - (val / maxSleepVal) * (yMax - yMin);
       canvas.drawLine(Offset(xMin - 4, y), Offset(xMin, y), paintTicks);
@@ -111,27 +171,30 @@ class _SleepChartPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(canvas, Offset(xMin - 12, yMin - 16));
 
-    for (int i = 0; i < 7; i++) {
+    final points = <Offset>[];
+
+    for (int i = 0; i < pointCount; i++) {
       final double x = xMin + i * widthInterval;
+      final double normalized = values[i].clamp(0.0, maxSleepVal).toDouble();
+      final double y = yMax - (normalized / maxSleepVal) * (yMax - yMin);
+      points.add(Offset(x, y));
       canvas.drawLine(Offset(x, yMax), Offset(x, yMax + 4), paintTicks);
 
       textPainter.text = TextSpan(
-        text: '${13 + i}',
+        text: '${i + 1}',
         style: TextStyle(color: textColor, fontSize: 10),
       );
       textPainter.layout();
-      textPainter.paint(canvas, Offset(x - 6, yMax + 8));
+      textPainter.paint(canvas, Offset(x - 3, yMax + 8));
     }
 
-    final List<Offset> points = [];
-    for (int i = 0; i < values.length; i++) {
-      final double x = xMin + i * widthInterval;
-      final double y = yMax - (values[i] / maxSleepVal) * (yMax - yMin);
-      points.add(Offset(x, y));
+    if (points.length == 1) {
+      canvas.drawCircle(points.first, 3, Paint()..color = AppColors.primary);
+      return;
     }
 
     final Path path = Path();
-    path.moveTo(points[0].dx, points[0].dy);
+    path.moveTo(points.first.dx, points.first.dy);
     for (int i = 0; i < points.length - 1; i++) {
       final p1 = points[i];
       final p2 = points[i + 1];
@@ -167,5 +230,9 @@ class _SleepChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _SleepChartPainter oldDelegate) {
+    return oldDelegate.values != values ||
+        oldDelegate.borderColor != borderColor ||
+        oldDelegate.textColor != textColor;
+  }
 }
