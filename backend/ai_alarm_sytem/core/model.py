@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 _booster_cache: dict[str, lgb.Booster] = {}
 
 
-# ─── Firebase Storage helpers ────────────────────────────────────────────────
+# Firebase Storage helpers
 
 def _tmp_path(user_id: str) -> str:
     return f"/tmp/{user_id}.txt"
@@ -51,7 +51,7 @@ def invalidate_cache(user_id: str) -> None:
         os.remove(tmp)
 
 
-# ─── Prediction ──────────────────────────────────────────────────────────────
+# Prediction
 
 def predict_buffer(user_id: str, feature_frame) -> float:
     """Predict wake-up buffer minutes. Returns 0.0 if no trained model exists."""
@@ -70,7 +70,7 @@ def predict_buffer(user_id: str, feature_frame) -> float:
     return max(0.0, min(raw, float(settings.max_buffer_minutes)))
 
 
-# ─── Training ────────────────────────────────────────────────────────────────
+# Training
 
 def train_model(user_id: str) -> dict:
     """Train (or retrain) the alarm buffer model for a single user."""
