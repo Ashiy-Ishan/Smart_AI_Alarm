@@ -18,18 +18,13 @@ class OptionToggleRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 14),
-          ),
-        ),
+        Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
         Transform.scale(
           scale: 0.85,
           child: Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.black,
+            activeThumbColor: Colors.black,
             activeTrackColor: AppColors.primary,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),

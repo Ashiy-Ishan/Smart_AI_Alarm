@@ -95,7 +95,6 @@ class AppRouter {
     }
   }
 
-
   static PageRouteBuilder<void> _fade(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (_, _, _) => page,

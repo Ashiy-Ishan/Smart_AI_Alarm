@@ -14,6 +14,7 @@ class AgendaTimelineItem extends StatelessWidget {
     this.isLast = false,
   });
 
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -22,6 +23,38 @@ class AgendaTimelineItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              agenda.time,
+              style: TextStyle(
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 3,
+            height: 58,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: theme.dividerColor),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
           if (showDate && agenda.dateLabel != null)
             Padding(
               padding: const EdgeInsets.only(top: 24, bottom: 12),
@@ -30,6 +63,23 @@ class AgendaTimelineItem extends StatelessWidget {
                   const Icon(Icons.calendar_today, size: 14, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(
+                    agenda.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    agenda.subtitle,
+                    style: TextStyle(
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ) ??
+                          AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
                     agenda.dateLabel!,
                     style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 14),
                   ),

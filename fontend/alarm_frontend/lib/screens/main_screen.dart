@@ -12,7 +12,8 @@ import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
-  static final GlobalKey<MainScreenState> globalKey = GlobalKey<MainScreenState>();
+  static final GlobalKey<MainScreenState> globalKey =
+      GlobalKey<MainScreenState>();
 
   @override
   State<MainScreen> createState() => MainScreenState();
@@ -47,7 +48,11 @@ class MainScreenState extends State<MainScreen> {
       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
     } else {
       setState(() => currentIndex = index);
-      _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -56,7 +61,10 @@ class MainScreenState extends State<MainScreen> {
       key: _navigatorKeys[index],
       onGenerateRoute: (settings) {
         if (settings.name == Navigator.defaultRouteName) {
-          return MaterialPageRoute(settings: settings, builder: (_) => rootScreen);
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => rootScreen,
+          );
         }
         return AppRouter.onGenerateRoute(settings);
       },
@@ -87,7 +95,10 @@ class MainScreenState extends State<MainScreen> {
             _buildTabNavigator(4, ProfileScreen(user: user)),
           ],
         ),
-        bottomNavigationBar: BottomNavBar(currentIndex: currentIndex, onTap: changeTab),
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: currentIndex,
+          onTap: changeTab,
+        ),
       ),
     );
   }

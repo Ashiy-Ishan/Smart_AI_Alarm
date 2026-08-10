@@ -36,7 +36,7 @@ class CustomCheckboxTile extends StatelessWidget {
               height: size,
               decoration: BoxDecoration(
                 color: isChecked
-                    ? AppColors.primary.withOpacity(0.2)
+                    ? AppColors.primary.withValues(alpha: 0.2)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(
@@ -52,9 +52,12 @@ class CustomCheckboxTile extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: isChecked 
-                  ? theme.textTheme.bodyLarge?.color 
-                  : theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                color: isChecked
+                    ? theme.textTheme.bodyLarge?.color
+                    : theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ) ??
+                          AppColors.textSecondary,
                 fontSize: fontSize,
               ),
             ),

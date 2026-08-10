@@ -38,7 +38,9 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     String? wifiName;
     try {
       wifiName = await _networkInfo.getWifiName();
-      if (wifiName != null && wifiName.startsWith('"') && wifiName.endsWith('"')) {
+      if (wifiName != null &&
+          wifiName.startsWith('"') &&
+          wifiName.endsWith('"')) {
         wifiName = wifiName.substring(1, wifiName.length - 1);
       }
     } catch (error) {
@@ -52,9 +54,15 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
   }
 
   String _getHiddenUid(String email) {
-    String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String prefix = email
+        .split('@')
+        .first
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toLowerCase();
     String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
+    String suffix = hash.length > 4
+        ? hash.substring(hash.length - 4)
+        : hash.padLeft(4, '0');
     return "user_${prefix}_$suffix";
   }
 
@@ -73,27 +81,54 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Connect to Hub', style: TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text(
+              'Connect to Hub',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 40),
-            
-            const Text("Wi-Fi Name", style: TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600)),
+
+            const Text(
+              "Wi-Fi Name",
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             TextField(
               controller: _ssidController,
               style: const TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'MyHomeNetwork',
                 hintStyle: const TextStyle(color: Colors.white24),
-                enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.border)),
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.border),
+                ),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.refresh, color: AppColors.primary, size: 20),
+                  icon: const Icon(
+                    Icons.refresh,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
                   onPressed: _autoDetectWifi,
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
-            const Text("Password", style: TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600)),
+
+            const Text(
+              "Password",
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             TextField(
               controller: _passwordController,
               obscureText: true,
@@ -101,12 +136,14 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
               decoration: const InputDecoration(
                 hintText: '********',
                 hintStyle: TextStyle(color: Colors.white24),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.border)),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.border),
+                ),
               ),
             ),
-            
+
             const Spacer(),
-            
+
             PrimaryButton(
               text: 'Send to Device',
               isLoading: _isLoading,
@@ -124,44 +161,59 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     final String password = _passwordController.text.trim();
 
     if (ssid.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please fill in both fields")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in both fields")),
+      );
       return;
     }
 
     setState(() => _isLoading = true);
-    
+
     final email = FirebaseAuth.instance.currentUser?.email ?? "unknown";
     final macAddress = widget.device.remoteId.toString();
     final hiddenUid = _getHiddenUid(email);
 
     try {
       final bleService = custom.BluetoothService();
-      final sent = await bleService.sendProvisioningData(ssid, password, hiddenUid);
+      final sent = await bleService.sendProvisioningData(
+        ssid,
+        password,
+        hiddenUid,
+      );
       if (!sent) {
         throw StateError('Could not send Wi-Fi credentials to the device.');
       }
 
       final rtdb = FirebaseDatabase.instance.ref();
-      await rtdb.child('Users').child(hiddenUid).child('Devices').child(macAddress).set({
-        "AlarmTime": "07:00",
-        "AlarmEnabled": true,
-        "Humidity": 0.0,
-        "LightStatus": "INIT",
-        "MotionDetected": 0,
-        "RelayEnabled": true,
-        "RelayStatus": "OFF",
-        "Temperature": 0.0,
-        "UserStatus": "idle",
-        "SoundLevel": 5,
-        "SelectedTone": 0,
-        "FactoryReset": false
-      });
+      await rtdb
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .child(macAddress)
+          .set({
+            "AlarmTime": "07:00",
+            "AlarmEnabled": true,
+            "Humidity": 0.0,
+            "LightStatus": "INIT",
+            "MotionDetected": 0,
+            "RelayEnabled": true,
+            "RelayStatus": "OFF",
+            "Temperature": 0.0,
+            "UserStatus": "idle",
+            "SoundLevel": 5,
+            "SelectedTone": 0,
+            "FactoryReset": false,
+          });
 
       if (mounted) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Setup Failed: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Setup Failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

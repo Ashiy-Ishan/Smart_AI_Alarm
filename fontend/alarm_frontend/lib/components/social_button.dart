@@ -1,15 +1,10 @@
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SocialButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const SocialButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
+  const SocialButton({super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +16,7 @@ class SocialButton extends StatelessWidget {
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          side: BorderSide(
-            color: theme.dividerColor,
-            width: 1,
-          ),
+          side: BorderSide(color: theme.dividerColor, width: 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),

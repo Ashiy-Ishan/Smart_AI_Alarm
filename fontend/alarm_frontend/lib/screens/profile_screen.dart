@@ -16,7 +16,8 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin {
+class _ProfileScreenState extends State<ProfileScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -33,9 +34,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
   Future<void> _refreshLinkStatus() async {
     if (!mounted) return;
     setState(() => _isLoadingStatus = true);
-    
+
     final linked = await GoogleSyncService().isLinked();
-    
+
     if (mounted) {
       setState(() {
         _isGoogleLinked = linked;
@@ -51,7 +52,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
       final account = await GoogleSyncService().linkAccount();
       if (account != null && mounted) {
         setState(() => _isGoogleLinked = true);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Google Account Linked Successfully!")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Google Account Linked Successfully!")),
+        );
       } else if (mounted) {
         setState(() => _isGoogleLinked = false);
       }
@@ -64,8 +67,17 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
           title: const Text("Unlink Google?"),
           content: const Text("Gmail and Calendar sync will be disabled."),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancel")),
-            TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Unlink", style: TextStyle(color: Colors.redAccent))),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text(
+                "Unlink",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ),
           ],
         ),
       );
@@ -74,7 +86,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
         await GoogleSyncService().unlinkAccount();
         if (mounted) {
           setState(() => _isGoogleLinked = false);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Google Account Unlinked.")));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Google Account Unlinked.")),
+          );
         }
       } else if (mounted) {
         // revert switch if canceled
@@ -97,16 +111,34 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                const Align(alignment: Alignment.centerLeft, child: Text("Profile", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Profile",
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                ),
                 const SizedBox(height: 20),
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: AppColors.primary,
-                  backgroundImage: widget.user.profileImage.isNotEmpty ? NetworkImage(widget.user.profileImage) : null,
-                  child: widget.user.profileImage.isEmpty ? const Icon(Icons.person, size: 40) : null,
+                  backgroundImage: widget.user.profileImage.isNotEmpty
+                      ? NetworkImage(widget.user.profileImage)
+                      : null,
+                  child: widget.user.profileImage.isEmpty
+                      ? const Icon(Icons.person, size: 40)
+                      : null,
                 ),
                 const SizedBox(height: 10),
-                Text(widget.user.fullName.isEmpty ? "User Name" : widget.user.fullName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                Text(
+                  widget.user.fullName.isEmpty
+                      ? "User Name"
+                      : widget.user.fullName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 25),
 
                 // Appearance
@@ -115,9 +147,21 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                   children: [
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: Icon(themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode, color: AppColors.primary),
-                      title: const Text("Dark Mode", style: TextStyle(fontSize: 15)),
-                      trailing: Switch(value: themeProvider.isDarkMode, onChanged: (v) => themeProvider.toggleTheme(), activeColor: AppColors.primary),
+                      leading: Icon(
+                        themeProvider.isDarkMode
+                            ? Icons.dark_mode
+                            : Icons.light_mode,
+                        color: AppColors.primary,
+                      ),
+                      title: const Text(
+                        "Dark Mode",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      trailing: Switch(
+                        value: themeProvider.isDarkMode,
+                        onChanged: (v) => themeProvider.toggleTheme(),
+                        activeThumbColor: AppColors.primary,
+                      ),
                     ),
                   ],
                 ),
@@ -130,14 +174,47 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.link, color: AppColors.primary),
-                      title: const Text("Google Services", style: TextStyle(fontSize: 15)),
-                      subtitle: Text(_isLoadingStatus ? "Checking..." : (_isGoogleLinked ? "Sync Active" : "Link for AI Insights"), style: const TextStyle(fontSize: 12)),
-                      trailing: _isLoadingStatus 
-                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary))
-                        : Switch(value: _isGoogleLinked, onChanged: _handleToggleLink, activeColor: AppColors.primary),
+                      title: const Text(
+                        "Google Services",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      subtitle: Text(
+                        _isLoadingStatus
+                            ? "Checking..."
+                            : (_isGoogleLinked
+                                  ? "Sync Active"
+                                  : "Link for AI Insights"),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      trailing: _isLoadingStatus
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : Switch(
+                              value: _isGoogleLinked,
+                              onChanged: _handleToggleLink,
+                              activeThumbColor: AppColors.primary,
+                            ),
                     ),
-                    _tile(context, "Calendar", Icons.calendar_today, AppRoutes.calendar, _isGoogleLinked),
-                    _tile(context, "Gmail", Icons.mail, AppRoutes.gmail, _isGoogleLinked),
+                    _tile(
+                      context,
+                      "Calendar",
+                      Icons.calendar_today,
+                      AppRoutes.calendar,
+                      _isGoogleLinked,
+                    ),
+                    _tile(
+                      context,
+                      "Gmail",
+                      Icons.mail,
+                      AppRoutes.gmail,
+                      _isGoogleLinked,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -146,22 +223,68 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 SectionCard(
                   title: "Security",
                   children: [
-                    _tile(context, "Data Encryption", Icons.lock, AppRoutes.dataEncryption, true),
-                    _tile(context, "Clear History", Icons.history, AppRoutes.clearHistory, true),
-                    _tile(context, "Delete Account", Icons.delete, AppRoutes.deleteAccount, true),
+                    _tile(
+                      context,
+                      "Data Encryption",
+                      Icons.lock,
+                      AppRoutes.dataEncryption,
+                      true,
+                    ),
+                    _tile(
+                      context,
+                      "Clear History",
+                      Icons.history,
+                      AppRoutes.clearHistory,
+                      true,
+                    ),
+                    _tile(
+                      context,
+                      "Delete Account",
+                      Icons.delete,
+                      AppRoutes.deleteAccount,
+                      true,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
                 SectionCard(
                   children: [
-                    _tile(context, "Notification Control", Icons.notifications_active_outlined, AppRoutes.notificationControl, true),
-                    _tile(context, "Terms & Conditions", Icons.description_outlined, AppRoutes.termsAndConditions, true),
-                    _tile(context, "Feedback", Icons.warning_amber, AppRoutes.feedback, true),
+                    _tile(
+                      context,
+                      "Notification Control",
+                      Icons.notifications_active_outlined,
+                      AppRoutes.notificationControl,
+                      true,
+                    ),
+                    _tile(
+                      context,
+                      "Terms & Conditions",
+                      Icons.description_outlined,
+                      AppRoutes.termsAndConditions,
+                      true,
+                    ),
+                    _tile(
+                      context,
+                      "Feedback",
+                      Icons.warning_amber,
+                      AppRoutes.feedback,
+                      true,
+                    ),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.logout, color: Colors.redAccent),
-                      title: const Text("Log Out", style: TextStyle(color: Colors.redAccent, fontSize: 15, fontWeight: FontWeight.w600)),
+                      leading: const Icon(
+                        Icons.logout,
+                        color: Colors.redAccent,
+                      ),
+                      title: const Text(
+                        "Log Out",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       onTap: () async {
                         final confirm = await showDialog<bool>(
                           context: context,
@@ -170,15 +293,33 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                             title: const Text("Log Out"),
                             content: const Text("Are you sure?"),
                             actions: [
-                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancel")),
-                              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Log Out", style: TextStyle(color: Colors.redAccent))),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text("Cancel"),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: const Text(
+                                  "Log Out",
+                                  style: TextStyle(color: Colors.redAccent),
+                                ),
+                              ),
                             ],
                           ),
                         );
                         if (confirm == true && context.mounted) {
-                          await Provider.of<UserProvider>(context, listen: false).signOut(context);
+                          await Provider.of<UserProvider>(
+                            context,
+                            listen: false,
+                          ).signOut(context);
                           if (!context.mounted) return;
-                          Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(AppRoutes.splash, (route) => false);
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushNamedAndRemoveUntil(
+                            AppRoutes.splash,
+                            (route) => false,
+                          );
                         }
                       },
                     ),
@@ -192,15 +333,32 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     );
   }
 
-  Widget _tile(BuildContext context, String title, IconData icon, String? route, bool isEnabled) {
+  Widget _tile(
+    BuildContext context,
+    String title,
+    IconData icon,
+    String? route,
+    bool isEnabled,
+  ) {
     final theme = Theme.of(context);
-    final color = isEnabled ? theme.textTheme.bodyLarge?.color : Colors.grey.shade400;
+    final color = isEnabled
+        ? theme.textTheme.bodyLarge?.color
+        : Colors.grey.shade400;
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: isEnabled ? AppColors.primary : Colors.grey.shade400),
+      leading: Icon(
+        icon,
+        color: isEnabled ? AppColors.primary : Colors.grey.shade400,
+      ),
       title: Text(title, style: TextStyle(color: color, fontSize: 15)),
-      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: isEnabled ? AppColors.textSecondary : Colors.grey.shade300),
-      onTap: (route == null || !isEnabled) ? null : () => Navigator.pushNamed(context, route),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        size: 16,
+        color: isEnabled ? AppColors.textSecondary : Colors.grey.shade300,
+      ),
+      onTap: (route == null || !isEnabled)
+          ? null
+          : () => Navigator.pushNamed(context, route),
     );
   }
 }

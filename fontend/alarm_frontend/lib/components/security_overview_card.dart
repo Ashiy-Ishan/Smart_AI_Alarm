@@ -4,10 +4,7 @@ import 'package:alarm_frontend/utils/app_colors.dart';
 class SecurityOverviewCard extends StatelessWidget {
   final bool isEncryptionActive;
 
-  const SecurityOverviewCard({
-    super.key,
-    this.isEncryptionActive = true,
-  });
+  const SecurityOverviewCard({super.key, this.isEncryptionActive = true});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,7 @@ class SecurityOverviewCard extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -38,17 +35,16 @@ class SecurityOverviewCard extends StatelessWidget {
           const SizedBox(height: 16),
           const Text(
             'Data Security Overview',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(
             'Your personal data are protected\nwith end-to-end encryption.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
               fontSize: 13,
               height: 1.5,
             ),
@@ -75,14 +71,20 @@ class SecurityOverviewCard extends StatelessWidget {
               Text(
                 'Encryption Status: ',
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                  fontSize: 13
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 13,
                 ),
               ),
               Text(
                 isEncryptionActive ? 'Active' : 'Inactive',
                 style: TextStyle(
-                  color: isEncryptionActive ? AppColors.primary : Colors.redAccent,
+                  color: isEncryptionActive
+                      ? AppColors.primary
+                      : Colors.redAccent,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),

@@ -4,11 +4,7 @@ class AiInsightCard extends StatelessWidget {
   final String title;
   final String content;
 
-  const AiInsightCard({
-    super.key,
-    required this.title,
-    required this.content,
-  });
+  const AiInsightCard({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +22,13 @@ class AiInsightCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           Text(
             content,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
               fontSize: 14,
               height: 1.45,
               fontWeight: FontWeight.w500,

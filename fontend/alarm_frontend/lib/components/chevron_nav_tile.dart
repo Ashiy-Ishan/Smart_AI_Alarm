@@ -5,11 +5,7 @@ class ChevronNavTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const ChevronNavTile({
-    super.key,
-    required this.title,
-    required this.onTap,
-  });
+  const ChevronNavTile({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +24,13 @@ class ChevronNavTile extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
             ),
             Icon(
               Icons.chevron_right,
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                  AppColors.textSecondary,
               size: 20,
             ),
           ],

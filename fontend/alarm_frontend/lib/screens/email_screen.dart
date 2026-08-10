@@ -102,9 +102,7 @@ class _EmailScreenState extends State<EmailScreen> {
             ),
             const SizedBox(height: 16),
             ..._emails.map((email) {
-              return EmailCard(
-                email: email,
-              );
+              return EmailCard(email: email);
             }),
             const SizedBox(height: 8),
             Container(
@@ -128,7 +126,10 @@ class _EmailScreenState extends State<EmailScreen> {
                         ),
                         title: Text(
                           folder['label'] as String,
-                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,

@@ -13,8 +13,7 @@ class CalendarGrid extends StatelessWidget {
     required this.onDaySelected,
   });
 
-  int _daysInMonth(DateTime date) =>
-      DateTime(date.year, date.month + 1, 0).day;
+  int _daysInMonth(DateTime date) => DateTime(date.year, date.month + 1, 0).day;
 
   int _firstWeekdayOfMonth(DateTime date) =>
       DateTime(date.year, date.month, 1).weekday % 7;
@@ -39,19 +38,21 @@ class CalendarGrid extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: const ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-                .map((d) => SizedBox(
-              width: 36,
-              child: Center(
-                child: Text(
-                  d,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                .map(
+                  (d) => SizedBox(
+                    width: 36,
+                    child: Center(
+                      child: Text(
+                        d,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ))
+                )
                 .toList(),
           ),
           const SizedBox(height: 10),
@@ -68,26 +69,35 @@ class CalendarGrid extends StatelessWidget {
                     return const SizedBox(width: 36, height: 36);
                   }
                   final isSelected = day == selectedDay;
-                  return GestureDetector(
-                    onTap: () => onDaySelected(day),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? AppColors.primary
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '$day',
-                        style: TextStyle(
-                          color: isSelected ? Colors.black : theme.textTheme.bodyLarge?.color,
-                          fontSize: 14,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                  return Semantics(
+                    button: true,
+                    selected: isSelected,
+                    label:
+                        '${month.year}-${month.month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}',
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () => onDaySelected(day),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primary
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '$day',
+                          style: TextStyle(
+                            color: isSelected
+                                ? Colors.black
+                                : theme.textTheme.bodyLarge?.color,
+                            fontSize: 14,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
                         ),
                       ),
                     ),

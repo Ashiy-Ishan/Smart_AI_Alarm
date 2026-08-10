@@ -32,9 +32,10 @@ class PillToggleButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: isActive 
-                ? theme.textTheme.bodyLarge?.color 
-                : theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+              color: isActive
+                  ? theme.textTheme.bodyLarge?.color
+                  : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                        AppColors.textSecondary,
             ),
           ),
         ),

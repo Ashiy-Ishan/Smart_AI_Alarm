@@ -21,10 +21,7 @@ class AlarmRingingScreen extends StatelessWidget {
         .child(hiddenUid)
         .child('Devices')
         .child(macAddress)
-        .update({
-          'MobileStop': true, 
-          'AlarmStatus': 'IDLE'
-        });
+        .update({'MobileStop': true, 'AlarmStatus': 'IDLE'});
   }
 
   void _snoozeAlarm() async {
@@ -39,10 +36,7 @@ class AlarmRingingScreen extends StatelessWidget {
     DateTime snoozeTime = now.add(const Duration(minutes: 5));
     String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
 
-    await ref.update({
-      'SnoozeUntil': snoozeTimeStr,
-      'AlarmStatus': 'SNOOZE'
-    });
+    await ref.update({'SnoozeUntil': snoozeTimeStr, 'AlarmStatus': 'SNOOZE'});
   }
 
   @override
@@ -59,7 +53,7 @@ class AlarmRingingScreen extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                AppColors.primary.withOpacity(0.2),
+                AppColors.primary.withValues(alpha: 0.2),
                 theme.scaffoldBackgroundColor,
               ],
             ),
@@ -77,7 +71,7 @@ class AlarmRingingScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               Text(
                 DateFormat("HH:mm").format(DateTime.now()),
                 style: TextStyle(
@@ -86,7 +80,7 @@ class AlarmRingingScreen extends StatelessWidget {
                   fontWeight: FontWeight.w200,
                 ),
               ),
-  
+
               const SizedBox(height: 40),
               SizedBox(
                 height: 250,
@@ -110,7 +104,13 @@ class AlarmRingingScreen extends StatelessWidget {
                           elevation: 0,
                           side: BorderSide(color: theme.dividerColor),
                         ),
-                        child: const Text("SNOOZE", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          "SNOOZE",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -126,7 +126,13 @@ class AlarmRingingScreen extends StatelessWidget {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text("STOP", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          "STOP",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ],

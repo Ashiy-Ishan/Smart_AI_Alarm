@@ -81,8 +81,10 @@ class AccountVerifiedScreen extends StatelessWidget {
                     onPressed:
                         onContinue ??
                         () {
-                          Navigator.of(context, rootNavigator: true)
-                              .pushReplacementNamed(AppRoutes.main);
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushReplacementNamed(AppRoutes.main);
                         },
                   ),
                   const SizedBox(height: 20),

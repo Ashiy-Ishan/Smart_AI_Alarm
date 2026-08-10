@@ -10,6 +10,9 @@ class GmailScanCard extends StatefulWidget {
   final MeetingStatus status;
   final String? fullBody;
 
+<<<<<<< HEAD
+  const GmailScanCard({super.key, required this.title, required this.subtitle});
+=======
   const GmailScanCard({
     super.key,
     required this.title,
@@ -17,6 +20,7 @@ class GmailScanCard extends StatefulWidget {
     this.status = MeetingStatus.unknown,
     this.fullBody,
   });
+>>>>>>> origin/main
 
   @override
   State<GmailScanCard> createState() => _GmailScanCardState();
@@ -70,6 +74,13 @@ class _GmailScanCardState extends State<GmailScanCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
+<<<<<<< HEAD
+      onTap: () => Navigator.of(
+        context,
+        rootNavigator: true,
+      ).push(MaterialPageRoute(builder: (_) => const EmailScreen())),
+      child: Container(
+=======
       onTap: () {
         if (widget.fullBody != null) {
           setState(() => _isExpanded = !_isExpanded);
@@ -78,6 +89,7 @@ class _GmailScanCardState extends State<GmailScanCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
+>>>>>>> origin/main
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           color: theme.cardColor,
@@ -183,7 +195,45 @@ class _GmailScanCardState extends State<GmailScanCard> {
                   ),
                 ),
               ),
+<<<<<<< HEAD
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ) ??
+                          AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                  AppColors.textSecondary,
+              size: 18,
+            ),
+=======
             ],
+>>>>>>> origin/main
           ],
         ),
       ),

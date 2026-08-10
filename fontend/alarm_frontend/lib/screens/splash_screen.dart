@@ -57,12 +57,15 @@ class _SplashScreenState extends State<SplashScreen> {
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 24,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox.shrink(),
-                      
+
                       // App Logo (SVG)
                       Column(
                         children: [
@@ -92,19 +95,28 @@ class _SplashScreenState extends State<SplashScreen> {
                         children: [
                           PrimaryButton(
                             text: 'Get Started',
-                            onPressed: () => Navigator.pushNamed(context, AppRoutes.auth),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, AppRoutes.auth),
                           ),
                           const SizedBox(height: 32),
                           Text(
                             'SUSL POWERED',
                             style: TextStyle(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                              color:
+                                  theme.textTheme.bodyMedium?.color?.withValues(
+                                    alpha: 0.5,
+                                  ) ??
+                                  AppColors.textSecondary,
                               fontSize: 12,
                               letterSpacing: 2.0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).padding.bottom > 0 ? 10 : 20),
+                          SizedBox(
+                            height: MediaQuery.of(context).padding.bottom > 0
+                                ? 10
+                                : 20,
+                          ),
                         ],
                       ),
                     ],

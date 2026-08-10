@@ -43,8 +43,12 @@ class SleepProgressCard extends StatelessWidget {
               Text(
                 sleepTime,
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                  fontSize: 13
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 13,
                 ),
               ),
             ],
@@ -53,8 +57,10 @@ class SleepProgressCard extends StatelessWidget {
           Text(
             wakeTime,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-              fontSize: 12
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
+              fontSize: 12,
             ),
           ),
           const SizedBox(height: 10),
@@ -66,7 +72,9 @@ class SleepProgressCard extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progressValue,
                     backgroundColor: theme.dividerColor,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.primary,
+                    ),
                     minHeight: 6,
                   ),
                 ),
@@ -75,8 +83,12 @@ class SleepProgressCard extends StatelessWidget {
               Text(
                 durationLabel,
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                  fontSize: 12
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 12,
                 ),
               ),
             ],

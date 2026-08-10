@@ -31,18 +31,13 @@ class AuthTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       cursorColor: AppColors.primary,
-      style: const TextStyle(
-        fontSize: 15,
-      ),
+      style: const TextStyle(fontSize: 15),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTextStyles.subHeading.copyWith(
-          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
         ),
-        prefixIcon: Icon(
-          prefixIcon,
-          color: AppColors.primary,
-        ),
+        prefixIcon: Icon(prefixIcon, color: AppColors.primary),
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: theme.cardColor,
@@ -52,36 +47,21 @@ class AuthTextField extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: theme.dividerColor,
-            width: 1,
-          ),
+          borderSide: BorderSide(color: theme.dividerColor, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 1.4,
-          ),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: AppColors.error,
-            width: 1.1,
-          ),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.1),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: AppColors.error,
-            width: 1.2,
-          ),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.2),
         ),
-        errorStyle: const TextStyle(
-          color: AppColors.error,
-          fontSize: 12,
-        ),
+        errorStyle: const TextStyle(color: AppColors.error, fontSize: 12),
       ),
     );
   }

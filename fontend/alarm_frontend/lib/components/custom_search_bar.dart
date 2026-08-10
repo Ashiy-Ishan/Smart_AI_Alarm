@@ -27,9 +27,11 @@ class CustomSearchBar extends StatelessWidget {
         children: [
           const SizedBox(width: 14),
           Icon(
-            Icons.search, 
-            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary, 
-            size: 20
+            Icons.search,
+            color:
+                theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                AppColors.textSecondary,
+            size: 20,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -41,7 +43,11 @@ class CustomSearchBar extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: hintText,
                 hintStyle: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.5,
+                      ) ??
+                      AppColors.textSecondary,
                   fontSize: 14,
                 ),
                 isDense: true,

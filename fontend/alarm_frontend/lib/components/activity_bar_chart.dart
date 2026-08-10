@@ -8,7 +8,20 @@ class ActivityBarChart extends StatelessWidget {
 
   const ActivityBarChart({
     super.key,
-    this.heights = const [0.5, 0.8, 0.4, 0.9, 0.3, 0.7, 0.5, 0.6, 0.4, 0.8, 0.3, 0.6],
+    this.heights = const [
+      0.5,
+      0.8,
+      0.4,
+      0.9,
+      0.3,
+      0.7,
+      0.5,
+      0.6,
+      0.4,
+      0.8,
+      0.3,
+      0.6,
+    ],
     this.maxHeight = 44.0,
     this.barWidth = 10.0,
   });
