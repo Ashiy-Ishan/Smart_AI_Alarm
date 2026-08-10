@@ -275,3 +275,195 @@ def daily_retrain(event: scheduler_fn.ScheduledEvent) -> None:
     results = retrain_all()
     trained = sum(1 for r in results if r.get("trained"))
     logger.info("Daily retrain complete: %d/%d users trained", trained, len(results))
+
+# Insight routes
+
+@_app.get("/insights/<user_id>")
+def user_insights_route(user_id: str):
+    from core.insights import get_user_insights
+
+    try:
+        days = int(
+            flask.request.args.get(
+                "days",
+                7,
+            )
+        )
+
+        return _jsonify(
+            get_user_insights(
+                user_id=user_id,
+                days=days,
+            )
+        )
+
+    except Exception as exc:
+        logger.exception(
+            "Failed to load insights "
+            "for user %s",
+            user_id,
+        )
+
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 500
+
+
+@_app.get("/insights/<user_id>/habit")
+def habit_insights_route(user_id: str):
+    from core.insights import get_habit_insights
+
+    try:
+        days = int(
+            flask.request.args.get(
+                "days",
+                7,
+            )
+        )
+
+        return _jsonify(
+            get_habit_insights(
+                user_id,
+                days,
+            )
+        )
+
+    except Exception as exc:
+        logger.exception(
+            "Failed to load habit insights"
+        )
+
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 500
+
+
+@_app.get("/insights/<user_id>/sleep")
+def sleep_insights_route(user_id: str):
+    from core.insights import get_sleep_insights
+
+    try:
+        days = int(
+            flask.request.args.get(
+                "days",
+                7,
+            )
+        )
+
+        return _jsonify(
+            get_sleep_insights(
+                user_id,
+                days,
+            )
+        )
+
+    except Exception as exc:
+        logger.exception(
+            "Failed to load sleep insights"
+        )
+
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 500
+
+@_app.post("/sleep/session")
+def create_sleep_session_route():
+    from core.insights import create_sleep_session
+
+    body = (
+        flask.request.get_json(
+            force=True
+        )
+        or {}
+    )
+
+    user_id = body.get(
+        "user_id"
+    )
+
+    sleep_start = _parse_dt(
+        body.get(
+            "sleep_start"
+        )
+    )
+
+    sleep_end = _parse_dt(
+        body.get(
+            "sleep_end"
+        )
+    )
+
+    if not user_id:
+        return flask.jsonify(
+            {
+                "error": (
+                    "user_id is required"
+                ),
+            }
+        ), 422
+
+    if (
+        sleep_start is None
+        or sleep_end is None
+    ):
+        return flask.jsonify(
+            {
+                "error": (
+                    "sleep_start and "
+                    "sleep_end are required"
+                ),
+            }
+        ), 422
+
+    try:
+        result = create_sleep_session(
+            user_id=user_id,
+            sleep_start=sleep_start,
+            sleep_end=sleep_end,
+            awakenings=int(
+                body.get(
+                    "awakenings",
+                    0,
+                )
+            ),
+            motion_events=int(
+                body.get(
+                    "motion_events",
+                    0,
+                )
+            ),
+            source=str(
+                body.get(
+                    "source",
+                    "mobile",
+                )
+            ),
+        )
+
+        return _jsonify(
+            result
+        ), 201
+
+    except ValueError as exc:
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 422
+
+    except Exception as exc:
+        logger.exception(
+            "Failed to save sleep session"
+        )
+
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 500

@@ -6,435 +6,896 @@ from datetime import datetime, timezone
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_squared_error,
+    r2_score,
+)
 from sklearn.model_selection import train_test_split
 
+from core.features import (
+    build_feature_dataframe,
+    get_feature_columns,
+)
 from db.collections import (
     get_collections,
     ALARM_LOGS,
     MODEL_METADATA,
+    IOT_SENSOR_LOGS,
 )
 
 logger = logging.getLogger(__name__)
 
 MIN_TRAINING_SAMPLES = 8
-
-FEATURE_COLUMNS = [
-    "weather_severity",
-    "traffic_condition",
-    "room_temp",
-    "snooze_count",
-    "unlock_delay",
-    "success",
-    "is_holiday",
-    "alarm_type_encoded",
-]
-
 TARGET_COLUMN = "buffer_minutes"
+DEFAULT_BUFFER_MINUTES = 15.0
 
 
-def _encode_alarm_type(value: str | None) -> int:
-    mapping = {
-        "custom": 0,
-        "work": 1,
-        "school": 2,
-        "meeting": 3,
-        "travel": 4,
-        "exercise": 5,
-    }
-
-    return mapping.get(str(value or "custom").lower(), 0)
-
-
-def _safe_float(value, default: float = 0.0) -> float:
+def _safe_float(
+    value,
+    default: float = 0.0,
+) -> float:
     try:
         if value is None:
             return default
+
         return float(value)
+
     except (TypeError, ValueError):
         return default
 
 
-def _safe_int(value, default: int = 0) -> int:
-    try:
-        if value is None:
-            return default
-        return int(value)
-    except (TypeError, ValueError):
-        return default
-
-
-def _log_to_training_row(log: dict) -> dict:
-    return {
-        "weather_severity": _safe_float(log.get("weather_severity")),
-        "traffic_condition": _safe_float(log.get("traffic_condition")),
-        "room_temp": _safe_float(log.get("room_temp"), 27.0),
-        "snooze_count": _safe_int(log.get("snooze_count")),
-        "unlock_delay": _safe_float(log.get("unlock_delay")),
-        "success": _safe_int(log.get("success"), 1),
-        "is_holiday": _safe_int(log.get("is_holiday")),
-        "alarm_type_encoded": _encode_alarm_type(
-            log.get("alarm_type")
-        ),
-        TARGET_COLUMN: _safe_float(log.get(TARGET_COLUMN)),
-    }
-
-
-def _live_features_to_row(features: dict) -> dict:
+def _store_untrained_metadata(
+    user_id: str,
+    sample_count: int,
+    message: str,
+) -> dict:
     """
-    Convert the dictionary returned by build_live_feature_vector()
-    into the columns expected by the LightGBM model.
-
-    Missing values safely fall back to defaults.
-    """
-
-    return {
-        "weather_severity": _safe_float(
-            features.get("weather_severity")
-        ),
-        "traffic_condition": _safe_float(
-            features.get("traffic_condition")
-        ),
-        "room_temp": _safe_float(
-            features.get(
-                "room_temp",
-                features.get("room_temperature", 27.0),
-            ),
-            27.0,
-        ),
-        "snooze_count": _safe_int(
-            features.get("snooze_count")
-        ),
-        "unlock_delay": _safe_float(
-            features.get("unlock_delay")
-        ),
-        "success": _safe_int(
-            features.get("success"),
-            1,
-        ),
-        "is_holiday": _safe_int(
-            features.get("is_holiday")
-        ),
-        "alarm_type_encoded": _encode_alarm_type(
-            features.get("alarm_type")
-        ),
-    }
-
-
-def train_model(user_id: str) -> dict:
-    """
-    Train a LightGBM regression model for one user.
-
-    Target:
-        buffer_minutes
-
-    Stores:
-        - serialized LightGBM model
-        - MAE
-        - RMSE
-        - R²
-        - display accuracy score
-        - sample count
-        - training timestamp
+    Store metadata when a user's model cannot
+    yet be trained.
     """
 
     collections = get_collections()
 
-    logs = list(
-        collections[ALARM_LOGS].find(
-            {"user_id": user_id}
-        ).sort("created_at", 1)
+    now = datetime.now(timezone.utc)
+
+    result = {
+        "trained": False,
+        "user_id": user_id,
+        "sample_count": int(sample_count),
+        "minimum_samples": MIN_TRAINING_SAMPLES,
+        "accuracy_score": None,
+        "mae": None,
+        "rmse": None,
+        "r2": None,
+        "trained_at": None,
+        "message": message,
+    }
+
+    collections[MODEL_METADATA].update_one(
+        {
+            "user_id": user_id,
+        },
+        {
+            "$set": {
+                **result,
+                "updated_at": now,
+            },
+            "$unset": {
+                "model_string": "",
+                "feature_columns": "",
+                "feature_count": "",
+                "model_type": "",
+                "target": "",
+            },
+        },
+        upsert=True,
+    )
+
+    return result
+
+
+def _load_user_alarm_logs(
+    user_id: str,
+) -> list[dict]:
+    """
+    Load alarm outcome logs in chronological order.
+    """
+
+    return list(
+        get_collections()[ALARM_LOGS]
+        .find(
+            {
+                "user_id": user_id,
+            }
+        )
+        .sort(
+            "created_at",
+            1,
+        )
+    )
+
+
+def _load_user_sensor_logs(
+    user_id: str,
+) -> list[dict]:
+    """
+    Load IoT sensor readings in chronological order.
+    """
+
+    return list(
+        get_collections()[IOT_SENSOR_LOGS]
+        .find(
+            {
+                "user_id": user_id,
+            }
+        )
+        .sort(
+            "timestamp",
+            1,
+        )
+    )
+
+
+def _validate_training_dataframe(
+    dataframe: pd.DataFrame,
+    feature_columns: list[str],
+) -> None:
+    """
+    Validate the dataframe generated by features.py.
+    """
+
+    if dataframe.empty:
+        raise ValueError(
+            "Training feature dataframe is empty."
+        )
+
+    missing_features = [
+        column
+        for column in feature_columns
+        if column not in dataframe.columns
+    ]
+
+    if missing_features:
+        raise ValueError(
+            "Missing model feature columns: "
+            + ", ".join(missing_features)
+        )
+
+    if TARGET_COLUMN not in dataframe.columns:
+        raise ValueError(
+            f"Training target '{TARGET_COLUMN}' is missing."
+        )
+
+
+def train_model(
+    user_id: str,
+) -> dict:
+    """
+    Train a per-user LightGBM regression model.
+
+    Alarm history:
+        alarm_logs
+
+    Sensor history:
+        iot_sensor_logs
+
+    Feature engineering:
+        core.features.build_feature_dataframe()
+
+    Target:
+        buffer_minutes
+    """
+
+    if not user_id:
+        raise ValueError(
+            "user_id is required."
+        )
+
+    collections = get_collections()
+
+    logs = _load_user_alarm_logs(
+        user_id
     )
 
     sample_count = len(logs)
 
+    # --------------------------------------------------
+    # Minimum training data check
+    # --------------------------------------------------
+
     if sample_count < MIN_TRAINING_SAMPLES:
-        result = {
-            "trained": False,
-            "user_id": user_id,
-            "sample_count": sample_count,
-            "minimum_samples": MIN_TRAINING_SAMPLES,
-            "message": (
-                f"At least {MIN_TRAINING_SAMPLES} alarm outcomes "
-                "are required before model training."
+        return _store_untrained_metadata(
+            user_id=user_id,
+            sample_count=sample_count,
+            message=(
+                f"At least {MIN_TRAINING_SAMPLES} "
+                "completed alarm outcomes are required "
+                "before model training."
             ),
-            "trained_at": None,
-        }
-
-        collections[MODEL_METADATA].update_one(
-            {"user_id": user_id},
-            {
-                "$set": {
-                    **result,
-                    "updated_at": datetime.now(timezone.utc),
-                }
-            },
-            upsert=True,
         )
 
-        return result
+    # --------------------------------------------------
+    # IoT sensor history
+    # --------------------------------------------------
 
-    rows = [_log_to_training_row(log) for log in logs]
+    sensor_logs = _load_user_sensor_logs(
+        user_id
+    )
 
-    dataframe = pd.DataFrame(rows)
+    # --------------------------------------------------
+    # Build model features using existing features.py
+    # --------------------------------------------------
 
-    X = dataframe[FEATURE_COLUMNS]
-    y = dataframe[TARGET_COLUMN]
+    dataframe = build_feature_dataframe(
+        raw_logs=logs,
+        sensor_logs=sensor_logs,
+    )
 
-    # Constant targets cannot produce a useful regression model.
+    feature_columns = get_feature_columns()
+
+    try:
+        _validate_training_dataframe(
+            dataframe,
+            feature_columns,
+        )
+
+    except ValueError as exc:
+        logger.warning(
+            "Training dataframe invalid "
+            "for user %s: %s",
+            user_id,
+            exc,
+        )
+
+        return _store_untrained_metadata(
+            user_id=user_id,
+            sample_count=sample_count,
+            message=str(exc),
+        )
+
+    # --------------------------------------------------
+    # Prepare X and y
+    # --------------------------------------------------
+
+    X = (
+        dataframe[
+            feature_columns
+        ]
+        .copy()
+        .astype(float)
+        .replace(
+            [np.inf, -np.inf],
+            0.0,
+        )
+        .fillna(0.0)
+    )
+
+    y = (
+        pd.to_numeric(
+            dataframe[TARGET_COLUMN],
+            errors="coerce",
+        )
+        .fillna(0.0)
+        .astype(float)
+    )
+
+    # --------------------------------------------------
+    # Target must have variation
+    # --------------------------------------------------
+
     if y.nunique() < 2:
-        result = {
-            "trained": False,
-            "user_id": user_id,
-            "sample_count": sample_count,
-            "message": (
-                "Training data does not contain enough variation "
-                "in buffer_minutes."
+        return _store_untrained_metadata(
+            user_id=user_id,
+            sample_count=sample_count,
+            message=(
+                "Training data does not contain "
+                "enough variation in buffer_minutes."
             ),
-            "trained_at": None,
-        }
-
-        collections[MODEL_METADATA].update_one(
-            {"user_id": user_id},
-            {
-                "$set": {
-                    **result,
-                    "updated_at": datetime.now(timezone.utc),
-                }
-            },
-            upsert=True,
         )
 
-        return result
+    # --------------------------------------------------
+    # Train / test split
+    # --------------------------------------------------
 
-    test_size = max(2, int(round(sample_count * 0.2)))
+    test_size = max(
+        2,
+        int(
+            round(
+                len(dataframe) * 0.2
+            )
+        ),
+    )
 
-    # Ensure training set still contains enough rows.
-    if test_size >= sample_count:
-        test_size = 2
+    if test_size >= len(dataframe):
+        test_size = max(
+            1,
+            len(dataframe) - 1,
+        )
 
-    X_train, X_test, y_train, y_test = train_test_split(
+    if test_size <= 0:
+        return _store_untrained_metadata(
+            user_id=user_id,
+            sample_count=sample_count,
+            message=(
+                "Not enough usable rows remain "
+                "for training and validation."
+            ),
+        )
+
+    (
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+    ) = train_test_split(
         X,
         y,
         test_size=test_size,
         random_state=42,
     )
 
+    # --------------------------------------------------
+    # LightGBM model
+    # --------------------------------------------------
+
     model = lgb.LGBMRegressor(
         objective="regression",
-        n_estimators=120,
+        n_estimators=150,
         learning_rate=0.05,
         num_leaves=15,
         max_depth=5,
+        min_child_samples=3,
         random_state=42,
         verbosity=-1,
     )
 
-    model.fit(X_train, y_train)
+    model.fit(
+        X_train,
+        y_train,
+    )
 
-    predictions = np.asarray( model.predict(X_test), dtype=float, )
-    y_test_array = y_test.to_numpy( dtype=float, )
+    # --------------------------------------------------
+    # Predictions
+    #
+    # np.asarray avoids the LightGBM typing issue.
+    # --------------------------------------------------
+
+    predictions = np.asarray(
+        model.predict(
+            X_test
+        ),
+        dtype=float,
+    ).reshape(-1)
+
+    y_test_array = np.asarray(
+        y_test.to_numpy(
+            dtype=float
+        ),
+        dtype=float,
+    ).reshape(-1)
+
+    # --------------------------------------------------
+    # Evaluation metrics
+    # --------------------------------------------------
 
     mae = float(
-        mean_absolute_error(y_test_array, predictions)
+        mean_absolute_error(
+            y_test_array,
+            predictions,
+        )
     )
 
     rmse = float(
         np.sqrt(
-            mean_squared_error(y_test_array, predictions)
+            mean_squared_error(
+                y_test_array,
+                predictions,
+            )
         )
     )
 
-    if len(y_test) >= 2:
+    if len(y_test_array) >= 2:
         r2 = float(
-            r2_score(y_test_array, predictions)
+            r2_score(
+                y_test_array,
+                predictions,
+            )
         )
     else:
         r2 = 0.0
 
+    if not np.isfinite(mae):
+        mae = 0.0
+
+    if not np.isfinite(rmse):
+        rmse = 0.0
+
     if not np.isfinite(r2):
         r2 = 0.0
 
-    # UI-friendly score.
+    # --------------------------------------------------
+    # UI accuracy score
     #
-    # R² itself is NOT technically an "accuracy percentage".
-    # We convert it only for presentation on the Accuracy screen.
+    # R² is a regression metric.
+    # This conversion is only for the Flutter gauge.
+    # --------------------------------------------------
+
     accuracy_score = max(
         0.0,
-        min(100.0, r2 * 100.0),
+        min(
+            100.0,
+            r2 * 100.0,
+        ),
     )
 
-    trained_at = datetime.now(timezone.utc)
+    trained_at = datetime.now(
+        timezone.utc
+    )
 
-    booster = model.booster_
+    # --------------------------------------------------
+    # Serialize LightGBM model
+    # --------------------------------------------------
 
-    serialized_model = booster.model_to_string()
+    serialized_model = (
+        model.booster_
+        .model_to_string()
+    )
+
+    # --------------------------------------------------
+    # Store model metadata
+    # --------------------------------------------------
 
     metadata = {
         "trained": True,
         "user_id": user_id,
-        "sample_count": sample_count,
-        "feature_columns": FEATURE_COLUMNS,
+        "sample_count": int(
+            sample_count
+        ),
+
+        "feature_count": len(
+            feature_columns
+        ),
+
+        "feature_columns": list(
+            feature_columns
+        ),
+
         "target": TARGET_COLUMN,
-        "mae": round(mae, 4),
-        "rmse": round(rmse, 4),
-        "r2": round(r2, 4),
-        "accuracy_score": round(accuracy_score, 2),
-        "trained_at": trained_at,
-        "model_type": "LightGBMRegressor",
+
+        "model_type": (
+            "LightGBMRegressor"
+        ),
+
         "model_string": serialized_model,
+
+        "mae": round(
+            mae,
+            4,
+        ),
+
+        "rmse": round(
+            rmse,
+            4,
+        ),
+
+        "r2": round(
+            r2,
+            4,
+        ),
+
+        "accuracy_score": round(
+            accuracy_score,
+            2,
+        ),
+
+        "trained_at": trained_at,
+
         "updated_at": trained_at,
+
+        "message": (
+            "Model trained successfully."
+        ),
     }
 
     collections[MODEL_METADATA].update_one(
-        {"user_id": user_id},
-        {"$set": metadata},
+        {
+            "user_id": user_id,
+        },
+        {
+            "$set": metadata,
+        },
         upsert=True,
     )
 
     logger.info(
-        "Model trained for user %s with %d samples. "
-        "MAE=%.4f RMSE=%.4f R2=%.4f",
+        (
+            "Model trained for user %s | "
+            "samples=%d | "
+            "features=%d | "
+            "MAE=%.4f | "
+            "RMSE=%.4f | "
+            "R2=%.4f"
+        ),
         user_id,
         sample_count,
+        len(feature_columns),
         mae,
         rmse,
         r2,
     )
 
-    # Don't return the serialized model to Flutter.
-    response = dict(metadata)
-    response.pop("model_string", None)
-    response.pop("updated_at", None)
+    # --------------------------------------------------
+    # Safe API response
+    # --------------------------------------------------
+
+    response = dict(
+        metadata
+    )
+
+    # Never expose serialized ML model
+    # to Flutter.
+    response.pop(
+        "model_string",
+        None,
+    )
+
+    response.pop(
+        "updated_at",
+        None,
+    )
 
     return response
 
 
-def get_model_metadata(user_id: str) -> dict | None:
+def get_model_metadata(
+    user_id: str,
+) -> dict | None:
     """
-    Return model metrics for the Accuracy Score screen.
+    Return model statistics for the frontend.
     """
 
-    metadata = get_collections()[MODEL_METADATA].find_one(
-        {"user_id": user_id}
-    )
-
-    if not metadata:
+    if not user_id:
         return None
 
-    metadata["_id"] = str(metadata["_id"])
+    metadata = (
+        get_collections()[
+            MODEL_METADATA
+        ]
+        .find_one(
+            {
+                "user_id": user_id,
+            }
+        )
+    )
 
-    # Never send the serialized LightGBM model to Flutter.
-    metadata.pop("model_string", None)
+    if metadata is None:
+        return None
 
-    return metadata
+    result = dict(
+        metadata
+    )
+
+    if result.get(
+        "_id"
+    ) is not None:
+        result["_id"] = str(
+            result["_id"]
+        )
+
+    # Never return serialized model
+    # through the API.
+    result.pop(
+        "model_string",
+        None,
+    )
+
+    return result
+
+
+def _historical_average_buffer(
+    user_id: str,
+) -> float:
+    """
+    Fallback when no trained model exists.
+
+    Uses the last 20 actual buffer values.
+    """
+
+    logs = list(
+        get_collections()[
+            ALARM_LOGS
+        ]
+        .find(
+            {
+                "user_id": user_id,
+                "buffer_minutes": {
+                    "$exists": True,
+                },
+            },
+            {
+                "buffer_minutes": 1,
+            },
+        )
+        .sort(
+            "created_at",
+            -1,
+        )
+        .limit(20)
+    )
+
+    values: list[float] = []
+
+    for log in logs:
+        value = log.get(
+            "buffer_minutes"
+        )
+
+        if value is None:
+            continue
+
+        values.append(
+            _safe_float(
+                value
+            )
+        )
+
+    if not values:
+        return DEFAULT_BUFFER_MINUTES
+
+    average = float(
+        np.mean(
+            values
+        )
+    )
+
+    if not np.isfinite(
+        average
+    ):
+        return DEFAULT_BUFFER_MINUTES
+
+    return max(
+        0.0,
+        average,
+    )
 
 
 def predict_buffer(
     user_id: str,
-    features: dict,
+    features: pd.DataFrame,
 ) -> float:
     """
-    Predict buffer minutes for a new alarm.
+    Predict a personalized alarm buffer.
 
-    Falls back to the user's historical average when no trained
-    model exists.
+    IMPORTANT:
+    features must be the DataFrame returned by:
+
+        build_live_feature_vector()
+
+    Fallback:
+        trained model
+            ↓
+        historical average
+            ↓
+        15 minutes
     """
+
+    if not user_id:
+        return DEFAULT_BUFFER_MINUTES
 
     collections = get_collections()
 
-    metadata = collections[MODEL_METADATA].find_one(
-        {
-            "user_id": user_id,
-            "trained": True,
-        }
+    metadata = (
+        collections[
+            MODEL_METADATA
+        ]
+        .find_one(
+            {
+                "user_id": user_id,
+                "trained": True,
+            }
+        )
     )
 
-    if metadata and metadata.get("model_string"):
+    # --------------------------------------------------
+    # Trained model prediction
+    # --------------------------------------------------
+
+    if (
+        metadata
+        and metadata.get(
+            "model_string"
+        )
+    ):
         try:
+            stored_columns = metadata.get(
+                "feature_columns"
+            )
+
+            if (
+                isinstance(
+                    stored_columns,
+                    list,
+                )
+                and stored_columns
+            ):
+                feature_columns = [
+                    str(column)
+                    for column
+                    in stored_columns
+                ]
+
+            else:
+                feature_columns = (
+                    get_feature_columns()
+                )
+
+            if not isinstance(
+                features,
+                pd.DataFrame,
+            ):
+                raise TypeError(
+                    "features must be a pandas "
+                    "DataFrame returned by "
+                    "build_live_feature_vector()."
+                )
+
+            if features.empty:
+                raise ValueError(
+                    "Prediction feature dataframe "
+                    "is empty."
+                )
+
+            missing_columns = [
+                column
+                for column in feature_columns
+                if column not in features.columns
+            ]
+
+            if missing_columns:
+                raise ValueError(
+                    "Missing prediction feature "
+                    "columns: "
+                    + ", ".join(
+                        missing_columns
+                    )
+                )
+
+            input_df = (
+                features[
+                    feature_columns
+                ]
+                .copy()
+                .astype(float)
+                .replace(
+                    [np.inf, -np.inf],
+                    0.0,
+                )
+                .fillna(0.0)
+            )
+
             booster = lgb.Booster(
-                model_str=metadata["model_string"]
+                model_str=metadata[
+                    "model_string"
+                ]
             )
 
-            row = _live_features_to_row(features)
+            raw_prediction = np.asarray(
+                booster.predict(
+                    input_df
+                ),
+                dtype=float,
+            ).reshape(-1)
 
-            input_df = pd.DataFrame(
-                [row],
-                columns=FEATURE_COLUMNS,
-            )
-
-            raw_prediction = np.asarray( booster.predict( input_df ), dtype=float, )
+            if len(
+                raw_prediction
+            ) == 0:
+                raise ValueError(
+                    "Model returned no prediction."
+                )
 
             prediction = float(
                 raw_prediction[0]
             )
 
-            # Prevent unrealistic negative buffers.
-            return max(0.0, prediction)
+            if not np.isfinite(
+                prediction
+            ):
+                raise ValueError(
+                    "Model returned an invalid "
+                    "prediction."
+                )
+
+            # Never allow negative buffer time.
+            return max(
+                0.0,
+                prediction,
+            )
 
         except Exception as exc:
             logger.warning(
-                "Prediction failed for user %s: %s",
+                (
+                    "Model prediction failed "
+                    "for user %s: %s. "
+                    "Using fallback."
+                ),
                 user_id,
                 exc,
             )
 
-    # Fallback: historical average buffer.
-    logs = list(
-        collections[ALARM_LOGS].find(
-            {"user_id": user_id},
-            {"buffer_minutes": 1},
-        )
-        .sort("created_at", -1)
-        .limit(20)
+    # --------------------------------------------------
+    # Fallback
+    # --------------------------------------------------
+
+    return _historical_average_buffer(
+        user_id
     )
-
-    values = [
-        _safe_float(log.get("buffer_minutes"))
-        for log in logs
-        if log.get("buffer_minutes") is not None
-    ]
-
-    if values:
-        return max(0.0, float(np.mean(values)))
-
-    # New user fallback.
-    return 15.0
 
 
 def retrain_all() -> list[dict]:
     """
-    Retrain models for all users who have alarm logs.
+    Retrain every user that has alarm logs.
+
+    Used by your Firebase daily_retrain
+    scheduled function.
     """
 
     collections = get_collections()
 
-    user_ids = collections[ALARM_LOGS].distinct(
-        "user_id"
-    )
+    try:
+        user_ids = (
+            collections[
+                ALARM_LOGS
+            ]
+            .distinct(
+                "user_id"
+            )
+        )
+
+    except Exception as exc:
+        logger.exception(
+            "Unable to find users "
+            "for retraining: %s",
+            exc,
+        )
+
+        return []
 
     results: list[dict] = []
 
-    for user_id in user_ids:
-        if not user_id:
+    for raw_user_id in user_ids:
+        if not raw_user_id:
             continue
 
+        user_id = str(
+            raw_user_id
+        )
+
         try:
-            result = train_model(str(user_id))
-            results.append(result)
+            result = train_model(
+                user_id
+            )
+
+            results.append(
+                result
+            )
 
         except Exception as exc:
             logger.exception(
-                "Failed to retrain model for user %s",
+                "Model retraining failed "
+                "for user %s",
                 user_id,
             )
 
             results.append(
                 {
-                    "user_id": str(user_id),
+                    "user_id": user_id,
                     "trained": False,
-                    "error": str(exc),
+                    "error": str(
+                        exc
+                    ),
                 }
             )
 
     return results
+
