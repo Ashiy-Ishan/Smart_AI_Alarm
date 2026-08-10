@@ -36,6 +36,6 @@ def ensure_indexes(db: Database | None = None) -> None:
     cols[CALENDAR_CREDENTIALS].create_index("user_id", unique=True)
     cols[CALENDAR_EVENTS_CACHE].create_index([("user_id", 1), ("expires_at", 1)])
     cols[CALENDAR_EVENTS_CACHE].create_index("expires_at", expireAfterSeconds=0)
-    cols[SLEEP_SESSIONS].create_index([("user_id", 1), ("start_time", 1)])
+    cols[SLEEP_SESSIONS].create_index([("user_id", 1), ("sleep_start", 1)])
 
 

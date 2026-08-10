@@ -508,3 +508,45 @@ def create_sleep_session_route():
                 "error": str(exc),
             }
         ), 500
+
+# ============================================================
+# TODAY SUMMARY ROUTE
+# ============================================================
+
+
+@_app.get("/summary/<user_id>/today")
+def today_summary_route(
+    user_id: str,
+):
+    from core.today_summary import (
+        get_today_summary,
+    )
+
+    try:
+        summary = get_today_summary(
+            user_id
+        )
+
+        return _jsonify(
+            summary
+        )
+
+    except ValueError as exc:
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 422
+
+    except Exception as exc:
+        logger.exception(
+            "Failed to load today's summary "
+            "for user %s",
+            user_id,
+        )
+
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 500

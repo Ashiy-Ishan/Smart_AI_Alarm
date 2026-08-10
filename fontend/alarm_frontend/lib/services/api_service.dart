@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:alarm_frontend/models/model_accuracy.dart';
 import 'package:alarm_frontend/models/insight_data_model.dart';
+import 'package:alarm_frontend/models/today_summary_model.dart';
 
 class ApiService {
   static const String baseUrl =
@@ -70,5 +71,11 @@ class ApiService {
     final data = await get('/insights/$userId?days=$days');
 
     return InsightDataModel.fromJson(Map<String, dynamic>.from(data));
+  }
+
+  static Future<TodaySummaryModel> getTodaySummary(String userId) async {
+    final data = await get('/summary/$userId/today');
+
+    return TodaySummaryModel.fromJson(Map<String, dynamic>.from(data));
   }
 }
