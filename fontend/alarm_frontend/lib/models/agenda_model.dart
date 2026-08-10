@@ -26,8 +26,6 @@ class AgendaModel {
     this.dateLabel,
     this.isUpdated = false,
   });
-<<<<<<< HEAD
-=======
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -56,5 +54,4 @@ class AgendaModel {
     source: AgendaSource.values[json['source'] ?? 0],
     dateTime: DateTime.parse(json['dateTime']),
   );
->>>>>>> origin/main
 }

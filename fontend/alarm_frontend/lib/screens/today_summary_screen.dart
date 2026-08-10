@@ -483,7 +483,7 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
           _metricItem(
             value: activity?.calories != null
-                ? '${activity!.calories!.toStringAsFixed(0)}'
+                ? activity!.calories!.toStringAsFixed(0)
                 : '--',
             label: 'Cal',
           ),

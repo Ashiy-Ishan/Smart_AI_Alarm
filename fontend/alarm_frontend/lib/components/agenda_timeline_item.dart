@@ -7,16 +7,13 @@ class AgendaTimelineItem extends StatelessWidget {
   final bool showDate;
   final bool isLast;
 
-<<<<<<< HEAD
-  const AgendaTimelineItem({super.key, required this.agenda});
-=======
   const AgendaTimelineItem({
     super.key,
     required this.agenda,
     this.showDate = false,
     this.isLast = false,
   });
->>>>>>> origin/main
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,6 @@ class AgendaTimelineItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-<<<<<<< HEAD
           SizedBox(
             width: 48,
             child: Text(
@@ -59,17 +55,14 @@ class AgendaTimelineItem extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-=======
           if (showDate && agenda.dateLabel != null)
             Padding(
               padding: const EdgeInsets.only(top: 24, bottom: 12),
               child: Row(
->>>>>>> origin/main
                 children: [
                   const Icon(Icons.calendar_today, size: 14, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(
-<<<<<<< HEAD
                     agenda.title,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -87,10 +80,8 @@ class AgendaTimelineItem extends StatelessWidget {
                           AppColors.textSecondary,
                       fontSize: 12,
                     ),
-=======
                     agenda.dateLabel!,
                     style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 14),
->>>>>>> origin/main
                   ),
                 ],
               ),

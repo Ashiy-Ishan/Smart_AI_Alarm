@@ -250,7 +250,20 @@ class _ProfileScreenState extends State<ProfileScreen>
 
                 SectionCard(
                   children: [
-<<<<<<< HEAD
+                    _tile(
+                      context,
+                      "Notification Control",
+                      Icons.notifications_active_outlined,
+                      AppRoutes.notificationControl,
+                      true,
+                    ),
+                    _tile(
+                      context,
+                      "Terms & Conditions",
+                      Icons.description_outlined,
+                      AppRoutes.termsAndConditions,
+                      true,
+                    ),
                     _tile(
                       context,
                       "Feedback",
@@ -258,11 +271,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                       AppRoutes.feedback,
                       true,
                     ),
-=======
-                    _tile(context, "Notification Control", Icons.notifications_active_outlined, AppRoutes.notificationControl, true),
-                    _tile(context, "Terms & Conditions", Icons.description_outlined, AppRoutes.termsAndConditions, true),
-                    _tile(context, "Feedback", Icons.warning_amber, AppRoutes.feedback, true),
->>>>>>> origin/main
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(
