@@ -78,4 +78,23 @@ class ApiService {
 
     return TodaySummaryModel.fromJson(Map<String, dynamic>.from(data));
   }
+
+  static Future<List<Map<String, dynamic>>> getUpcomingEvents(
+    String userId, {
+    int hoursAhead = 24,
+  }) async {
+    final status = await get('/calendar/status/$userId');
+
+    if (status['connected'] != true) {
+      return [];
+    }
+
+    final response = await get(
+      '/calendar/events/$userId?hours_ahead=$hoursAhead',
+    );
+
+    final rawEvents = (response['events'] as List?) ?? [];
+
+    return rawEvents.map((event) => Map<String, dynamic>.from(event)).toList();
+  }
 }
