@@ -1,48 +1,201 @@
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
-import 'package:alarm_frontend/screens/email_screen.dart';
+import 'dart:convert';
 
-class GmailScanCard extends StatelessWidget {
+enum MeetingStatus { scheduled, canceled, updated, unknown }
+
+class GmailScanCard extends StatefulWidget {
   final String title;
   final String subtitle;
+  final MeetingStatus status;
+  final String? fullBody;
 
+<<<<<<< HEAD
   const GmailScanCard({super.key, required this.title, required this.subtitle});
+=======
+  const GmailScanCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    this.status = MeetingStatus.unknown,
+    this.fullBody,
+  });
+>>>>>>> origin/main
+
+  @override
+  State<GmailScanCard> createState() => _GmailScanCardState();
+}
+
+class _GmailScanCardState extends State<GmailScanCard> {
+  bool _isExpanded = false;
+
+  Color _getStatusColor() {
+    switch (widget.status) {
+      case MeetingStatus.scheduled:
+        return Colors.greenAccent.shade700;
+      case MeetingStatus.canceled:
+        return Colors.redAccent;
+      case MeetingStatus.updated:
+        return Colors.orangeAccent;
+      case MeetingStatus.unknown:
+        return AppColors.primary;
+    }
+  }
+
+  String _getStatusText() {
+    switch (widget.status) {
+      case MeetingStatus.scheduled:
+        return "SCHEDULED";
+      case MeetingStatus.canceled:
+        return "CANCELED";
+      case MeetingStatus.updated:
+        return "UPDATED";
+      case MeetingStatus.unknown:
+        return "PRIORITY";
+    }
+  }
+
+  String _decodeBody(String? base64Body) {
+    if (base64Body == null || base64Body.isEmpty) return "No content available.";
+    try {
+      // Gmail base64url encoding uses '-' instead of '+' and '_' instead of '/'
+      String normalized = base64Body.replaceAll('-', '+').replaceAll('_', '/');
+      // Add padding if necessary
+      while (normalized.length % 4 != 0) {
+        normalized += '=';
+      }
+      return utf8.decode(base64.decode(normalized));
+    } catch (e) {
+      return "Error decoding email content.";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
+<<<<<<< HEAD
       onTap: () => Navigator.of(
         context,
         rootNavigator: true,
       ).push(MaterialPageRoute(builder: (_) => const EmailScreen())),
       child: Container(
+=======
+      onTap: () {
+        if (widget.fullBody != null) {
+          setState(() => _isExpanded = !_isExpanded);
+        }
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+>>>>>>> origin/main
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.dividerColor),
+          border: Border.all(
+            color: _isExpanded ? AppColors.primary : theme.dividerColor,
+            width: _isExpanded ? 1.5 : 1,
+          ),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.grey.shade300),
+            Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: _getStatusColor().withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: _getStatusColor().withOpacity(0.3)),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      widget.status == MeetingStatus.canceled ? Icons.event_busy : Icons.event_available,
+                      color: _getStatusColor(),
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            _getStatusText(),
+                            style: TextStyle(
+                              color: _getStatusColor(),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.subtitle,
+                        style: TextStyle(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
+                          fontSize: 12
+                        ),
+                        maxLines: _isExpanded ? 10 : 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                  size: 18,
+                ),
+              ],
+            ),
+            if (_isExpanded && widget.fullBody != null) ...[
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+              const SizedBox(height: 12),
+              Text(
+                _decodeBody(widget.fullBody),
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.5,
+                  color: theme.textTheme.bodyLarge?.color?.withOpacity(0.9),
+                ),
               ),
-              child: const Center(
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
                 child: Text(
-                  'M',
+                  "Tap to collapse",
                   style: TextStyle(
-                    color: Colors.redAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 10,
+                    color: AppColors.primary.withOpacity(0.7),
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
+<<<<<<< HEAD
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -78,6 +231,9 @@ class GmailScanCard extends StatelessWidget {
                   AppColors.textSecondary,
               size: 18,
             ),
+=======
+            ],
+>>>>>>> origin/main
           ],
         ),
       ),

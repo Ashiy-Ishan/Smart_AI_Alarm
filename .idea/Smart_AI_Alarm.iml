@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/backend/ai_alarm_sytem" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/build" />

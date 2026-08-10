@@ -303,6 +303,7 @@ def api(req: https_fn.Request) -> https_fn.Response:
 
     with _app.request_context(environ):
         return _app.full_dispatch_request()
+    return None
 
 
 @scheduler_fn.on_schedule(

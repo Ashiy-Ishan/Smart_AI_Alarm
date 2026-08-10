@@ -19,6 +19,9 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Remove the problematic afterEvaluate block that causes failures in Kotlin script
+// Stick to explicit declarations in the app-level build.gradle.kts for now
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

@@ -3,7 +3,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+<<<<<<< HEAD
 import 'package:logger/logger.dart';
+=======
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:alarm_frontend/models/notification_history_model.dart';
+>>>>>>> origin/main
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -23,8 +30,10 @@ class NotificationService {
   );
 
   Future<void> initialize() async {
-    await _fcm.requestPermission(alert: true, badge: true, sound: true);
+    try {
+      await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
+<<<<<<< HEAD
     const AndroidInitializationSettings androidInit =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
@@ -50,7 +59,91 @@ class NotificationService {
 
     String? token = await _fcm.getToken();
     Logger().i("FCM Token: $token");
+=======
+      const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+      const InitializationSettings initSettings = InitializationSettings(android: androidInit, iOS: iosInit);
+      
+      await _localNotifications.initialize(
+        settings: initSettings,
+        onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
+      );
+
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(_channel);
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        _addToHistory(message.notification?.title ?? "Notification", message.notification?.body ?? "");
+        _showLocalNotification(message);
+      });
+
+      if (!kIsWeb) {
+        String? token = await _fcm.getToken().catchError((e) {
+          debugPrint("FCM Token retrieval failed: $e");
+          return null;
+        });
+        if (token != null) debugPrint("FCM Token: $token");
+      }
+    } catch (e) {
+      debugPrint("Notification Service Init Warning: $e");
+    }
   }
+
+  Future<void> showInstantNotification({required String title, required String body}) async {
+    await _addToHistory(title, body);
+    
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'alarm_high_importance',
+      'Schedule Updates',
+      channelDescription: 'Notifications for meeting changes',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    
+    await _localNotifications.show(
+      id: DateTime.now().millisecond % 100000, 
+      title: title, 
+      body: body, 
+      notificationDetails: const NotificationDetails(android: androidDetails),
+    );
+  }
+
+  // --- Notification History Logic ---
+
+  Future<void> _addToHistory(String title, String body) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> historyStrings = prefs.getStringList('notif_history') ?? [];
+    
+    final newItem = NotificationHistoryModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      body: body,
+      timestamp: DateTime.now(),
+    );
+
+    historyStrings.insert(0, jsonEncode(newItem.toJson()));
+    
+    if (historyStrings.length > 20) {
+      historyStrings.removeRange(20, historyStrings.length);
+    }
+
+    await prefs.setStringList('notif_history', historyStrings);
+>>>>>>> origin/main
+  }
+
+  Future<List<NotificationHistoryModel>> getHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> historyStrings = prefs.getStringList('notif_history') ?? [];
+    return historyStrings.map((s) => NotificationHistoryModel.fromJson(jsonDecode(s))).toList();
+  }
+
+  Future<void> clearHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('notif_history');
+  }
+
+  // --- Existing Logic ---
 
   void _onDidReceiveNotificationResponse(NotificationResponse response) async {
     final String? actionId = response.actionId;

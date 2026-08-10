@@ -11,8 +11,7 @@ CALENDAR_EVENTS_CACHE = "calendar_events_cache"
 SLEEP_SESSIONS = "sleep_sessions"
 
 def get_collections(db: Database | None = None) -> dict:
-    if db is None:
-        db = get_database()
+    db = db or get_database()
     return {
         USERS: db[USERS],
         ALARMS: db[ALARMS],

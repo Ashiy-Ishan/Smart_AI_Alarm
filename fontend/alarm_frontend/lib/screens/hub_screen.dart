@@ -84,20 +84,29 @@ class _HubScreenState extends State<HubScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final theme = Theme.of(context);
+
     if (!_isInitialized) {
       return Scaffold(
+<<<<<<< HEAD
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: const Center(
           child: CircularProgressIndicator(color: AppColors.primary),
         ),
+=======
+        backgroundColor: theme.scaffoldBackgroundColor,
+        body: const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+>>>>>>> origin/main
       );
     }
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: _macAddress == null 
+        ? _buildNoDeviceUI() 
+        : SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
+<<<<<<< HEAD
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Padding(
@@ -110,15 +119,22 @@ class _HubScreenState extends State<HubScreen>
                 child: _macAddress == null
                     ? _buildNoDeviceUI()
                     : _buildLiveDashboardContent(),
+=======
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 16, right: 16, 
+                top: MediaQuery.of(context).padding.top + 16,
+                bottom: MediaQuery.of(context).padding.bottom + 100,
+>>>>>>> origin/main
               ),
+              child: _buildLiveDashboardContent(),
             ),
-          );
-        },
-      ),
+          ),
     );
   }
 
   Widget _buildNoDeviceUI() {
+<<<<<<< HEAD
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -162,8 +178,48 @@ class _HubScreenState extends State<HubScreen>
               ),
             ),
           ),
+=======
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.bluetooth_disabled, size: 80, color: AppColors.textSecondary),
+            const SizedBox(height: 24),
+            const Text(
+              "No Hub Connected",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              "Link your Bedside Hub to see live\nenvironment and activity stats.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+            ),
+            const SizedBox(height: 32),
+            TextButton(
+              onPressed: () async {
+                await Navigator.push(context, MaterialPageRoute(builder: (_) => const BluetoothScanScreen()));
+                _findUserDevice();
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.primary),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Text(
+                  "Setup Bedside Hub",
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+>>>>>>> origin/main
         ),
-      ],
+      ),
     );
   }
 

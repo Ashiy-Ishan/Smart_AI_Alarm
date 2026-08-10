@@ -214,7 +214,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 18),
           AuthTextField(
@@ -320,7 +320,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email Address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
           AuthTextField(
@@ -395,7 +395,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   fontSize: 16,
                 ),
               ),
-              const Text('terms', style: AppTextStyles.link),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, AppRoutes.termsAndConditions),
+                child: const Text('terms and condition', style: AppTextStyles.link),
+              ),
             ],
           ),
           const SizedBox(height: 28),
@@ -451,7 +454,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 28),
           PrimaryButton(
