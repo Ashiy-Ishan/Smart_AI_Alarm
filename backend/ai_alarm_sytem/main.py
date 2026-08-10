@@ -234,6 +234,7 @@ def api(req: https_fn.Request) -> https_fn.Response:
     """Single HTTP entry point — all routes handled internally by Flask."""
     with _app.request_context(req.environ):
         return _app.full_dispatch_request()
+    return None
 
 
 @scheduler_fn.on_schedule(
