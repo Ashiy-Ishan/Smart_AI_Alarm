@@ -101,6 +101,15 @@ def alarm_outcome_route():
     if not (body.get("user_id") and body.get("alarm_id") and trigger_time):
         return flask.jsonify({"error": "user_id, alarm_id, and trigger_time are required"}), 422
     try:
+        raw_actual_buffer = body.get(
+            "actual_buffer_minutes"
+        )
+
+        actual_buffer = (
+            float(raw_actual_buffer)
+            if raw_actual_buffer is not None
+            else None
+        )
         log_id = log_alarm_outcome(
             user_id=body["user_id"],
             alarm_id=body["alarm_id"],
@@ -114,10 +123,26 @@ def alarm_outcome_route():
             alarm_type=body.get("alarm_type", "custom"),
             is_holiday=int(body.get("is_holiday", 0)),
             buffer_minutes=float(body.get("buffer_minutes", 0.0)),
+            actual_buffer_minutes=actual_buffer,
         )
-        return flask.jsonify({"log_id": log_id}), 201
+        return flask.jsonify({"success": True, "log_id": log_id}), 201
+    except ValueError as exc:
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 422
+
     except Exception as exc:
-        return flask.jsonify({"error": str(exc)}), 400
+        logger.exception(
+            "alarm_outcome failed"
+        )
+
+        return flask.jsonify(
+            {
+                "error": str(exc),
+            }
+        ), 500,
 
 
 @_app.post("/alarms/<user_id>/retrain")
