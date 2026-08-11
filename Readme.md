@@ -82,10 +82,13 @@ Verify the main tools:
 
 Go to the backend directory
 
+`cd ~/Smart_AI_Alarm/backend/ai_alarm_system`
+
 Create and activate python environment
 
-`python3.14 -m venv .venv
-source .venv/bin/activate`
+`python3.14 -m venv .venv`
+
+`source .venv/bin/activate`
 
 Install dependencies:
 
@@ -99,7 +102,7 @@ The backend uses the Firebase Functions Emulator for local development.
 
 From:
 
-backend/ai_alarm_sytem/
+`backend/ai_alarm_sytem/`
 
 run:
 
@@ -167,7 +170,7 @@ Because free ngrok URLs can change, update this value whenever a new ngrok tunne
 
 Go to the Flutter application:
 
-`cd ~/Workspace/projects/capstone_project/Smart_AI_Alarm/fontend/alarm_frontend`
+`cd ~/Smart_AI_Alarm/fontend/alarm_frontend`
 
 Install Flutter dependencies:
 
