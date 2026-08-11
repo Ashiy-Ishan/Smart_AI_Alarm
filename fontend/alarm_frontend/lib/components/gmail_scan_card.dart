@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
-import 'dart:convert';
 
 enum MeetingStatus { scheduled, canceled, updated, unknown }
 
@@ -10,9 +11,6 @@ class GmailScanCard extends StatefulWidget {
   final MeetingStatus status;
   final String? fullBody;
 
-<<<<<<< HEAD
-  const GmailScanCard({super.key, required this.title, required this.subtitle});
-=======
   const GmailScanCard({
     super.key,
     required this.title,
@@ -20,7 +18,6 @@ class GmailScanCard extends StatefulWidget {
     this.status = MeetingStatus.unknown,
     this.fullBody,
   });
->>>>>>> origin/main
 
   @override
   State<GmailScanCard> createState() => _GmailScanCardState();
@@ -33,10 +30,13 @@ class _GmailScanCardState extends State<GmailScanCard> {
     switch (widget.status) {
       case MeetingStatus.scheduled:
         return Colors.greenAccent.shade700;
+
       case MeetingStatus.canceled:
         return Colors.redAccent;
+
       case MeetingStatus.updated:
         return Colors.orangeAccent;
+
       case MeetingStatus.unknown:
         return AppColors.primary;
     }
@@ -45,51 +45,62 @@ class _GmailScanCardState extends State<GmailScanCard> {
   String _getStatusText() {
     switch (widget.status) {
       case MeetingStatus.scheduled:
-        return "SCHEDULED";
+        return 'SCHEDULED';
+
       case MeetingStatus.canceled:
-        return "CANCELED";
+        return 'CANCELED';
+
       case MeetingStatus.updated:
-        return "UPDATED";
+        return 'UPDATED';
+
       case MeetingStatus.unknown:
-        return "PRIORITY";
+        return 'PRIORITY';
     }
   }
 
   String _decodeBody(String? base64Body) {
-    if (base64Body == null || base64Body.isEmpty) return "No content available.";
+    if (base64Body == null || base64Body.isEmpty) {
+      return 'No content available.';
+    }
+
     try {
-      // Gmail base64url encoding uses '-' instead of '+' and '_' instead of '/'
+      // Gmail uses base64url:
+      // '-' instead of '+'
+      // '_' instead of '/'
       String normalized = base64Body.replaceAll('-', '+').replaceAll('_', '/');
-      // Add padding if necessary
+
       while (normalized.length % 4 != 0) {
         normalized += '=';
       }
-      return utf8.decode(base64.decode(normalized));
+
+      final decodedBytes = base64.decode(normalized);
+
+      return utf8.decode(decodedBytes, allowMalformed: true);
     } catch (e) {
-      return "Error decoding email content.";
+      debugPrint('Failed to decode Gmail body: $e');
+
+      return 'Error decoding email content.';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final hasBody =
+        widget.fullBody != null && widget.fullBody!.trim().isNotEmpty;
+
     return GestureDetector(
-<<<<<<< HEAD
-      onTap: () => Navigator.of(
-        context,
-        rootNavigator: true,
-      ).push(MaterialPageRoute(builder: (_) => const EmailScreen())),
-      child: Container(
-=======
-      onTap: () {
-        if (widget.fullBody != null) {
-          setState(() => _isExpanded = !_isExpanded);
-        }
-      },
+      onTap: hasBody
+          ? () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            }
+          : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
->>>>>>> origin/main
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           color: theme.cardColor,
@@ -108,25 +119,30 @@ class _GmailScanCardState extends State<GmailScanCard> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: _getStatusColor().withOpacity(0.1),
+                    color: _getStatusColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: _getStatusColor().withOpacity(0.3)),
+                    border: Border.all(
+                      color: _getStatusColor().withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Center(
                     child: Icon(
-                      widget.status == MeetingStatus.canceled ? Icons.event_busy : Icons.event_available,
+                      widget.status == MeetingStatus.canceled
+                          ? Icons.event_busy
+                          : Icons.event_available,
                       color: _getStatusColor(),
                       size: 18,
                     ),
                   ),
                 ),
+
                 const SizedBox(width: 12),
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: Text(
@@ -139,6 +155,9 @@ class _GmailScanCardState extends State<GmailScanCard> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+
+                          const SizedBox(width: 8),
+
                           Text(
                             _getStatusText(),
                             style: TextStyle(
@@ -150,12 +169,18 @@ class _GmailScanCardState extends State<GmailScanCard> {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 2),
+
                       Text(
                         widget.subtitle,
                         style: TextStyle(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                          fontSize: 12
+                          color:
+                              theme.textTheme.bodyMedium?.color?.withValues(
+                                alpha: 0.7,
+                              ) ??
+                              AppColors.textSecondary,
+                          fontSize: 12,
                         ),
                         maxLines: _isExpanded ? 10 : 1,
                         overflow: TextOverflow.ellipsis,
@@ -163,77 +188,57 @@ class _GmailScanCardState extends State<GmailScanCard> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Icon(
-                  _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
-                  size: 18,
-                ),
+
+                if (hasBody) ...[
+                  const SizedBox(width: 8),
+
+                  Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color:
+                        theme.textTheme.bodyMedium?.color?.withValues(
+                          alpha: 0.5,
+                        ) ??
+                        AppColors.textSecondary,
+                    size: 18,
+                  ),
+                ],
               ],
             ),
-            if (_isExpanded && widget.fullBody != null) ...[
+
+            if (_isExpanded && hasBody) ...[
               const SizedBox(height: 16),
+
               const Divider(height: 1),
+
               const SizedBox(height: 12),
+
               Text(
                 _decodeBody(widget.fullBody),
                 style: TextStyle(
                   fontSize: 13,
                   height: 1.5,
-                  color: theme.textTheme.bodyLarge?.color?.withOpacity(0.9),
+                  color: theme.textTheme.bodyLarge?.color?.withValues(
+                    alpha: 0.9,
+                  ),
                 ),
               ),
+
               const SizedBox(height: 8),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "Tap to collapse",
+                  'Tap to collapse',
                   style: TextStyle(
                     fontSize: 10,
-                    color: AppColors.primary.withOpacity(0.7),
+                    color: AppColors.primary.withValues(alpha: 0.7),
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
-<<<<<<< HEAD
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color:
-                          theme.textTheme.bodyMedium?.color?.withValues(
-                            alpha: 0.7,
-                          ) ??
-                          AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color:
-                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
-                  AppColors.textSecondary,
-              size: 18,
-            ),
-=======
             ],
->>>>>>> origin/main
           ],
         ),
       ),

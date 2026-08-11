@@ -1,174 +1,240 @@
+import 'dart:convert';
+
+import 'package:alarm_frontend/models/agenda_model.dart';
+import 'package:alarm_frontend/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:http/http.dart' as http;
-<<<<<<< HEAD
 import 'package:logger/logger.dart';
-=======
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:alarm_frontend/models/agenda_model.dart';
-import 'package:alarm_frontend/services/notification_service.dart';
->>>>>>> origin/main
 
 class GoogleSyncService {
   static final GoogleSyncService _instance = GoogleSyncService._internal();
-  static final Logger _logger = Logger();
-  factory GoogleSyncService() => _instance;
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  GoogleSignInAccount? _cachedAccount;
-  http.Client? _authenticatedClient;
-  bool _isInitialized = false;
+  static final Logger _logger = Logger();
+
+  factory GoogleSyncService() => _instance;
 
   GoogleSyncService._internal();
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+
+  GoogleSignInAccount? _cachedAccount;
+
+  http.Client? _authenticatedClient;
+
+  bool _isInitialized = false;
+
+  static const List<String> _scopes = [
+    CalendarApi.calendarReadonlyScope,
+    GmailApi.gmailReadonlyScope,
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ];
+
+  // =========================================================
+  // GOOGLE INITIALIZATION
+  // =========================================================
+
   Future<void> _ensureInitialized() async {
-    if (_isInitialized && _cachedAccount != null) return;
+    if (_isInitialized) {
+      return;
+    }
+
     try {
       await _googleSignIn.initialize();
+
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
+
       _isInitialized = true;
-<<<<<<< HEAD
-    } catch (error, stackTrace) {
+
+      _logger.i('Google Sign-In initialized');
+    } catch (e, stackTrace) {
       _logger.e(
-        'Failed to initialize Google Sign-In',
-        error: error,
+        'Google initialization failed',
+        error: e,
         stackTrace: stackTrace,
       );
-=======
-    } catch (e) {
+
       debugPrint('Google Init Error: $e');
->>>>>>> origin/main
     }
   }
 
-  final List<String> _scopes = [
-    CalendarApi.calendarReadonlyScope,
-    GmailApi.gmailReadonlyScope,
-    "https://www.googleapis.com/auth/contacts.readonly",
-  ];
+  // =========================================================
+  // CHECK LINK STATUS
+  // =========================================================
 
   Future<bool> isLinked() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return false;
-<<<<<<< HEAD
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+
+      if (firebaseUser == null) {
+        return false;
+      }
 
       await _ensureInitialized();
+
       _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
 
-      if (_cachedAccount == null) return false;
+      final account = _cachedAccount;
 
-      // verify that we have the required permissions
-      final authorization = await _cachedAccount!.authorizationClient
+      if (account == null) {
+        return false;
+      }
+
+      final authorization = await account.authorizationClient
           .authorizationForScopes(_scopes);
+
       return authorization != null;
-=======
-      await _ensureInitialized();
-      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-      if (_cachedAccount == null) return false;
-      
-      final authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      return authz != null && authz.accessToken != null;
->>>>>>> origin/main
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.w(
+        'Unable to check Google link status',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
       return false;
     }
   }
 
+  // =========================================================
+  // LINK GOOGLE ACCOUNT
+  // =========================================================
+
   Future<GoogleSignInAccount?> linkAccount() async {
     try {
       await _ensureInitialized();
-      _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
-<<<<<<< HEAD
 
-      // show account picker only if totally necessary
-=======
->>>>>>> origin/main
-      _cachedAccount ??= await _googleSignIn.authenticate();
-      if (_cachedAccount != null) {
-        await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
+      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
+
+      if (_cachedAccount == null) {
+        if (!_googleSignIn.supportsAuthenticate()) {
+          debugPrint(
+            'Google authenticate() is not supported on this platform.',
+          );
+
+          return null;
+        }
+
+        _cachedAccount = await _googleSignIn.authenticate();
       }
+
+      final account = _cachedAccount;
+
+      if (account == null) {
+        return null;
+      }
+
+      await account.authorizationClient.authorizeScopes(_scopes);
+
+      // Force a new HTTP client with the newly
+      // authorized token.
+      _authenticatedClient?.close();
       _authenticatedClient = null;
-      return _cachedAccount;
-<<<<<<< HEAD
-    } catch (error, stackTrace) {
+
+      return account;
+    } catch (e, stackTrace) {
       _logger.e(
-        'Failed to link Google account',
-        error: error,
+        'Google account linking failed',
+        error: e,
         stackTrace: stackTrace,
       );
-=======
-    } catch (e) {
+
       debugPrint('Link Error: $e');
->>>>>>> origin/main
+
       return null;
     }
   }
+
+  // =========================================================
+  // UNLINK
+  // =========================================================
 
   Future<void> unlinkAccount() async {
     try {
+      await _ensureInitialized();
+
       await _googleSignIn.signOut();
+
       _cachedAccount = null;
-<<<<<<< HEAD
-    } catch (error, stackTrace) {
-      _logger.e(
-        'Failed to unlink Google account',
-        error: error,
-        stackTrace: stackTrace,
-      );
-=======
+
+      _authenticatedClient?.close();
       _authenticatedClient = null;
+
       final prefs = await SharedPreferences.getInstance();
+
       await prefs.remove('cached_priority_emails');
+
       await prefs.remove('cached_agenda_events');
+
       await prefs.remove('cached_unified_agenda');
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('Google unlink failed', error: e, stackTrace: stackTrace);
+
       debugPrint('Unlink Error: $e');
->>>>>>> origin/main
     }
   }
 
+  // =========================================================
+  // AUTHENTICATED HTTP CLIENT
+  // =========================================================
+
   Future<http.Client?> _getAuthenticatedClient() async {
-    if (_authenticatedClient != null) return _authenticatedClient;
+    if (_authenticatedClient != null) {
+      return _authenticatedClient;
+    }
+
     try {
       await _ensureInitialized();
+
       _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-      if (_cachedAccount == null) return null;
-<<<<<<< HEAD
 
-      // get access silently
-      final authz = await _cachedAccount!.authorizationClient
+      final account = _cachedAccount;
+
+      if (account == null) {
+        return null;
+      }
+
+      var authorization = await account.authorizationClient
           .authorizationForScopes(_scopes);
-      if (authz == null) return null;
 
-      return GoogleAuthenticatedClient(authz.accessToken);
-    } catch (error, stackTrace) {
-      _logger.e(
-        'Failed to create an authenticated Google client',
-        error: error,
-        stackTrace: stackTrace,
-      );
-=======
-      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      if (authz == null || authz.accessToken == null) {
+      if (authorization == null) {
         try {
-          authz = await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
-        } catch (e) {
+          authorization = await account.authorizationClient.authorizeScopes(
+            _scopes,
+          );
+        } catch (e, stackTrace) {
+          _logger.w(
+            'Google scopes were not authorized',
+            error: e,
+            stackTrace: stackTrace,
+          );
+
           return null;
         }
       }
-      if (authz == null || authz.accessToken == null) return null;
-      _authenticatedClient = GoogleAuthenticatedClient(authz.accessToken!);
+
+      _authenticatedClient = GoogleAuthenticatedClient(
+        authorization.accessToken,
+      );
+
       return _authenticatedClient;
-    } catch (e) {
->>>>>>> origin/main
+    } catch (e, stackTrace) {
+      _logger.e(
+        'Unable to create authenticated Google client',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
       return null;
     }
   }
+
+  // =========================================================
+  // CALENDAR
+  // =========================================================
 
   Future<List<Event>> fetchUpcomingEvents() async {
     return fetchEvents(timeMin: DateTime.now().toUtc(), maxResults: 15);
@@ -181,165 +247,341 @@ class GoogleSyncService {
   }) async {
     try {
       final client = await _getAuthenticatedClient();
-      if (client == null) return [];
+
+      if (client == null) {
+        return [];
+      }
+
       final calendar = CalendarApi(client);
-<<<<<<< HEAD
+
       final events = await calendar.events.list(
         'primary',
+
         timeMin: timeMin.toUtc(),
+
         timeMax: timeMax?.toUtc(),
+
         maxResults: maxResults,
+
         orderBy: 'startTime',
+
         singleEvents: true,
       );
 
-      return events.items ?? [];
-=======
-      final now = DateTime.now();
-      final startOfToday = DateTime(now.year, now.month, now.day).toUtc();
-      final events = await calendar.events.list('primary', timeMin: startOfToday, maxResults: 20, orderBy: 'startTime', singleEvents: true);
-      
-      final List<Event> items = events.items ?? [];
-      _cacheAgendaEvents(items); // Cache raw events for Calendar Screen
+      final items = events.items ?? <Event>[];
+
+      await _cacheAgendaEvents(items);
+
       return items;
->>>>>>> origin/main
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('Calendar fetch failed', error: e, stackTrace: stackTrace);
+
+      debugPrint('Calendar Fetch Error: $e');
+
       return [];
     }
   }
 
-  // RESTORED: General unread email fetcher for Gmail Screen
+  // =========================================================
+  // GMAIL - LATEST EMAILS
+  // =========================================================
+
   Future<List<Message>> fetchLatestEmails() async {
     try {
       final client = await _getAuthenticatedClient();
-      if (client == null) return [];
+
+      if (client == null) {
+        return [];
+      }
+
       final gmail = GmailApi(client);
-<<<<<<< HEAD
+
       final response = await gmail.users.messages.list(
         'me',
         maxResults: 10,
-        q: 'is:unread',
+        q:
+            'is:unread '
+            '-category:social '
+            '-category:promotions',
       );
 
-      List<Message> emails = [];
-      if (response.messages != null) {
-        for (var msg in response.messages!) {
-          final fullMsg = await gmail.users.messages.get('me', msg.id!);
-          emails.add(fullMsg);
-        }
+      final messageRefs = response.messages;
+
+      if (messageRefs == null || messageRefs.isEmpty) {
+        return [];
       }
-=======
-      
-      final response = await gmail.users.messages.list('me', maxResults: 10, q: 'is:unread -category:social -category:promotions');
-      if (response.messages == null) return [];
-      
-      final detailFutures = response.messages!
-          .where((m) => m.id != null)
-          .map((m) => gmail.users.messages.get('me', m.id!, format: 'full'))
+
+      final futures = messageRefs
+          .where((message) => message.id != null)
+          .map(
+            (message) =>
+                gmail.users.messages.get('me', message.id!, format: 'full'),
+          )
           .toList();
-          
-      final List<Message> emails = await Future.wait(detailFutures);
-      _cachePriorityEmails(emails); // Update generic email cache
->>>>>>> origin/main
+
+      final emails = await Future.wait(futures);
+
+      await _cachePriorityEmails(emails);
+
       return emails;
-    } catch (e) {
-      debugPrint("Gmail Fetch Error: $e");
+    } catch (e, stackTrace) {
+      _logger.e('Gmail fetch failed', error: e, stackTrace: stackTrace);
+
+      debugPrint('Gmail Fetch Error: $e');
+
       return [];
     }
   }
+
+  // =========================================================
+  // GMAIL - MEETING EMAILS
+  // =========================================================
 
   Future<List<Message>> fetchPriorityMeetingEmails() async {
     try {
       final client = await _getAuthenticatedClient();
-      if (client == null) return [];
+
+      if (client == null) {
+        return [];
+      }
+
       final gmail = GmailApi(client);
-      const String query = '-category:social -category:promotions subject:(meeting OR scheduled OR canceled OR invitation OR updated OR "zoom link" OR "google meet" OR interview OR "sync")';
-      final response = await gmail.users.messages.list('me', maxResults: 10, q: query);
-      if (response.messages == null) return [];
-      final detailFutures = response.messages!.where((m) => m.id != null).map((m) => gmail.users.messages.get('me', m.id!, format: 'full')).toList();
-      return await Future.wait(detailFutures);
-    } catch (e) {
+
+      const query =
+          '-category:social '
+          '-category:promotions '
+          'subject:('
+          'meeting OR '
+          'scheduled OR '
+          'canceled OR '
+          'invitation OR '
+          'updated OR '
+          '"zoom link" OR '
+          '"google meet" OR '
+          'interview OR '
+          '"sync"'
+          ')';
+
+      final response = await gmail.users.messages.list(
+        'me',
+        maxResults: 10,
+        q: query,
+      );
+
+      final messageRefs = response.messages;
+
+      if (messageRefs == null || messageRefs.isEmpty) {
+        return [];
+      }
+
+      final futures = messageRefs
+          .where((message) => message.id != null)
+          .map(
+            (message) =>
+                gmail.users.messages.get('me', message.id!, format: 'full'),
+          )
+          .toList();
+
+      return await Future.wait(futures);
+    } catch (e, stackTrace) {
+      _logger.e(
+        'Priority Gmail fetch failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
+      debugPrint('Priority Gmail Fetch Error: $e');
+
       return [];
     }
   }
 
+  // =========================================================
+  // UNIFIED AGENDA
+  // =========================================================
+
   Future<void> saveUnifiedAgenda(List<AgendaModel> agenda) async {
     final prefs = await SharedPreferences.getInstance();
-    
-    final List<AgendaModel> oldAgenda = await getCachedUnifiedAgenda();
-    for (var newItem in agenda) {
-      if (newItem.isUpdated) {
-        final existing = oldAgenda.firstWhere((old) => old.id == newItem.id, orElse: () => newItem);
-        if (existing.time != newItem.time) {
-          NotificationService().showInstantNotification(
-            title: "Meeting Rescheduled",
-            body: "${newItem.title} moved to ${newItem.time}."
-          );
+
+    final oldAgenda = await getCachedUnifiedAgenda();
+
+    for (final newItem in agenda) {
+      if (!newItem.isUpdated) {
+        continue;
+      }
+
+      AgendaModel? existing;
+
+      for (final oldItem in oldAgenda) {
+        if (oldItem.id == newItem.id) {
+          existing = oldItem;
+          break;
         }
+      }
+
+      if (existing != null && existing.time != newItem.time) {
+        await NotificationService().showInstantNotification(
+          title: 'Meeting Rescheduled',
+          body: '${newItem.title} moved to ${newItem.time}.',
+        );
       }
     }
 
-    final List<String> data = agenda.map((e) => jsonEncode(e.toJson())).toList();
+    final data = agenda.map((item) => jsonEncode(item.toJson())).toList();
+
     await prefs.setStringList('cached_unified_agenda', data);
   }
 
   Future<List<AgendaModel>> getCachedUnifiedAgenda() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+
       final list = prefs.getStringList('cached_unified_agenda') ?? [];
-      return list.map((s) => AgendaModel.fromJson(jsonDecode(s))).toList();
-    } catch (e) {
+
+      return list
+          .map(
+            (item) => AgendaModel.fromJson(
+              Map<String, dynamic>.from(jsonDecode(item)),
+            ),
+          )
+          .toList();
+    } catch (e, stackTrace) {
+      _logger.w(
+        'Failed to read cached unified agenda',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
       return [];
     }
   }
+
+  // =========================================================
+  // EMAIL CACHE
+  // =========================================================
 
   Future<List<Map<String, dynamic>>> getCachedEmails() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+
       final list = prefs.getStringList('cached_priority_emails') ?? [];
-      return list.map((s) => jsonDecode(s) as Map<String, dynamic>).toList();
-    } catch (e) {
+
+      return list
+          .map((item) => Map<String, dynamic>.from(jsonDecode(item)))
+          .toList();
+    } catch (e, stackTrace) {
+      _logger.w(
+        'Failed to read cached Gmail messages',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
       return [];
     }
   }
 
-  // RESTORED: Required by Calendar Screen
+  // =========================================================
+  // EVENT CACHE
+  // =========================================================
+
   Future<List<Event>> getCachedEvents() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+
       final list = prefs.getStringList('cached_agenda_events') ?? [];
-      return list.map((s) => Event.fromJson(jsonDecode(s))).toList();
-    } catch (e) {
+
+      return list
+          .map(
+            (item) =>
+                Event.fromJson(Map<String, dynamic>.from(jsonDecode(item))),
+          )
+          .toList();
+    } catch (e, stackTrace) {
+      _logger.w(
+        'Failed to read cached Calendar events',
+        error: e,
+        stackTrace: stackTrace,
+      );
+
       return [];
     }
   }
 
   Future<void> _cacheAgendaEvents(List<Event> events) async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> data = events.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('cached_agenda_events', data);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final data = events.map((event) => jsonEncode(event.toJson())).toList();
+
+      await prefs.setStringList('cached_agenda_events', data);
+    } catch (e, stackTrace) {
+      _logger.w(
+        'Failed to cache Calendar events',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> _cachePriorityEmails(List<Message> emails) async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> data = emails.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('cached_priority_emails', data);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final data = emails.map((email) => jsonEncode(email.toJson())).toList();
+
+      await prefs.setStringList('cached_priority_emails', data);
+    } catch (e, stackTrace) {
+      _logger.w(
+        'Failed to cache Gmail messages',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
+  // =========================================================
+  // SIGN OUT
+  // =========================================================
+
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
-    _cachedAccount = null;
-    _authenticatedClient = null;
+    try {
+      await _ensureInitialized();
+
+      await _googleSignIn.signOut();
+
+      _cachedAccount = null;
+
+      _authenticatedClient?.close();
+
+      _authenticatedClient = null;
+    } catch (e, stackTrace) {
+      _logger.e('Google sign out failed', error: e, stackTrace: stackTrace);
+    }
   }
 }
 
+// =============================================================
+// AUTHENTICATED GOOGLE HTTP CLIENT
+// =============================================================
+
 class GoogleAuthenticatedClient extends http.BaseClient {
   final String accessToken;
+
   final http.Client _inner = http.Client();
+
   GoogleAuthenticatedClient(this.accessToken);
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     request.headers['Authorization'] = 'Bearer $accessToken';
+
     return _inner.send(request);
+  }
+
+  @override
+  void close() {
+    _inner.close();
+
+    super.close();
   }
 }
