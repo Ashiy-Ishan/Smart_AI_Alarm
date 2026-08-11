@@ -27,7 +27,11 @@ class NotificationHistoryModal extends StatelessWidget {
         color: theme.scaffoldBackgroundColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 20, spreadRadius: 5),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
         ],
       ),
       child: Column(
@@ -42,7 +46,7 @@ class NotificationHistoryModal extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Header
           Padding(
             padding: const EdgeInsets.all(24),
@@ -58,7 +62,10 @@ class NotificationHistoryModal extends StatelessWidget {
                     await NotificationService().clearHistory();
                     if (context.mounted) Navigator.pop(context);
                   },
-                  child: const Text("Clear All", style: TextStyle(color: Colors.redAccent)),
+                  child: const Text(
+                    "Clear All",
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
                 ),
               ],
             ),
@@ -79,18 +86,28 @@ class NotificationHistoryModal extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.notifications_none, size: 64, color: theme.dividerColor),
+                        Icon(
+                          Icons.notifications_none,
+                          size: 64,
+                          color: theme.dividerColor,
+                        ),
                         const SizedBox(height: 16),
-                        const Text("No recent notifications", style: TextStyle(color: AppColors.textSecondary)),
+                        const Text(
+                          "No recent notifications",
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
                       ],
                     ),
                   );
                 }
 
                 return ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   itemCount: history.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = history[index];
                     return _buildNotificationItem(context, item);
@@ -105,7 +122,10 @@ class NotificationHistoryModal extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationItem(BuildContext context, NotificationHistoryModel item) {
+  Widget _buildNotificationItem(
+    BuildContext context,
+    NotificationHistoryModel item,
+  ) {
     final theme = Theme.of(context);
     final timeStr = DateFormat('HH:mm').format(item.timestamp);
     final dateStr = DateFormat('MMM d').format(item.timestamp);
@@ -128,10 +148,14 @@ class NotificationHistoryModal extends StatelessWidget {
               color: AppColors.primary.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.notifications_active, color: AppColors.primary, size: 20),
+            child: const Icon(
+              Icons.notifications_active,
+              color: AppColors.primary,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 16),
-          
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +166,10 @@ class NotificationHistoryModal extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                     Text(
@@ -154,7 +181,10 @@ class NotificationHistoryModal extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   item.body,
-                  style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7), fontSize: 13),
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                    fontSize: 13,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(

@@ -550,7 +550,7 @@ class _HomeScreenState extends State<HomeScreen>
 
               fit: BoxFit.contain,
 
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return Lottie.asset('assets/lotties/home.json');
               },
             ),
