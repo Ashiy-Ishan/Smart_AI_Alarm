@@ -7,10 +7,14 @@ import 'package:alarm_frontend/models/today_summary_model.dart';
 
 class ApiService {
   static const String baseUrl =
+<<<<<<< HEAD
       'http://192.168.8.186:5001/'
       'smart-ai-alarm-2f71d/'
       'us-central1/'
       'api';
+=======
+      'https://outward-entire-growing.ngrok-free.dev/ai-alarm-system/us-central1/api/';
+>>>>>>> 4b7c0b8 (Modify backend)
 
   static Future<Map<String, dynamic>> checkHealth() async {
     final response = await http.get(Uri.parse('$baseUrl/health'));

@@ -1,0 +1,21 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="pymongo" />
+          <option value="python-dotenv" />
+          <option value="pydantic" />
+          <option value="pydantic-settings" />
+          <option value="pandas" />
+          <option value="numpy" />
+          <option value="lightgbm" />
+          <option value="scikit-learn" />
+          <option value="apscheduler" />
+          <option value="requests" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
