@@ -8,10 +8,10 @@ MODEL_METADATA = "model_metadata"
 IOT_SENSOR_LOGS = "iot_sensor_logs"
 CALENDAR_CREDENTIALS = "calendar_credentials"
 CALENDAR_EVENTS_CACHE = "calendar_events_cache"
+SLEEP_SESSIONS = "sleep_sessions"
 
 def get_collections(db: Database | None = None) -> dict:
-    if db is None:
-        db = get_database()
+    db = db or get_database()
     return {
         USERS: db[USERS],
         ALARMS: db[ALARMS],
@@ -20,6 +20,7 @@ def get_collections(db: Database | None = None) -> dict:
         IOT_SENSOR_LOGS: db[IOT_SENSOR_LOGS],
         CALENDAR_CREDENTIALS: db[CALENDAR_CREDENTIALS],
         CALENDAR_EVENTS_CACHE: db[CALENDAR_EVENTS_CACHE],
+        SLEEP_SESSIONS: db[SLEEP_SESSIONS],
     }
 
 def ensure_indexes(db: Database | None = None) -> None:
@@ -34,5 +35,6 @@ def ensure_indexes(db: Database | None = None) -> None:
     cols[CALENDAR_CREDENTIALS].create_index("user_id", unique=True)
     cols[CALENDAR_EVENTS_CACHE].create_index([("user_id", 1), ("expires_at", 1)])
     cols[CALENDAR_EVENTS_CACHE].create_index("expires_at", expireAfterSeconds=0)
+    cols[SLEEP_SESSIONS].create_index([("user_id", 1), ("sleep_start", 1)])
 
 

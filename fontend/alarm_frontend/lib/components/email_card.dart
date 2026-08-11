@@ -6,11 +6,7 @@ class EmailCard extends StatelessWidget {
   final EmailModel email;
   final VoidCallback? onTap;
 
-  const EmailCard({
-    super.key,
-    required this.email,
-    this.onTap,
-  });
+  const EmailCard({super.key, required this.email, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +52,22 @@ class EmailCard extends StatelessWidget {
                       Text(
                         email.time,
                         style: TextStyle(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                          color:
+                              theme.textTheme.bodyMedium?.color?.withValues(
+                                alpha: 0.7,
+                              ) ??
+                              AppColors.textSecondary,
                           fontSize: 12,
                         ),
                       ),
                       const SizedBox(width: 6),
                       Icon(
                         Icons.chevron_right,
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.5,
+                            ) ??
+                            AppColors.textSecondary,
                         size: 16,
                       ),
                     ],
@@ -75,7 +79,11 @@ class EmailCard extends StatelessWidget {
                         child: Text(
                           email.preview,
                           style: TextStyle(
-                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                            color:
+                                theme.textTheme.bodyMedium?.color?.withValues(
+                                  alpha: 0.7,
+                                ) ??
+                                AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -87,10 +95,10 @@ class EmailCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.2),
+                            color: AppColors.primary.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.5),
+                              color: AppColors.primary.withValues(alpha: 0.5),
                             ),
                           ),
                           child: const Text(

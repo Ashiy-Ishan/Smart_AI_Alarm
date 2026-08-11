@@ -14,7 +14,8 @@ class NotificationService {
   NotificationService._internal();
 
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
 
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
     'alarm_high_importance',
@@ -28,21 +29,31 @@ class NotificationService {
     try {
       await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
-      const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-      const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
-      const InitializationSettings initSettings = InitializationSettings(android: androidInit, iOS: iosInit);
-      
+      const AndroidInitializationSettings androidInit =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      const DarwinInitializationSettings iosInit =
+          DarwinInitializationSettings();
+      const InitializationSettings initSettings = InitializationSettings(
+        android: androidInit,
+        iOS: iosInit,
+      );
+
       await _localNotifications.initialize(
         settings: initSettings,
         onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
       );
 
       await _localNotifications
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.createNotificationChannel(_channel);
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        _addToHistory(message.notification?.title ?? "Notification", message.notification?.body ?? "");
+        _addToHistory(
+          message.notification?.title ?? "Notification",
+          message.notification?.body ?? "",
+        );
         _showLocalNotification(message);
       });
 
@@ -58,21 +69,25 @@ class NotificationService {
     }
   }
 
-  Future<void> showInstantNotification({required String title, required String body}) async {
+  Future<void> showInstantNotification({
+    required String title,
+    required String body,
+  }) async {
     await _addToHistory(title, body);
-    
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'alarm_high_importance',
-      'Schedule Updates',
-      channelDescription: 'Notifications for meeting changes',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    
+
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'alarm_high_importance',
+          'Schedule Updates',
+          channelDescription: 'Notifications for meeting changes',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
+
     await _localNotifications.show(
-      id: DateTime.now().millisecond % 100000, 
-      title: title, 
-      body: body, 
+      id: DateTime.now().millisecond % 100000,
+      title: title,
+      body: body,
       notificationDetails: const NotificationDetails(android: androidDetails),
     );
   }
@@ -81,8 +96,9 @@ class NotificationService {
 
   Future<void> _addToHistory(String title, String body) async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String> historyStrings = prefs.getStringList('notif_history') ?? [];
-    
+    final List<String> historyStrings =
+        prefs.getStringList('notif_history') ?? [];
+
     final newItem = NotificationHistoryModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: title,
@@ -91,7 +107,7 @@ class NotificationService {
     );
 
     historyStrings.insert(0, jsonEncode(newItem.toJson()));
-    
+
     if (historyStrings.length > 20) {
       historyStrings.removeRange(20, historyStrings.length);
     }
@@ -101,8 +117,11 @@ class NotificationService {
 
   Future<List<NotificationHistoryModel>> getHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String> historyStrings = prefs.getStringList('notif_history') ?? [];
-    return historyStrings.map((s) => NotificationHistoryModel.fromJson(jsonDecode(s))).toList();
+    final List<String> historyStrings =
+        prefs.getStringList('notif_history') ?? [];
+    return historyStrings
+        .map((s) => NotificationHistoryModel.fromJson(jsonDecode(s)))
+        .toList();
   }
 
   Future<void> clearHistory() async {
@@ -118,45 +137,75 @@ class NotificationService {
     if (user == null || user.email == null) return;
 
     final hiddenUid = _getHiddenUid(user.email!);
-    final devicesSnapshot = await FirebaseDatabase.instance.ref().child('Users').child(hiddenUid).child('Devices').get();
-    
+    final devicesSnapshot = await FirebaseDatabase.instance
+        .ref()
+        .child('Users')
+        .child(hiddenUid)
+        .child('Devices')
+        .get();
+
     if (devicesSnapshot.exists) {
       final devices = devicesSnapshot.value as Map<dynamic, dynamic>;
       if (devices.isEmpty) return;
       final mac = devices.keys.first.toString();
-      final ref = FirebaseDatabase.instance.ref().child('Users').child(hiddenUid).child('Devices').child(mac);
+      final ref = FirebaseDatabase.instance
+          .ref()
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .child(mac);
 
       if (actionId == 'stop_action') {
         await ref.update({'MobileStop': true, 'AlarmStatus': 'IDLE'});
       } else if (actionId == 'snooze_action') {
-        String snoozeTimeStr = DateFormat("HH:mm").format(DateTime.now().add(const Duration(minutes: 5)));
-        await ref.update({'SnoozeUntil': snoozeTimeStr, 'AlarmStatus': 'SNOOZE'});
+        String snoozeTimeStr = DateFormat(
+          "HH:mm",
+        ).format(DateTime.now().add(const Duration(minutes: 5)));
+        await ref.update({
+          'SnoozeUntil': snoozeTimeStr,
+          'AlarmStatus': 'SNOOZE',
+        });
       }
     }
   }
 
   String _getHiddenUid(String email) {
-    String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String prefix = email
+        .split('@')
+        .first
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toLowerCase();
     String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
+    String suffix = hash.length > 4
+        ? hash.substring(hash.length - 4)
+        : hash.padLeft(4, '0');
     return "user_${prefix}_$suffix";
   }
 
   void _showLocalNotification(RemoteMessage message) async {
     final List<AndroidNotificationAction> androidActions = [
-      const AndroidNotificationAction('snooze_action', 'SNOOZE', showsUserInterface: true),
-      const AndroidNotificationAction('stop_action', 'STOP', showsUserInterface: true),
+      const AndroidNotificationAction(
+        'snooze_action',
+        'SNOOZE',
+        showsUserInterface: true,
+      ),
+      const AndroidNotificationAction(
+        'stop_action',
+        'STOP',
+        showsUserInterface: true,
+      ),
     ];
 
-    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      _channel.id,
-      _channel.name,
-      channelDescription: _channel.description,
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: true,
-      actions: androidActions,
-    );
+    final AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          _channel.id,
+          _channel.name,
+          channelDescription: _channel.description,
+          importance: Importance.max,
+          priority: Priority.high,
+          showWhen: true,
+          actions: androidActions,
+        );
 
     await _localNotifications.show(
       id: message.hashCode,

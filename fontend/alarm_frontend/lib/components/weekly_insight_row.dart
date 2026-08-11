@@ -5,11 +5,7 @@ class WeeklyInsightRow extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const WeeklyInsightRow({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
+  const WeeklyInsightRow({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +21,9 @@ class WeeklyInsightRow extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary,
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8) ??
+                    AppColors.textSecondary,
                 fontSize: 13,
                 height: 1.4,
               ),

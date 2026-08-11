@@ -6,9 +6,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle subHeading = TextStyle(
-    fontSize: 14,
-  );
+  static const TextStyle subHeading = TextStyle(fontSize: 14);
 
   static const TextStyle button = TextStyle(
     fontSize: 16,
@@ -22,7 +20,5 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
   );
 
-  static const TextStyle label = TextStyle(
-    fontSize: 14,
-  );
+  static const TextStyle label = TextStyle(fontSize: 14);
 }

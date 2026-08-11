@@ -40,7 +40,6 @@ class ThemeProvider extends ChangeNotifier {
       primary: AppColors.primary,
       secondary: AppColors.primary,
       surface: AppColors.card,
-      background: AppColors.background,
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: AppColors.textPrimary),
@@ -59,7 +58,6 @@ class ThemeProvider extends ChangeNotifier {
       primary: AppColors.primary,
       secondary: AppColors.primary,
       surface: Colors.white,
-      background: const Color(0xFFF3F4F6),
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Color(0xFF111827), fontSize: 16),

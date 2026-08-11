@@ -39,8 +39,10 @@ class WeeklyMotionReportScreen extends StatelessWidget {
             Text(
               'Nov 5 - Nov 12',
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                fontSize: 12
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+                fontSize: 12,
               ),
             ),
           ],
@@ -58,14 +60,20 @@ class WeeklyMotionReportScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 SizedBox(height: 14),
-                WeeklyBarChart(
-                  items: weeklyData,
-                  highlightLabel: 'Thu',
-                ),
+                WeeklyBarChart(items: weeklyData, highlightLabel: 'Thu'),
                 SizedBox(height: 14),
-                WeeklyReportStatRow(label: 'Total Active Time:', value: '45h 30m'),
-                WeeklyReportStatRow(label: 'Peak Day:', value: 'Thursday (8h 15m)'),
-                WeeklyReportStatRow(label: 'Lowest Day:', value: 'Sunday (4h 30m)'),
+                WeeklyReportStatRow(
+                  label: 'Total Active Time:',
+                  value: '45h 30m',
+                ),
+                WeeklyReportStatRow(
+                  label: 'Peak Day:',
+                  value: 'Thursday (8h 15m)',
+                ),
+                WeeklyReportStatRow(
+                  label: 'Lowest Day:',
+                  value: 'Sunday (4h 30m)',
+                ),
                 WeeklyReportStatRow(label: 'Average Daily:', value: '6h 30m'),
               ],
             ),
@@ -87,7 +95,9 @@ class WeeklyMotionReportScreen extends StatelessWidget {
                         child: LinearProgressIndicator(
                           value: 0.72,
                           backgroundColor: theme.dividerColor,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                           minHeight: 6,
                         ),
                       ),
@@ -96,17 +106,33 @@ class WeeklyMotionReportScreen extends StatelessWidget {
                     Text(
                       '7h 12m',
                       style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                        fontSize: 12
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 14),
-                const WeeklyReportStatRow(label: 'Total Sleep:', value: '56h 45m'),
-                const WeeklyReportStatRow(label: 'Average Per Night:', value: '8h 06m'),
-                const WeeklyReportStatRow(label: 'Deep Sleep:', value: '24h 30m'),
-                const WeeklyReportStatRow(label: 'Light Sleep:', value: '30h 15m'),
+                const WeeklyReportStatRow(
+                  label: 'Total Sleep:',
+                  value: '56h 45m',
+                ),
+                const WeeklyReportStatRow(
+                  label: 'Average Per Night:',
+                  value: '8h 06m',
+                ),
+                const WeeklyReportStatRow(
+                  label: 'Deep Sleep:',
+                  value: '24h 30m',
+                ),
+                const WeeklyReportStatRow(
+                  label: 'Light Sleep:',
+                  value: '30h 15m',
+                ),
                 const WeeklyReportStatRow(label: 'Awake:', value: '2h 00m'),
               ],
             ),
@@ -126,7 +152,8 @@ class WeeklyMotionReportScreen extends StatelessWidget {
                 ),
                 WeeklyInsightRow(
                   icon: Icons.bedtime_outlined,
-                  text: 'Sleep consistency improved — 6 out of 7 nights above 7h.',
+                  text:
+                      'Sleep consistency improved — 6 out of 7 nights above 7h.',
                 ),
                 WeeklyInsightRow(
                   icon: Icons.warning_amber_outlined,

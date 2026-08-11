@@ -22,24 +22,27 @@ class SettingsNavRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Text(
-              label,
-              style: const TextStyle(fontSize: 14),
-            ),
+            Text(label, style: const TextStyle(fontSize: 14)),
             const Spacer(),
             if (badge != null) ...[
               Text(
                 badge!,
                 style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                  fontSize: 13
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 13,
                 ),
               ),
               const SizedBox(width: 4),
             ],
             Icon(
               Icons.chevron_right,
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                  AppColors.textSecondary,
               size: 18,
             ),
           ],

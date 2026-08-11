@@ -4,7 +4,6 @@ import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/providers/theme_provider.dart'; // added theme provider
 import 'package:alarm_frontend/routes/app_router.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/screens/alarm/alarm_ringing_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -12,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:alarm_frontend/services/notification_service.dart';
@@ -25,19 +23,23 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-    statusBarColor: Colors.transparent,
-  ));
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ),
+  );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   try {
     await dotenv.load(fileName: ".env");
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    
+
     await NotificationService().initialize();
 
     await AppBackgroundService.initializeService();
@@ -75,9 +77,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   String _getHiddenUid(String email) {
-    String prefix = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String prefix = email
+        .split('@')
+        .first
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toLowerCase();
     String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4 ? hash.substring(hash.length - 4) : hash.padLeft(4, '0');
+    String suffix = hash.length > 4
+        ? hash.substring(hash.length - 4)
+        : hash.padLeft(4, '0');
     return "user_${prefix}_$suffix";
   }
 
@@ -86,13 +94,18 @@ class _MyAppState extends State<MyApp> {
       _alarmSubscription?.cancel();
       if (user != null && user.email != null) {
         final hiddenUid = _getHiddenUid(user.email!);
-        
-        final devicesSnapshot = await FirebaseDatabase.instance.ref().child('Users').child(hiddenUid).child('Devices').get();
+
+        final devicesSnapshot = await FirebaseDatabase.instance
+            .ref()
+            .child('Users')
+            .child(hiddenUid)
+            .child('Devices')
+            .get();
         if (devicesSnapshot.exists) {
           final devices = devicesSnapshot.value as Map<dynamic, dynamic>;
           if (devices.isNotEmpty) {
             _currentMac = devices.keys.first.toString();
-            
+
             _alarmSubscription = FirebaseDatabase.instance
                 .ref()
                 .child('Users')
@@ -102,13 +115,13 @@ class _MyAppState extends State<MyApp> {
                 .child('AlarmStatus')
                 .onValue
                 .listen((event) {
-              final status = event.snapshot.value?.toString();
-              if (status == 'RINGING' && !_isAlarmShowing) {
-                _showAlarmOverlay(hiddenUid, _currentMac!);
-              } else if (status != 'RINGING' && _isAlarmShowing) {
-                _hideAlarmOverlay();
-              }
-            });
+                  final status = event.snapshot.value?.toString();
+                  if (status == 'RINGING' && !_isAlarmShowing) {
+                    _showAlarmOverlay(hiddenUid, _currentMac!);
+                  } else if (status != 'RINGING' && _isAlarmShowing) {
+                    _hideAlarmOverlay();
+                  }
+                });
           }
         }
       }

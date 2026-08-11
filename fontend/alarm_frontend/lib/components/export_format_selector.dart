@@ -28,7 +28,9 @@ class ExportFormatSelector extends StatelessWidget {
                 duration: const Duration(milliseconds: 180),
                 height: 42,
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : theme.scaffoldBackgroundColor,
+                  color: isSelected
+                      ? AppColors.primary
+                      : theme.scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: isSelected ? AppColors.primary : theme.dividerColor,
@@ -38,7 +40,12 @@ class ExportFormatSelector extends StatelessWidget {
                 child: Text(
                   format,
                   style: TextStyle(
-                    color: isSelected ? Colors.black : theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                    color: isSelected
+                        ? Colors.black
+                        : theme.textTheme.bodyMedium?.color?.withValues(
+                                alpha: 0.7,
+                              ) ??
+                              AppColors.textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),

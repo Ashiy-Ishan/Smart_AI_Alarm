@@ -10,7 +10,7 @@ class AuthUserModel {
     this.email = '',
     this.password = '',
     this.confirmPassword = '',
-    this.profileImage= '',
+    this.profileImage = '',
   });
 
   factory AuthUserModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +23,7 @@ class AuthUserModel {
     );
   }
 
-    Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'fullName': fullName,
       'email': email,

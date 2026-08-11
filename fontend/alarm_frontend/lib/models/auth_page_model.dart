@@ -37,8 +37,4 @@ class AuthPageModel {
   }
 }
 
-enum AuthPageType {
-  login,
-  signup,
-  resetPassword,
-}
+enum AuthPageType { login, signup, resetPassword }

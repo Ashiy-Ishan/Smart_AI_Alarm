@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../utils/app_colors.dart';
 
 class SectionCard extends StatelessWidget {
   final String? title;
@@ -29,10 +28,7 @@ class SectionCard extends StatelessWidget {
           if (title != null && title!.isNotEmpty) ...[
             Text(
               title!,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 10),
           ],

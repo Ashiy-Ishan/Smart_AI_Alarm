@@ -53,8 +53,10 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
             Text(
               'Mon, Nov 12',
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                fontSize: 12
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+                fontSize: 12,
               ),
             ),
           ],
@@ -63,11 +65,7 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.wifi,
-              color: AppColors.primary,
-              size: 24,
-            ),
+            child: Icon(Icons.wifi, color: AppColors.primary, size: 24),
           ),
         ],
       ),
@@ -113,7 +111,9 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
             title: 'Weekly Motion Report',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const WeeklyMotionReportScreen()),
+              MaterialPageRoute(
+                builder: (_) => const WeeklyMotionReportScreen(),
+              ),
             ),
           ),
 

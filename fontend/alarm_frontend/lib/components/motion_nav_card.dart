@@ -46,7 +46,11 @@ class MotionNavCard extends StatelessWidget {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.5,
+                      ) ??
+                      AppColors.textSecondary,
                   size: 20,
                 ),
               ],
@@ -69,7 +73,11 @@ class MotionNavCard extends StatelessWidget {
                     Text(
                       stat.label,
                       style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
                         fontSize: 14,
                       ),
                     ),

@@ -50,7 +50,9 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Deletion failed: ${e.toString().split(']').last.trim()}"),
+            content: Text(
+              "Deletion failed: ${e.toString().split(']').last.trim()}",
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -73,13 +75,16 @@ class UserProvider extends ChangeNotifier {
         fullName: user.displayName ?? '',
         profileImage: user.photoURL ?? '',
       );
-      
+
       // Warm up sync service immediately after login
       await GoogleSyncService().isLinked();
 
       notifyListeners();
       if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pushReplacementNamed(AppRoutes.main);
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).pushReplacementNamed(AppRoutes.main);
       }
     }
   }
@@ -91,7 +96,11 @@ class UserProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     try {
-      final user = await AuthController.signUpWithEmailAndPassword(email, password, fullName);
+      final user = await AuthController.signUpWithEmailAndPassword(
+        email,
+        password,
+        fullName,
+      );
       if (user != null) {
         _user = AuthUserModel(
           email: user.email ?? '',
@@ -104,7 +113,9 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Sign Up Failed: ${e.toString().split(']').last.trim()}"),
+            content: Text(
+              "Sign Up Failed: ${e.toString().split(']').last.trim()}",
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -119,7 +130,10 @@ class UserProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     try {
-      final user = await AuthController.signInWithEmailAndPassword(email, password);
+      final user = await AuthController.signInWithEmailAndPassword(
+        email,
+        password,
+      );
       if (user != null) {
         _user = AuthUserModel(
           email: user.email ?? '',
@@ -132,7 +146,9 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Sign In Failed: ${e.toString().split(']').last.trim()}"),
+            content: Text(
+              "Sign In Failed: ${e.toString().split(']').last.trim()}",
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -159,7 +175,9 @@ class UserProvider extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Failed to send reset link: ${e.toString().split(']').last.trim()}"),
+            content: Text(
+              "Failed to send reset link: ${e.toString().split(']').last.trim()}",
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -175,9 +193,9 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Sign out failed: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Sign out failed: $e")));
       }
     }
   }

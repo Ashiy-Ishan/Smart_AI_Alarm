@@ -28,7 +28,9 @@ class ActivityRecordsScreen extends StatelessWidget {
             Text(
               'Mon, Nov 12',
               style: TextStyle(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -47,10 +49,7 @@ class ActivityRecordsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 12),
-                const SizedBox(
-                  height: 44,
-                  child: ActivityBarChart(),
-                ),
+                const SizedBox(height: 44, child: ActivityBarChart()),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,21 +57,32 @@ class ActivityRecordsScreen extends StatelessWidget {
                     Text(
                       '07:15 AM',
                       style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
                     Text(
                       '09:15 AM',
                       style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 14),
-                const ActivityStatLine(label: 'Total Active Time:', value: '6h 45m'),
+                const ActivityStatLine(
+                  label: 'Total Active Time:',
+                  value: '6h 45m',
+                ),
                 const ActivityStatLine(label: 'Morning:', value: '2h 30m'),
                 const ActivityStatLine(label: 'Afternoon:', value: '3h 15m'),
                 const ActivityStatLine(label: 'Evening:', value: '1h 00m'),
@@ -107,7 +117,11 @@ class ActivityRecordsScreen extends StatelessWidget {
                     Text(
                       '7h 12m',
                       style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -133,7 +147,10 @@ class ActivityRecordsScreen extends StatelessWidget {
                 const ActivityStatLine(label: 'Motion Events:', value: '48'),
                 const ActivityStatLine(label: 'Active Periods:', value: '6'),
                 const ActivityStatLine(label: 'Rest Periods:', value: '3'),
-                const ActivityStatLine(label: 'Peak Activity:', value: '08:30 AM'),
+                const ActivityStatLine(
+                  label: 'Peak Activity:',
+                  value: '08:30 AM',
+                ),
               ],
             ),
           ),

@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
+import 'package:alarm_frontend/models/habit_insight_model.dart';
 
 class HabitLearningCard extends StatelessWidget {
-  const HabitLearningCard({super.key});
+  final HabitInsightModel habit;
+  const HabitLearningCard({super.key, required this.habit});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const List<double> userValues = [12.0, 18.0, 21.0, 20.0, 17.0, 19.0, 15.0];
-    const List<double> aiValues = [9.0, 17.0, 20.0, 17.5, 16.5, 17.0, 15.0];
+    final userValues = habit.daily
+        .map((item) => item.actualBufferMinutes)
+        .toList();
+    final aiValues = habit.daily.map((item) => item.aiBufferMinutes).toList();
+    final userAverage = habit.averageActualBuffer;
+    final aiAverage = habit.averageAiBuffer;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -22,46 +28,89 @@ class HabitLearningCard extends StatelessWidget {
         children: [
           const Text(
             'Habit Learning',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'User Predict: 21m Avg',
-                style: TextStyle(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+          if (!habit.available)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  habit.message ?? 'More alarm history is required.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(
+                      alpha: 0.7,
+                    ),
+                  ),
                 ),
               ),
-              const Text(
-                'AI Predict: 23m Avg',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+            )
+          else ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    userAverage == null
+                        ? 'User Actual: --'
+                        : 'User Actual: '
+                              '${userAverage.toStringAsFixed(0)}m Avg',
+                    style: TextStyle(
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ) ??
+                          AppColors.textSecondary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 160,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: _HabitChartPainter(
-                userValues: userValues,
-                aiValues: aiValues,
-                borderColor: theme.dividerColor,
-                textColor: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textSecondary,
+                const SizedBox(width: 8),
+                Text(
+                  aiAverage == null
+                      ? 'AI Predict: --'
+                      : 'AI Predict: '
+                            '${aiAverage.toStringAsFixed(0)}m Avg',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Trend: ${habit.trend} • '
+              'Error: '
+              '${habit.averageErrorMinutes?.toStringAsFixed(1) ?? '--'} min',
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withValues(
+                  alpha: 0.65,
+                ),
+                fontSize: 12,
               ),
             ),
-          ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 160,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _HabitChartPainter(
+                  userValues: userValues,
+                  aiValues: aiValues,
+                  borderColor: theme.dividerColor,
+                  textColor:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.6,
+                      ) ??
+                      AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -83,131 +132,126 @@ class _HabitChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (userValues.isEmpty || aiValues.isEmpty) {
+      return;
+    }
+    final int count = userValues.length < aiValues.length
+        ? userValues.length
+        : aiValues.length;
+    if (count == 0) {
+      return;
+    }
     final double xMin = 30;
     final double xMax = size.width - 16;
     final double yMin = 16;
     final double yMax = size.height - 24;
 
-    final double widthInterval = (xMax - xMin) / 6;
+    final double widthInterval = count > 1 ? (xMax - xMin) / (count - 1) : 0.0;
+
+    final allValues = [...userValues.take(count), ...aiValues.take(count)];
+    double maxValue = allValues.fold(
+      0.0,
+      (previous, element) => element > previous ? element : previous,
+    );
+    maxValue = (maxValue + 5).clamp(30.0, 120.0).toDouble();
 
     final paintAxes = Paint()
       ..color = borderColor
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
-    final paintTicks = Paint()
-      ..color = borderColor
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
     final paintGrid = Paint()
-      ..color = borderColor.withOpacity(0.35)
+      ..color = borderColor.withValues(alpha: 0.35)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
-
     canvas.drawLine(Offset(xMin, yMin - 8), Offset(xMin, yMax), paintAxes);
-
     canvas.drawLine(Offset(xMin, yMax), Offset(xMax + 8, yMax), paintAxes);
-
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-
-    const List<int> yLabels = [12, 18, 24, 30];
-    const double maxVal = 30.0;
-    for (final val in yLabels) {
-      final double y = yMax - (val / maxVal) * (yMax - yMin);
-      canvas.drawLine(Offset(xMin - 4, y), Offset(xMin, y), paintTicks);
-
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
+    final ySteps = [
+      maxValue * 0.25,
+      maxValue * 0.50,
+      maxValue * 0.75,
+      maxValue,
+    ];
+    for (final value in ySteps) {
+      final y = yMax - (value / maxValue) * (yMax - yMin);
       textPainter.text = TextSpan(
-        text: '$val',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 9,
-        ),
+        text: value.round().toString(),
+        style: TextStyle(color: textColor, fontSize: 9),
       );
       textPainter.layout();
-      textPainter.paint(canvas, Offset(xMin - 16, y - 5));
+      textPainter.paint(canvas, Offset(xMin - 24, y - 5));
     }
-
-    for (int i = 0; i < 7; i++) {
-      final double x = xMin + i * widthInterval;
-      canvas.drawLine(Offset(x, yMax), Offset(x, yMax + 4), paintTicks);
-
+    for (int i = 0; i < count; i++) {
+      final x = xMin + i * widthInterval;
       canvas.drawLine(Offset(x, yMin - 4), Offset(x, yMax), paintGrid);
-
       textPainter.text = TextSpan(
-        text: '${13 + i}',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 10,
-        ),
+        text: '${i + 1}',
+        style: TextStyle(color: textColor, fontSize: 10),
       );
       textPainter.layout();
-      textPainter.paint(canvas, Offset(x - 6, yMax + 8));
+      textPainter.paint(canvas, Offset(x - 3, yMax + 8));
     }
-
     void drawCurve({
       required List<double> data,
       required Color color,
       required double opacity,
     }) {
-      final List<Offset> points = [];
-      for (int i = 0; i < data.length; i++) {
-        final double x = xMin + i * widthInterval;
-        final double y = yMax - (data[i] / maxVal) * (yMax - yMin);
+      final points = <Offset>[];
+      for (int i = 0; i < count; i++) {
+        final x = xMin + i * widthInterval;
+        final normalized = data[i].clamp(0.0, maxValue).toDouble();
+        final y = yMax - (normalized / maxValue) * (yMax - yMin);
         points.add(Offset(x, y));
       }
-
-      final Path path = Path();
-      path.moveTo(points[0].dx, points[0].dy);
+      if (points.length == 1) {
+        canvas.drawCircle(points.first, 3, Paint()..color = color);
+        return;
+      }
+      final path = Path();
+      path.moveTo(points.first.dx, points.first.dy);
       for (int i = 0; i < points.length - 1; i++) {
         final p1 = points[i];
         final p2 = points[i + 1];
         final controlX = (p1.dx + p2.dx) / 2;
         path.cubicTo(controlX, p1.dy, controlX, p2.dy, p2.dx, p2.dy);
       }
-
-      final Path fillPath = Path.from(path);
+      final fillPath = Path.from(path);
       fillPath.lineTo(points.last.dx, yMax);
       fillPath.lineTo(points.first.dx, yMax);
       fillPath.close();
-
       final fillPaint = Paint()
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            color.withOpacity(opacity),
-            color.withOpacity(0.0),
+            color.withValues(alpha: opacity),
+            color.withValues(alpha: 0),
           ],
         ).createShader(Rect.fromLTRB(xMin, yMin, xMax, yMax))
         ..style = PaintingStyle.fill;
-
       canvas.drawPath(fillPath, fillPaint);
-
       final strokePaint = Paint()
         ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.0
         ..strokeCap = StrokeCap.round;
-
       canvas.drawPath(path, strokePaint);
     }
 
     drawCurve(
       data: userValues,
-      color: textColor.withOpacity(0.8),
+      color: textColor.withValues(alpha: 0.8),
       opacity: 0.18,
     );
-
-    drawCurve(
-      data: aiValues,
-      color: AppColors.primary,
-      opacity: 0.28,
-    );
+    drawCurve(data: aiValues, color: AppColors.primary, opacity: 0.28);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _HabitChartPainter oldDelegate) {
+    return oldDelegate.userValues != userValues ||
+        oldDelegate.aiValues != aiValues ||
+        oldDelegate.borderColor != borderColor ||
+        oldDelegate.textColor != textColor;
+  }
 }

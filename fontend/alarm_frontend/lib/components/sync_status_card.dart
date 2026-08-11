@@ -5,11 +5,7 @@ class SyncStatusCard extends StatelessWidget {
   final String statusText;
   final VoidCallback? onTap;
 
-  const SyncStatusCard({
-    super.key,
-    required this.statusText,
-    this.onTap,
-  });
+  const SyncStatusCard({super.key, required this.statusText, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +34,9 @@ class SyncStatusCard extends StatelessWidget {
             const Spacer(),
             Icon(
               Icons.chevron_right,
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                  AppColors.textSecondary,
               size: 18,
             ),
           ],
