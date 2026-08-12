@@ -50,8 +50,9 @@ void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool
   if (toneIndex < 0) toneIndex = 0;
   if (toneIndex > 2) toneIndex = 2;
 
-  // Default to Tech Arpeggio (Index 1) if not explicitly set or out of range
-  if (lastToneIndex == -1 && toneIndex == 0) toneIndex = 1;
+
+  // FORCE Tone 1 (Tech) if index is 0 or -1 (ensure requested default)
+  if (toneIndex == 0) toneIndex = 1;
 
   if (toneIndex != lastToneIndex) {
     lastToneIndex = toneIndex;

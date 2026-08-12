@@ -1272,22 +1272,61 @@ class _HomeScreenState extends State<HomeScreen>
 
     final picked = await showTimePicker(
       context: context,
-
       initialTime: TimeOfDay(hour: hour, minute: minute),
-
       builder: (context, child) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.primary,
-
-              primary: AppColors.primary,
-
-              surface: Theme.of(context).cardColor,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: isDarkMode ? AppColors.card : Colors.white,
+              hourMinuteColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
+                      ? AppColors.primary.withValues(alpha: 0.2)
+                      : (isDarkMode ? AppColors.background : const Color(0xFFF3F4F6))),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
+                      ? (isDarkMode ? AppColors.primary : AppColors.primaryDark)
+                      : (isDarkMode ? AppColors.textPrimary : const Color(0xFF111827))),
+              dialHandColor: AppColors.primary,
+              dialBackgroundColor: isDarkMode ? AppColors.background : const Color(0xFFF3F4F6),
+              dialTextColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
+                      ? Colors.white
+                      : (isDarkMode ? AppColors.textPrimary : const Color(0xFF111827))),
+              entryModeIconColor: AppColors.primary,
+              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
+                      ? AppColors.primary.withValues(alpha: 0.2)
+                      : Colors.transparent),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
+                      ? (isDarkMode ? AppColors.primary : AppColors.primaryDark)
+                      : (isDarkMode ? AppColors.textSecondary : const Color(0xFF6B7280))),
+            ),
+            colorScheme: isDarkMode 
+              ? const ColorScheme.dark(
+                  primary: AppColors.primary,
+                  onPrimary: AppColors.background,
+                  surface: AppColors.card,
+                  onSurface: AppColors.textPrimary,
+                )
+              : const ColorScheme.light(
+                  primary: AppColors.primary,
+                  onPrimary: Colors.white,
+                  surface: Colors.white,
+                  onSurface: Color(0xFF111827),
+                ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primary,
+              ),
             ),
           ),
-
-          child: child!,
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+            child: child!,
+          ),
         );
       },
     );
