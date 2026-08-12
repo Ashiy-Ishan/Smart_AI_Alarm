@@ -176,7 +176,11 @@ class NotificationService {
           .child(mac);
 
       if (actionId == 'stop_action') {
-        await ref.update({'MobileStop': true, 'AlarmStatus': 'IDLE'});
+        await ref.update({
+          'MobileStop': true,
+          'AlarmStatus': 'IDLE',
+          'LastStopAt': ServerValue.timestamp,
+        });
       } else if (actionId == 'snooze_action') {
         String snoozeTimeStr = DateFormat(
           "HH:mm",
@@ -184,6 +188,7 @@ class NotificationService {
         await ref.update({
           'SnoozeUntil': snoozeTimeStr,
           'AlarmStatus': 'SNOOZE',
+          'MobileStop': true,
         });
       }
     }

@@ -14,31 +14,45 @@ class AlarmRingingScreen extends StatelessWidget {
     required this.hiddenUid,
   });
 
-  void _stopAlarm(BuildContext context) async {
-    Navigator.pop(context);
-    await FirebaseDatabase.instance
-        .ref()
-        .child('Users')
-        .child(hiddenUid)
-        .child('Devices')
-        .child(macAddress)
-        .update({'MobileStop': true, 'AlarmStatus': 'IDLE'});
+  void _stopAlarm() async {
+    try {
+      await FirebaseDatabase.instance
+          .ref()
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .child(macAddress)
+          .update({
+            'MobileStop': true, 
+            'AlarmStatus': 'IDLE',
+            'LastStopAt': ServerValue.timestamp,
+          });
+    } catch (e) {
+      debugPrint("Error stopping alarm: $e");
+    }
   }
 
-  void _snoozeAlarm(BuildContext context) async {
-    Navigator.pop(context);
-    final ref = FirebaseDatabase.instance
-        .ref()
-        .child('Users')
-        .child(hiddenUid)
-        .child('Devices')
-        .child(macAddress);
+  void _snoozeAlarm() async {
+    try {
+      final ref = FirebaseDatabase.instance
+          .ref()
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .child(macAddress);
 
-    DateTime now = DateTime.now();
-    DateTime snoozeTime = now.add(const Duration(minutes: 5));
-    String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
+      DateTime now = DateTime.now();
+      DateTime snoozeTime = now.add(const Duration(minutes: 5));
+      String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
 
-    await ref.update({'SnoozeUntil': snoozeTimeStr, 'AlarmStatus': 'SNOOZE'});
+      await ref.update({
+        'SnoozeUntil': snoozeTimeStr, 
+        'AlarmStatus': 'SNOOZE',
+        'MobileStop': true, // Also stop the current ringing
+      });
+    } catch (e) {
+      debugPrint("Error snoozing alarm: $e");
+    }
   }
 
   @override
@@ -95,7 +109,7 @@ class AlarmRingingScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => _snoozeAlarm(context),
+                        onPressed: _snoozeAlarm,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.cardColor,
                           foregroundColor: theme.textTheme.bodyLarge?.color,
@@ -118,7 +132,7 @@ class AlarmRingingScreen extends StatelessWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => _stopAlarm(context),
+                        onPressed: _stopAlarm,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.black,

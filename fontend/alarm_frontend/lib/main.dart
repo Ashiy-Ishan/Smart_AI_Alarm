@@ -144,20 +144,32 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _showAlarmOverlay(String uid, String mac) {
+    if (_isAlarmShowing) return;
     _isAlarmShowing = true;
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
+        settings: const RouteSettings(name: 'alarm_ringing'),
         builder: (_) => AlarmRingingScreen(macAddress: mac, hiddenUid: uid),
       ),
-    );
+    ).then((_) {
+      if (mounted) {
+        setState(() => _isAlarmShowing = false);
+      }
+    });
   }
 
   void _hideAlarmOverlay() {
-    _isAlarmShowing = false;
+    if (!_isAlarmShowing) return;
+    
     _lastDismissedTime = DateTime.now();
-    if (_navigatorKey.currentState?.canPop() ?? false) {
-      _navigatorKey.currentState?.pop();
-    }
+    _navigatorKey.currentState?.popUntil((route) {
+      // Pop until we find a route that is NOT the alarm screen
+      return route.settings.name != 'alarm_ringing';
+    });
+    
+    setState(() {
+      _isAlarmShowing = false;
+    });
   }
 
   @override
