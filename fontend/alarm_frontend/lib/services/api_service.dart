@@ -7,7 +7,8 @@ import 'package:alarm_frontend/models/today_summary_model.dart';
 
 class ApiService {
   static const String baseUrl =
-      'https://outward-entire-growing.ngrok-free.dev/ai-alarm-system/us-central1/api/';
+  //update here new ngrok link
+      'https://lagoon-roundworm-hastily.ngrok-free.dev/smart-ai-alarm-2f71d/us-central1/api'; // <--
 
   static Future<Map<String, dynamic>> checkHealth() async {
     final response = await http.get(Uri.parse('$baseUrl/health'));

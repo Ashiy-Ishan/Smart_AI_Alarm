@@ -3,15 +3,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:http/http.dart' as http;
-<<<<<<< HEAD
 import 'package:logger/logger.dart';
-=======
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:alarm_frontend/models/agenda_model.dart';
 import 'package:alarm_frontend/services/notification_service.dart';
->>>>>>> origin/main
 
 class GoogleSyncService {
   static final GoogleSyncService _instance = GoogleSyncService._internal();
@@ -31,17 +27,12 @@ class GoogleSyncService {
       await _googleSignIn.initialize();
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
       _isInitialized = true;
-<<<<<<< HEAD
     } catch (error, stackTrace) {
       _logger.e(
         'Failed to initialize Google Sign-In',
         error: error,
         stackTrace: stackTrace,
       );
-=======
-    } catch (e) {
-      debugPrint('Google Init Error: $e');
->>>>>>> origin/main
     }
   }
 
@@ -55,7 +46,6 @@ class GoogleSyncService {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return false;
-<<<<<<< HEAD
 
       await _ensureInitialized();
       _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
@@ -63,17 +53,8 @@ class GoogleSyncService {
       if (_cachedAccount == null) return false;
 
       // verify that we have the required permissions
-      final authorization = await _cachedAccount!.authorizationClient
-          .authorizationForScopes(_scopes);
-      return authorization != null;
-=======
-      await _ensureInitialized();
-      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-      if (_cachedAccount == null) return false;
-      
       final authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      return authz != null && authz.accessToken != null;
->>>>>>> origin/main
+      return authz?.accessToken != null;
     } catch (e) {
       return false;
     }
@@ -83,28 +64,20 @@ class GoogleSyncService {
     try {
       await _ensureInitialized();
       _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
-<<<<<<< HEAD
 
       // show account picker only if totally necessary
-=======
->>>>>>> origin/main
       _cachedAccount ??= await _googleSignIn.authenticate();
       if (_cachedAccount != null) {
         await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
       }
       _authenticatedClient = null;
       return _cachedAccount;
-<<<<<<< HEAD
     } catch (error, stackTrace) {
       _logger.e(
         'Failed to link Google account',
         error: error,
         stackTrace: stackTrace,
       );
-=======
-    } catch (e) {
-      debugPrint('Link Error: $e');
->>>>>>> origin/main
       return null;
     }
   }
@@ -113,22 +86,17 @@ class GoogleSyncService {
     try {
       await _googleSignIn.signOut();
       _cachedAccount = null;
-<<<<<<< HEAD
+      _authenticatedClient = null;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('cached_priority_emails');
+      await prefs.remove('cached_agenda_events');
+      await prefs.remove('cached_unified_agenda');
     } catch (error, stackTrace) {
       _logger.e(
         'Failed to unlink Google account',
         error: error,
         stackTrace: stackTrace,
       );
-=======
-      _authenticatedClient = null;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('cached_priority_emails');
-      await prefs.remove('cached_agenda_events');
-      await prefs.remove('cached_unified_agenda');
-    } catch (e) {
-      debugPrint('Unlink Error: $e');
->>>>>>> origin/main
     }
   }
 
@@ -138,34 +106,27 @@ class GoogleSyncService {
       await _ensureInitialized();
       _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
       if (_cachedAccount == null) return null;
-<<<<<<< HEAD
 
-      // get access silently
-      final authz = await _cachedAccount!.authorizationClient
-          .authorizationForScopes(_scopes);
-      if (authz == null) return null;
-
-      return GoogleAuthenticatedClient(authz.accessToken);
-    } catch (error, stackTrace) {
-      _logger.e(
-        'Failed to create an authenticated Google client',
-        error: error,
-        stackTrace: stackTrace,
-      );
-=======
       var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      if (authz == null || authz.accessToken == null) {
+      if (authz?.accessToken == null) {
         try {
           authz = await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
         } catch (e) {
           return null;
         }
       }
-      if (authz == null || authz.accessToken == null) return null;
-      _authenticatedClient = GoogleAuthenticatedClient(authz.accessToken!);
+
+      final token = authz?.accessToken;
+      if (token == null) return null;
+
+      _authenticatedClient = GoogleAuthenticatedClient(token);
       return _authenticatedClient;
-    } catch (e) {
->>>>>>> origin/main
+    } catch (error, stackTrace) {
+      _logger.e(
+        'Failed to create an authenticated Google client',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -183,26 +144,21 @@ class GoogleSyncService {
       final client = await _getAuthenticatedClient();
       if (client == null) return [];
       final calendar = CalendarApi(client);
-<<<<<<< HEAD
+
+      final now = DateTime.now();
+      final startOfToday = DateTime(now.year, now.month, now.day).toUtc();
+
       final events = await calendar.events.list(
         'primary',
-        timeMin: timeMin.toUtc(),
-        timeMax: timeMax?.toUtc(),
+        timeMin: startOfToday,
         maxResults: maxResults,
         orderBy: 'startTime',
         singleEvents: true,
       );
 
-      return events.items ?? [];
-=======
-      final now = DateTime.now();
-      final startOfToday = DateTime(now.year, now.month, now.day).toUtc();
-      final events = await calendar.events.list('primary', timeMin: startOfToday, maxResults: 20, orderBy: 'startTime', singleEvents: true);
-      
       final List<Event> items = events.items ?? [];
       _cacheAgendaEvents(items); // Cache raw events for Calendar Screen
       return items;
->>>>>>> origin/main
     } catch (e) {
       return [];
     }
@@ -214,36 +170,24 @@ class GoogleSyncService {
       final client = await _getAuthenticatedClient();
       if (client == null) return [];
       final gmail = GmailApi(client);
-<<<<<<< HEAD
+
       final response = await gmail.users.messages.list(
         'me',
         maxResults: 10,
-        q: 'is:unread',
+        q: 'is:unread -category:social -category:promotions',
       );
-
-      List<Message> emails = [];
-      if (response.messages != null) {
-        for (var msg in response.messages!) {
-          final fullMsg = await gmail.users.messages.get('me', msg.id!);
-          emails.add(fullMsg);
-        }
-      }
-=======
-      
-      final response = await gmail.users.messages.list('me', maxResults: 10, q: 'is:unread -category:social -category:promotions');
       if (response.messages == null) return [];
-      
+
       final detailFutures = response.messages!
           .where((m) => m.id != null)
           .map((m) => gmail.users.messages.get('me', m.id!, format: 'full'))
           .toList();
-          
+
       final List<Message> emails = await Future.wait(detailFutures);
       _cachePriorityEmails(emails); // Update generic email cache
->>>>>>> origin/main
       return emails;
     } catch (e) {
-      debugPrint("Gmail Fetch Error: $e");
+      _logger.e("Gmail Fetch Error", error: e);
       return [];
     }
   }
@@ -253,10 +197,14 @@ class GoogleSyncService {
       final client = await _getAuthenticatedClient();
       if (client == null) return [];
       final gmail = GmailApi(client);
-      const String query = '-category:social -category:promotions subject:(meeting OR scheduled OR canceled OR invitation OR updated OR "zoom link" OR "google meet" OR interview OR "sync")';
+      const String query =
+          '-category:social -category:promotions subject:(meeting OR scheduled OR canceled OR invitation OR updated OR "zoom link" OR "google meet" OR interview OR "sync")';
       final response = await gmail.users.messages.list('me', maxResults: 10, q: query);
       if (response.messages == null) return [];
-      final detailFutures = response.messages!.where((m) => m.id != null).map((m) => gmail.users.messages.get('me', m.id!, format: 'full')).toList();
+      final detailFutures = response.messages!
+          .where((m) => m.id != null)
+          .map((m) => gmail.users.messages.get('me', m.id!, format: 'full'))
+          .toList();
       return await Future.wait(detailFutures);
     } catch (e) {
       return [];
@@ -265,7 +213,7 @@ class GoogleSyncService {
 
   Future<void> saveUnifiedAgenda(List<AgendaModel> agenda) async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     final List<AgendaModel> oldAgenda = await getCachedUnifiedAgenda();
     for (var newItem in agenda) {
       if (newItem.isUpdated) {
@@ -273,7 +221,7 @@ class GoogleSyncService {
         if (existing.time != newItem.time) {
           NotificationService().showInstantNotification(
             title: "Meeting Rescheduled",
-            body: "${newItem.title} moved to ${newItem.time}."
+            body: "${newItem.title} moved to ${newItem.time}.",
           );
         }
       }

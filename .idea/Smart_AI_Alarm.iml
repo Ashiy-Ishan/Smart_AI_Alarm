@@ -139,8 +139,9 @@
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/backend/ai_alarm_sytem/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/functions/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/ai_alarm_sytem/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.14 (Smart_AI_Alarm) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />
     <orderEntry type="library" name="Dart Packages" level="project" />
