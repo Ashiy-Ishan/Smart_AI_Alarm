@@ -36,6 +36,15 @@ class BluetoothService {
       await device.connect(autoConnect: false, license: ble.License.nonprofit);
       connectedDevice = device;
 
+      // Request MTU to ensure provisioning data fits in packets
+      if (Platform.isAndroid) {
+        try {
+          await device.requestMtu(512);
+        } catch (e) {
+          Logger().w('MTU request failed: $e');
+        }
+      }
+
       await Future.delayed(const Duration(milliseconds: 500));
       List<ble.BluetoothService> services = await device.discoverServices();
 
@@ -79,10 +88,21 @@ class BluetoothService {
   ) async {
     if (writeCharacteristic != null) {
       try {
-        String payload = "$ssid,$password,$uid";
-        await writeCharacteristic!.write(utf8.encode(payload));
+        // Trim credentials before sending
+        String s = ssid.trim();
+        String p = password.trim();
+        String u = uid.trim();
+        
+        String payload = "$s,$p,$u";
+        
+        // Reverting to with response for guaranteed delivery
+        // The "Setup Failed" message is avoided by the catch block and UI order
+        await writeCharacteristic!.write(utf8.encode(payload),
+            withoutResponse: false);
+
         return true;
       } catch (e) {
+        Logger().e('Provisioning write error: $e');
         return false;
       }
     }

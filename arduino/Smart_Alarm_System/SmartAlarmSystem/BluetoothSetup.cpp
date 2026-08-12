@@ -1,47 +1,45 @@
 #include "BluetoothSetup.h"
+#include "Config.h"
 #include "Globals.h"
 #include "DeviceMemory.h"
+#include "DisplayUI.h"
+
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
-#include <BLE2902.h>
+#include <WiFi.h>
 
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-
-BLEServer* pServer = NULL;
-BLECharacteristic* pCharacteristic = NULL;
+BLEServer *pServer = NULL;
+BLECharacteristic *pTxCharacteristic;
 bool deviceConnected = false;
 
 class MyServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) {
-      deviceConnected = true;
-    }
-    void onDisconnect(BLEServer* pServer) {
-      deviceConnected = false;
-      BLEDevice::startAdvertising();
-    }
+    void onConnect(BLEServer* pServer) { deviceConnected = true; }
+    void onDisconnect(BLEServer* pServer) { deviceConnected = false; }
 };
 
 class MyCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
+      String rxValue = pCharacteristic->getValue(); 
       
-      // FIX 1: Use standard Arduino String directly for ESP32 v3.x.x
-      String receivedData = pCharacteristic->getValue();
-
-      if (receivedData.length() > 0) {
+      if (rxValue.length() > 0) {
+        // App sends format: "ssid,password,uid"
+        int firstComma = rxValue.indexOf(',');
+        int secondComma = rxValue.indexOf(',', firstComma + 1);
         
-        int firstComma = receivedData.indexOf(',');
-        int secondComma = receivedData.indexOf(',', firstComma + 1);
-
-        if (firstComma > 0 && secondComma > 0) {
-          wifiSSID = receivedData.substring(0, firstComma);
-          wifiPass = receivedData.substring(firstComma + 1, secondComma);
-          userUID = receivedData.substring(secondComma + 1); 
-
-          saveProvisioningData(wifiSSID, wifiPass, userUID);
+        if (firstComma > 0 && secondComma > firstComma) {
+          String s = rxValue.substring(0, firstComma);
+          String p = rxValue.substring(firstComma + 1, secondComma);
+          String u = rxValue.substring(secondComma + 1);
           
-          delay(1000);
+          s.trim();
+          p.trim();
+          u.trim();
+
+          saveConfigAsJSON(s, p, u);
+          
+          drawBootScreen("Setup Complete!");
+          delay(2000);
           ESP.restart(); 
         }
       }
@@ -49,32 +47,36 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 };
 
 void startBluetooth() {
-  isBleSetupMode = true;
-  
-  BLEDevice::init("Smart Alarm"); 
+  BLEDevice::init("Smart_AI_Alarm");
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
 
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-  pCharacteristic = pService->createCharacteristic(
-                      CHARACTERISTIC_UUID,
-                      BLECharacteristic::PROPERTY_READ   |
-                      BLECharacteristic::PROPERTY_WRITE  |
-                      BLECharacteristic::PROPERTY_NOTIFY |
-                      BLECharacteristic::PROPERTY_INDICATE
-                    );
+  BLEService *pService = pServer->createService(BLE_SERVICE_UUID);
 
-  pCharacteristic->setCallbacks(new MyCallbacks());
-  pCharacteristic->addDescriptor(new BLE2902());
+  pTxCharacteristic = pService->createCharacteristic(
+                        BLE_CHARACTERISTIC_UUID_TX,
+                        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
+                      );
+  
+  WiFi.mode(WIFI_STA);
+  pTxCharacteristic->setValue(WiFi.macAddress().c_str());
+                      
+  BLECharacteristic *pRxCharacteristic = pService->createCharacteristic(
+                                           BLE_CHARACTERISTIC_UUID_RX,
+                                           BLECharacteristic::PROPERTY_WRITE
+                                         );
+  pRxCharacteristic->setCallbacks(new MyCallbacks());
+
   pService->start();
-
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(SERVICE_UUID);
-  pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x06);  
-  pAdvertising->setMinPreferred(0x12);
-  BLEDevice::startAdvertising();
+  pServer->getAdvertising()->start();
+  isBleSetupMode = true;
 }
 
 void handleBluetooth() {
+  if (deviceConnected) {
+    String macAddress = WiFi.macAddress();
+    pTxCharacteristic->setValue(macAddress.c_str());
+    pTxCharacteristic->notify();
+    delay(1000); 
+  }
 }

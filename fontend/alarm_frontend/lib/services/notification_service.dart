@@ -30,7 +30,7 @@ class NotificationService {
       await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
       const AndroidInitializationSettings androidInit =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('ic_launcher');
       const DarwinInitializationSettings iosInit =
           DarwinInitializationSettings();
       const InitializationSettings initSettings = InitializationSettings(
@@ -82,6 +82,7 @@ class NotificationService {
           channelDescription: 'Notifications for meeting changes',
           importance: Importance.max,
           priority: Priority.high,
+          icon: 'ic_launcher', // Explicitly set the small icon
         );
 
     await _localNotifications.show(
@@ -204,6 +205,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           showWhen: true,
+          icon: 'ic_launcher', // Explicitly set the small icon
           actions: androidActions,
         );
 

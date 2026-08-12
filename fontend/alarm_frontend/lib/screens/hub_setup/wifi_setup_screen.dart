@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -170,20 +171,15 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     setState(() => _isLoading = true);
 
     final email = FirebaseAuth.instance.currentUser?.email ?? "unknown";
-    final macAddress = widget.device.remoteId.toString();
     final hiddenUid = _getHiddenUid(email);
 
     try {
       final bleService = custom.BluetoothService();
-      final sent = await bleService.sendProvisioningData(
-        ssid,
-        password,
-        hiddenUid,
-      );
-      if (!sent) {
-        throw StateError('Could not send Wi-Fi credentials to the device.');
-      }
+      
+      // Fetch the REAL MAC Address from the hub characteristic
+      final macAddress = await bleService.getDeviceRealMac() ?? widget.device.remoteId.toString();
 
+      // 1. First write to Firebase to ensure the hub has its path ready
       final rtdb = FirebaseDatabase.instance.ref();
       await rtdb
           .child('Users')
@@ -196,23 +192,45 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
             "Humidity": 0.0,
             "LightStatus": "INIT",
             "MotionDetected": 0,
-            "RelayEnabled": true,
             "RelayStatus": "OFF",
             "Temperature": 0.0,
             "UserStatus": "idle",
             "SoundLevel": 5,
             "SelectedTone": 0,
             "FactoryReset": false,
+            "ManualLamp": false,
           });
 
+      // 2. Then send provisioning data to the hub via Bluetooth
+      // Note: Hub restarts immediately after this, so we do it last
+      await bleService.sendProvisioningData(
+        ssid,
+        password,
+        hiddenUid,
+      );
+
       if (mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('WiFi Data Sent! Configuring Hub...')),
+        );
+
+        // Wait 2 seconds to ensure Hub receives data, then close and navigate
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            // Pop until first (MainScreen)
+            Navigator.of(context).popUntil((route) => route.isFirst);
+
+            // Switch to Hub Tab (index 2)
+            MainScreen.globalKey.currentState?.changeTab(2);
+          }
+        });
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Setup Failed: $e')));
+        ).showSnackBar(SnackBar(content: Text('Setup Error: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

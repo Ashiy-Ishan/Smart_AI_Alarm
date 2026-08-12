@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-enum AlarmState { IDLE, RINGING, RESTING };
+enum AlarmState { IDLE, RINGING };
 
 extern AlarmState currentAlarmState;
 
@@ -32,17 +32,9 @@ extern bool isBleSetupMode;
 
 extern bool isResetPending;
 extern unsigned long resetPendingStartTime;
+extern int resetConfirmPresses;
+extern int multiPressCount;
 
-extern String userUID; 
-
-extern bool isAlarmEnabled;     
-extern bool isRelayEnabled;     
-extern bool isRelayActuallyOn;  
-extern bool isLampOnByAlarm;  
-
-extern bool isCloudResetPending;
-extern unsigned long cloudResetStartTime;
-extern bool pushResetCancelToCloud;
-
-// --- LOGIC: 10s Offline Hardware Reset ---
-extern bool hardwareResetTriggered;
+// --- LOGIC: Relay & Lamp Switches ---
+extern bool isRelayActuallyOn;
+extern bool isManualLampOn;

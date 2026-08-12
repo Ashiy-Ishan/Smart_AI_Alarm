@@ -40,8 +40,8 @@ class HubDeviceControlCard extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.power,
+                child: Icon(
+                  icon,
                   color: AppColors.primary,
                   size: 18,
                 ),
@@ -72,21 +72,23 @@ class HubDeviceControlCard extends StatelessWidget {
                   ],
                 ),
               ),
-              ?trailing,
+              if (trailing != null) trailing!,
             ],
           ),
-          const SizedBox(height: 10),
-          SliderTheme(
-            data: SliderThemeData(
-              activeTrackColor: AppColors.primary,
-              inactiveTrackColor: theme.dividerColor,
-              thumbColor: AppColors.primary,
-              overlayColor: AppColors.primary.withValues(alpha: 0.2),
-              trackHeight: 4,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+          if (trailing == null) ...[
+            const SizedBox(height: 10),
+            SliderTheme(
+              data: SliderThemeData(
+                activeTrackColor: AppColors.primary,
+                inactiveTrackColor: theme.dividerColor,
+                thumbColor: AppColors.primary,
+                overlayColor: AppColors.primary.withValues(alpha: 0.2),
+                trackHeight: 4,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+              ),
+              child: Slider(value: value, onChanged: onChanged),
             ),
-            child: Slider(value: value, onChanged: onChanged),
-          ),
+          ],
         ],
       ),
     );

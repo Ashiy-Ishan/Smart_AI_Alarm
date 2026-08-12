@@ -118,6 +118,10 @@ class _MyAppState extends State<MyApp> {
                   final status = event.snapshot.value?.toString();
                   if (status == 'RINGING' && !_isAlarmShowing) {
                     _showAlarmOverlay(hiddenUid, _currentMac!);
+                    NotificationService().showInstantNotification(
+                      title: "Alarm Ringing!",
+                      body: "Your Bedside Hub is ringing. Tap to stop or snooze.",
+                    );
                   } else if (status != 'RINGING' && _isAlarmShowing) {
                     _hideAlarmOverlay();
                   }
