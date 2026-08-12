@@ -1,15 +1,31 @@
 #include "SoundEngine.h"
 #include "Config.h"
 
-const int melody0[] = {1000, 1200, 1000, 1200};
-const int durations0[] = {100, 100, 100, 100, 100, 500};
+// --- TONE 0: Gentle Sunrise ---
+// A rising melodic sequence using a major pentatonic scale
+const int melody0[] = {
+  262, 330, 392, 440, 523, // C4, E4, G4, A4, C5
+  523, 440, 392, 330, 262  // Descending
+};
+const int durations0[] = {
+  300, 300, 300, 300, 600, // Rising
+  300, 300, 300, 300, 1000 // Descending + Pause
+};
 
-const int melody1[] = {1500, 1700, 1900, 2100};
-const int durations1[] = {80, 80, 80, 80, 80, 80, 80, 80};
+// --- TONE 1: Digital Arpeggio ---
+// A faster, more urgent "tech" sound
+const int melody1[] = {
+  880, 1318, 1760, 1318, // A5, E6, A6, E6
+  880, 1318, 1760, 1318  // Repeat
+};
+const int durations1[] = {
+  100, 100, 100, 100,
+  100, 100, 100, 300 // Short pause at end
+};
 
 const int* const melodies[] = {melody0, melody1};
 const int* const durations[] = {durations0, durations1};
-const int arrayLengths[] = {4, 4};
+const int arrayLengths[] = {10, 8};
 
 void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool stopTone) {
   static int lastToneIndex = -1;
@@ -36,28 +52,27 @@ void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool
   const int* melody = melodies[toneIndex];
   const int* durationArray = durations[toneIndex];
   int len = arrayLengths[toneIndex];
-  int totalSteps = len + 1;
+  int totalSteps = len; // Removed the +1 for blank pause as I handled it in durations
   int noteDuration = durationArray[currentNote];
 
   if (currentMillis - noteStartTime >= noteDuration) {
     currentNote++;
-    if (currentNote >= totalSteps) currentNote = 0; 
+    if (currentNote >= len) currentNote = 0;
     noteStartTime = currentMillis;
     isPlayingNote = false;
   }
 
   if (!isPlayingNote) {
-    if (currentNote >= len) {
-      noTone(SPEAKER_PIN); 
-    } else {
-      int pitch = melody[currentNote];
-      int shiftedPitch = pitch + ((level - 5) * 150); 
-      if (shiftedPitch < 100) shiftedPitch = 100;
-      tone(SPEAKER_PIN, shiftedPitch);
-    }
+    int pitch = melody[currentNote];
+    // Scale pitch based on SoundLevel (1-10 range)
+    int shiftedPitch = pitch + ((level - 5) * 50);
+    if (shiftedPitch < 50) shiftedPitch = 50;
+
+    tone(SPEAKER_PIN, shiftedPitch);
     isPlayingNote = true;
   } 
-  else if (currentNote < len && (currentMillis - noteStartTime >= (noteDuration - 20))) {
+  else if (currentMillis - noteStartTime >= (noteDuration - 10)) {
+    // Small gap between notes for clarity
     noTone(SPEAKER_PIN);
   }
 }
