@@ -109,7 +109,7 @@ void syncWithFirebase(unsigned long currentMillis) {
             FirebaseJson defaultAppKeys;
             defaultAppKeys.set("AlarmTime", "07:00");     
             defaultAppKeys.set("SoundLevel", 5);          
-            defaultAppKeys.set("SelectedTone", 0);        
+            defaultAppKeys.set("SelectedTone", 1); // Default to Tech Sound Track (Index 1)
             defaultAppKeys.set("ManualLamp", false);
             defaultAppKeys.set("MobileStop", false);      
 
@@ -176,6 +176,15 @@ void syncWithFirebase(unsigned long currentMillis) {
           currentAlarmState = IDLE;
           Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false);
           Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");
+        }
+      }
+
+      // Physical stop check (optional extra sync)
+      if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmStatus")) {
+        if (fbdo.stringData() == "IDLE" && currentAlarmState == RINGING) {
+           isStopped = true;
+           playTonePattern(0, 0, 0, true);
+           currentAlarmState = IDLE;
         }
       }
 
