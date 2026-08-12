@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'dart:convert';
+import 'package:alarm_frontend/screens/email_screen.dart';
 
 enum MeetingStatus { scheduled, canceled, updated, unknown }
 
@@ -10,9 +11,6 @@ class GmailScanCard extends StatefulWidget {
   final MeetingStatus status;
   final String? fullBody;
 
-<<<<<<< HEAD
-  const GmailScanCard({super.key, required this.title, required this.subtitle});
-=======
   const GmailScanCard({
     super.key,
     required this.title,
@@ -20,7 +18,6 @@ class GmailScanCard extends StatefulWidget {
     this.status = MeetingStatus.unknown,
     this.fullBody,
   });
->>>>>>> origin/main
 
   @override
   State<GmailScanCard> createState() => _GmailScanCardState();
@@ -74,22 +71,19 @@ class _GmailScanCardState extends State<GmailScanCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
-<<<<<<< HEAD
-      onTap: () => Navigator.of(
-        context,
-        rootNavigator: true,
-      ).push(MaterialPageRoute(builder: (_) => const EmailScreen())),
-      child: Container(
-=======
       onTap: () {
         if (widget.fullBody != null) {
           setState(() => _isExpanded = !_isExpanded);
+        } else {
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).push(MaterialPageRoute(builder: (_) => const EmailScreen()));
         }
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
->>>>>>> origin/main
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           color: theme.cardColor,
@@ -108,13 +102,15 @@ class _GmailScanCardState extends State<GmailScanCard> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: _getStatusColor().withOpacity(0.1),
+                    color: _getStatusColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: _getStatusColor().withOpacity(0.3)),
+                    border: Border.all(color: _getStatusColor().withValues(alpha: 0.3)),
                   ),
                   child: Center(
                     child: Icon(
-                      widget.status == MeetingStatus.canceled ? Icons.event_busy : Icons.event_available,
+                      widget.status == MeetingStatus.canceled
+                          ? Icons.event_busy
+                          : Icons.event_available,
                       color: _getStatusColor(),
                       size: 18,
                     ),
@@ -154,8 +150,10 @@ class _GmailScanCardState extends State<GmailScanCard> {
                       Text(
                         widget.subtitle,
                         style: TextStyle(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary, 
-                          fontSize: 12
+                          color:
+                              theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                              AppColors.textSecondary,
+                          fontSize: 12,
                         ),
                         maxLines: _isExpanded ? 10 : 1,
                         overflow: TextOverflow.ellipsis,
@@ -166,7 +164,9 @@ class _GmailScanCardState extends State<GmailScanCard> {
                 const SizedBox(width: 8),
                 Icon(
                   _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? AppColors.textSecondary,
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                      AppColors.textSecondary,
                   size: 18,
                 ),
               ],
@@ -180,7 +180,7 @@ class _GmailScanCardState extends State<GmailScanCard> {
                 style: TextStyle(
                   fontSize: 13,
                   height: 1.5,
-                  color: theme.textTheme.bodyLarge?.color?.withOpacity(0.9),
+                  color: theme.textTheme.bodyLarge?.color?.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 8),
@@ -190,50 +190,12 @@ class _GmailScanCardState extends State<GmailScanCard> {
                   "Tap to collapse",
                   style: TextStyle(
                     fontSize: 10,
-                    color: AppColors.primary.withOpacity(0.7),
+                    color: AppColors.primary.withValues(alpha: 0.7),
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
-<<<<<<< HEAD
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color:
-                          theme.textTheme.bodyMedium?.color?.withValues(
-                            alpha: 0.7,
-                          ) ??
-                          AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color:
-                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
-                  AppColors.textSecondary,
-              size: 18,
-            ),
-=======
             ],
->>>>>>> origin/main
           ],
         ),
       ),
