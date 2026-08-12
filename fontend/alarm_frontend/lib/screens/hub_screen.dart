@@ -381,103 +381,67 @@ class _HubScreenState extends State<HubScreen>
   void _showFactoryResetWarning(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return AlertDialog(
-            backgroundColor: Theme.of(context).cardColor,
-            title: const Text(
-              "Factory Reset Warning",
-              style: TextStyle(color: Colors.orangeAccent),
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).cardColor,
+        title: const Text(
+          "Confirm Factory Reset",
+          style: TextStyle(color: Colors.orangeAccent),
+        ),
+        content: const Text(
+          "This will wipe all hardware settings and delete your data from the cloud. The device will reset in 5 seconds after confirmation.",
+          style: TextStyle(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(
+              "CANCEL",
+              style: TextStyle(color: AppColors.primary),
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "This will wipe all hardware settings and delete your data from the cloud.",
-                  style: TextStyle(color: AppColors.textSecondary),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "Resetting in: $_countdown seconds",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _executeInstantReset();
+            },
+            child: const Text(
+              "RESET NOW",
+              style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  _cancelReset();
-                  Navigator.pop(ctx);
-                },
-                child: const Text(
-                  "CANCEL",
-                  style: TextStyle(color: AppColors.primary),
-                ),
-              ),
-            ],
-          );
-        },
+          ),
+        ],
       ),
     );
-    _startResetCountdown(context);
   }
 
-  void _startResetCountdown(BuildContext context) {
-    _countdown = 15;
-    _updateDevice('FactoryReset', true);
-    _resetTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_countdown > 0) {
-        if (mounted) setState(() => _countdown--);
-      } else {
-        timer.cancel();
-        _verifyAndExecuteReset(context);
-      }
-    });
-  }
-
-  void _cancelReset() {
-    _resetTimer?.cancel();
-    _updateDevice('FactoryReset', false);
-    if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Reset Canceled")));
-    }
-  }
-
-  void _verifyAndExecuteReset(BuildContext context) async {
+  void _executeInstantReset() async {
     if (_macAddress == null || _hiddenUid == null) return;
-    final snapshot = await _rtdb
-        .ref()
-        .child('Users')
-        .child(_hiddenUid!)
-        .child('Devices')
-        .child(_macAddress!)
-        .child('FactoryReset')
-        .get();
-    if (snapshot.exists && snapshot.value == true) {
-      try {
-        await _rtdb
-            .ref()
-            .child('Users')
-            .child(_hiddenUid!)
-            .child('Devices')
-            .child(_macAddress!)
-            .remove();
-        if (mounted) {
-          Navigator.of(context, rootNavigator: true).pop();
-          setState(() => _macAddress = null);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Device unlinked successfully.")),
-          );
-        }
-      } catch (e) {
-        Logger().e("Reset Error: $e");
+
+    try {
+      // 1. Signal the device to start its reset
+      _updateDevice('FactoryReset', true);
+
+      // 2. Wait 2 seconds for the device to read the signal (as requested)
+      await Future.delayed(const Duration(seconds: 2));
+
+      // 3. Remove from Firebase
+      await _rtdb
+          .ref()
+          .child('Users')
+          .child(_hiddenUid!)
+          .child('Devices')
+          .child(_macAddress!)
+          .remove();
+
+      if (mounted) {
+        setState(() => _macAddress = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Device unlinked successfully.")),
+        );
       }
+    } catch (e) {
+      Logger().e("Reset Error: $e");
     }
   }
 }

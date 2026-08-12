@@ -76,6 +76,29 @@ void handleWiFiHealer(unsigned long currentMillis) {
 }
 
 void syncWithFirebase(unsigned long currentMillis) {
+  // Check for FactoryReset more frequently (every 1 second instead of 5)
+  static unsigned long lastResetCheck = 0;
+  if (currentMillis - lastResetCheck >= 1000) {
+    lastResetCheck = currentMillis;
+    if (Firebase.ready() && devicePath != "") {
+      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
+        if (fbdo.boolData() == true) {
+          if (!isResetPending) {
+            isResetPending = true;
+            resetPendingStartTime = currentMillis;
+            resetConfirmPresses = 0;
+            multiPressCount = 0;
+            playTonePattern(0, 0, 0, true);
+            Serial.println("Remote Factory Reset Triggered!");
+          }
+        } else if (isResetPending) {
+          isResetPending = false;
+          Serial.println("Remote Factory Reset Cancelled!");
+        }
+      }
+    }
+  }
+
   if (currentMillis - lastFirebaseSync >= 5000) {
     lastFirebaseSync = currentMillis;
     
@@ -192,6 +215,13 @@ void syncWithFirebase(unsigned long currentMillis) {
 void deleteDeviceNode() {
   if (WiFi.status() == WL_CONNECTED && devicePath != "") {
     Firebase.RTDB.deleteNode(&fbdo, devicePath);
+  }
+}
+
+void stopAlarmInCloud() {
+  if (Firebase.ready() && devicePath != "") {
+    Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", true);
+    Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");
   }
 }
 

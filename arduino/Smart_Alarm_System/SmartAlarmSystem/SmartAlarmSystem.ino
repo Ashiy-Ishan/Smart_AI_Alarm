@@ -220,14 +220,17 @@ else
           else if (multiPressCount == 1) { 
             if (isMenuMode) {
               selectedTone++;
-              if (selectedTone > 1) selectedTone = 0; 
+              if (selectedTone > 2) selectedTone = 0; // Updated for 3 tones (0, 1, 2)
               isPreviewing = true;
               previewEndTime = currentMillis + 4000; 
             } 
             else {
               // ALARM STOP LOGIC
               if (currentAlarmState == RINGING) {
-                isStopped = true; 
+                // Signal stop to both local and mobile via Firebase key
+                stopAlarmInCloud();
+
+                isStopped = true;
                 currentAlarmState = IDLE;
                 playTonePattern(0, 0, 0, true);
 
@@ -235,7 +238,7 @@ else
                 isManualLampOn = false;
 
                 if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
-                Serial.println("Alarm Stopped by Button");
+                Serial.println("Alarm Stopped by Physical Button");
               }
               else if (!isStopped) {
                 isStopped = true;
@@ -249,19 +252,16 @@ else
 
   // 5. RESET LOGIC (Physical & Remote)
   if (isResetPending) {
-    unsigned long elapsed = currentMillis - resetPendingStartTime;
-    if (elapsed >= 15000) { // Reduced to 5 seconds as requested
-      // If we are here, the countdown finished without cancellation
-      playTonePattern(0, 0, 0, true);
-      drawBootScreen("FACTORY RESET...");
+    // Immediate reset as requested
+    playTonePattern(0, 0, 0, true);
+    drawBootScreen("FACTORY RESET...");
 
-      // Cleanup Firebase if we are still connected before restarting
-      deleteDeviceNode();
+    // Cleanup Firebase if we are still connected before restarting
+    deleteDeviceNode();
 
-      factoryReset();
-      delay(2000);
-      ESP.restart();
-    }
+    factoryReset();
+    delay(1000);
+    ESP.restart();
   }
 
   // 6. ALARM TIMING LOGIC

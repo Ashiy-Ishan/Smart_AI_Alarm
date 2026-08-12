@@ -75,7 +75,10 @@ void renderMainScreen() {
     display.print("--- SOUND MENU ---");
     
     display.setTextSize(2);
-    String toneName = (selectedTone == 0) ? "1: CLASSIC" : "2: URGENT";
+    String toneName = "";
+    if (selectedTone == 0) toneName = "1: GENTLE";
+    else if (selectedTone == 1) toneName = "2: TECH";
+    else toneName = "3: AGENT";
     
     int16_t x1, y1; uint16_t w, h;
     display.getTextBounds(toneName, 0, 0, &x1, &y1, &w, &h);

@@ -23,9 +23,17 @@ const int durations1[] = {
   100, 100, 100, 300 // Short pause at end
 };
 
-const int* const melodies[] = {melody0, melody1};
-const int* const durations[] = {durations0, durations1};
-const int arrayLengths[] = {10, 8};
+// --- TONE 2: Agent Sound Track (Urgent) ---
+const int melody2[] = {
+  1500, 1200, 1500, 1200, 2000, 2000, 1000
+};
+const int durations2[] = {
+  150, 150, 150, 150, 200, 200, 500
+};
+
+const int* const melodies[] = {melody0, melody1, melody2};
+const int* const durations[] = {durations0, durations1, durations2};
+const int arrayLengths[] = {10, 8, 7};
 
 void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool stopTone) {
   static int lastToneIndex = -1;
@@ -40,7 +48,7 @@ void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool
   }
 
   if (toneIndex < 0) toneIndex = 0;
-  if (toneIndex > 1) toneIndex = 1;
+  if (toneIndex > 2) toneIndex = 2; // Updated range for Tone 2
 
   if (toneIndex != lastToneIndex) {
     lastToneIndex = toneIndex;
