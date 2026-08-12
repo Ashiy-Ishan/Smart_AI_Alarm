@@ -28,7 +28,7 @@ void setupNetworkAndTime() {
   WiFi.begin(wifiSSID.c_str(), wifiPass.c_str());
   int dotCount = 0;
   int wifiTimeout = 0;
-  
+
   while (WiFi.status() != WL_CONNECTED && wifiTimeout < 60) {
     String dots = "";
     for(int i = 0; i < dotCount; i++) dots += ".";
@@ -36,7 +36,7 @@ void setupNetworkAndTime() {
     delay(500);
     dotCount++;
     wifiTimeout++;
-    if(dotCount > 3) dotCount = 0; 
+    if(dotCount > 3) dotCount = 0;
   }
 
   if (WiFi.status() == WL_CONNECTED) {
@@ -61,7 +61,7 @@ void setupNetworkAndTime() {
   while (!getLocalTime(&timeinfo) || timeinfo.tm_year < 120) {
     delay(500);
     timeTimeout++;
-    if(timeTimeout > 6) break; 
+    if(timeTimeout > 6) break;
   }
 }
 
@@ -112,7 +112,7 @@ void syncWithFirebase(unsigned long currentMillis) {
             defaultAppKeys.set("SelectedTone", 0);        
             defaultAppKeys.set("ManualLamp", false);
             defaultAppKeys.set("MobileStop", false);      
-            
+
             Firebase.RTDB.updateNode(&fbdo, devicePath, &defaultAppKeys);
           }
         }
@@ -125,8 +125,7 @@ void syncWithFirebase(unsigned long currentMillis) {
       json.set("LightStatus", lightStatus);
       json.set("MotionDetected", motionDetected);
 
-      // Mirror the actual hardware relay state back to Firebase for visual sync
-      json.set("ManualLamp", isRelayActuallyOn);
+      // Report physical relay status
       json.set("RelayStatus", isRelayActuallyOn ? "ON" : "OFF");
 
       if (currentAlarmState == RINGING) json.set("AlarmStatus", "RINGING");
@@ -135,7 +134,7 @@ void syncWithFirebase(unsigned long currentMillis) {
       Firebase.RTDB.updateNode(&fbdo, devicePath, &json);
 
       if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmTime")) alarmTime = fbdo.stringData();
-      
+
       // READ SENSOR DATA FROM FIREBASE (as requested)
       if (Firebase.RTDB.getFloat(&fbdo, devicePath + "/Temperature")) {
         if (fbdo.dataType() != "null") temperature = fbdo.floatData();
@@ -148,11 +147,11 @@ void syncWithFirebase(unsigned long currentMillis) {
       }
 
       if (Firebase.RTDB.get(&fbdo, devicePath + "/SoundLevel")) {
-        soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
+        soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData();
       }
-      
+
       if (Firebase.RTDB.get(&fbdo, devicePath + "/SelectedTone")) {
-        selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
+        selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData();
       }
 
       if (Firebase.RTDB.get(&fbdo, devicePath + "/ManualLamp")) {
@@ -172,10 +171,10 @@ void syncWithFirebase(unsigned long currentMillis) {
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
         if (fbdo.boolData() == true) {
           isStopped = true;
-          playTonePattern(0, 0, 0, true); 
+          playTonePattern(0, 0, 0, true);
 
-          currentAlarmState = IDLE; 
-          Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false); 
+          currentAlarmState = IDLE;
+          Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false);
           Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");
         }
       }
