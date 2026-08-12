@@ -36,7 +36,5 @@ extern int resetConfirmPresses;
 extern int multiPressCount;
 
 // --- LOGIC: Relay & Lamp Switches ---
-extern bool isRelayEnabled;     
-extern bool isRelayActuallyOn;  
-extern bool isManualLampOn;  
-extern bool isLampOnByAlarm;
+extern bool isRelayActuallyOn;
+extern bool isManualLampOn;

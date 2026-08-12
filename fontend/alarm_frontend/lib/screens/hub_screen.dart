@@ -194,7 +194,7 @@ class _HubScreenState extends State<HubScreen>
         final double temp = (data['Temperature'] ?? 0.0).toDouble();
         final double humidity = (data['Humidity'] ?? 0.0).toDouble();
         final String lightStatus = data['LightStatus'] ?? 'UNKNOWN';
-        final bool relayEnabled = data['RelayEnabled'] ?? false;
+        final bool isManualLampOn = data['ManualLamp'] == true;
         final bool motion = (data['MotionDetected'] ?? 0) == 1;
         final String userStatus = data['UserStatus'] ?? 'idle';
         final int soundLevel = data['SoundLevel'] ?? 5;
@@ -315,16 +315,16 @@ class _HubScreenState extends State<HubScreen>
             ),
             const SizedBox(height: 12),
             HubDeviceControlCard(
-              icon: Icons.power,
-              title: 'Master Relay',
-              subtitle: relayEnabled ? 'System Enabled' : 'System Disabled',
-              value: relayEnabled ? 1.0 : 0.0,
-              onChanged: (v) => _updateDevice('RelayEnabled', v > 0.5),
+              icon: Icons.lightbulb_outline,
+              title: 'Lamp Control',
+              subtitle: isManualLampOn ? 'Light is ON' : 'Light is OFF',
+              value: isManualLampOn ? 1.0 : 0.0,
+              onChanged: (v) => _updateDevice('ManualLamp', v > 0.5),
               trailing: Transform.scale(
                 scale: 0.85,
                 child: Switch(
-                  value: relayEnabled,
-                  onChanged: (v) => _updateDevice('RelayEnabled', v),
+                  value: isManualLampOn,
+                  onChanged: (v) => _updateDevice('ManualLamp', v),
                   activeTrackColor: AppColors.primary,
                 ),
               ),

@@ -192,13 +192,13 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
             "Humidity": 0.0,
             "LightStatus": "INIT",
             "MotionDetected": 0,
-            "RelayEnabled": true,
             "RelayStatus": "OFF",
             "Temperature": 0.0,
             "UserStatus": "idle",
             "SoundLevel": 5,
             "SelectedTone": 0,
             "FactoryReset": false,
+            "ManualLamp": false,
           });
 
       // 2. Then send provisioning data to the hub via Bluetooth

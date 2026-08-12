@@ -110,8 +110,7 @@ void syncWithFirebase(unsigned long currentMillis) {
             defaultAppKeys.set("AlarmTime", "07:00");     
             defaultAppKeys.set("SoundLevel", 5);          
             defaultAppKeys.set("SelectedTone", 0);        
-            defaultAppKeys.set("RelayEnabled", true);     
-            defaultAppKeys.set("ManualLamp", false);      
+            defaultAppKeys.set("ManualLamp", false);
             defaultAppKeys.set("MobileStop", false);      
             
             Firebase.RTDB.updateNode(&fbdo, devicePath, &defaultAppKeys);
@@ -125,6 +124,9 @@ void syncWithFirebase(unsigned long currentMillis) {
       json.set("Humidity", humidity);
       json.set("LightStatus", lightStatus);
       json.set("MotionDetected", motionDetected);
+
+      // Mirror the actual hardware relay state back to Firebase for visual sync
+      json.set("ManualLamp", isRelayActuallyOn);
       json.set("RelayStatus", isRelayActuallyOn ? "ON" : "OFF");
 
       if (currentAlarmState == RINGING) json.set("AlarmStatus", "RINGING");
@@ -153,36 +155,25 @@ void syncWithFirebase(unsigned long currentMillis) {
         selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
 
-      if (Firebase.RTDB.get(&fbdo, devicePath + "/RelayEnabled")) {
-        if (fbdo.dataType() == "string") {
-          String val = fbdo.stringData(); val.toLowerCase();
-          isRelayEnabled = (val == "true" || val == "1" || val == "on");
-        } else isRelayEnabled = fbdo.boolData();
-      }
-
-      bool previousManualState = isManualLampOn;
-
       if (Firebase.RTDB.get(&fbdo, devicePath + "/ManualLamp")) {
         if (fbdo.dataType() == "string") {
-          String val = fbdo.stringData(); val.toLowerCase();
+          String val = fbdo.stringData();
+          val.toLowerCase();
           isManualLampOn = (val == "true" || val == "1" || val == "on");
-        } else isManualLampOn = fbdo.boolData();
-      }
-
-      if (previousManualState == true && isManualLampOn == false) {
-        isLampOnByAlarm = false;
+        }
+        else if (fbdo.dataType() == "boolean") {
+          isManualLampOn = fbdo.boolData();
+        }
+        else if (fbdo.dataType() == "int" || fbdo.dataType() == "float") {
+          isManualLampOn = (fbdo.intData() > 0);
+        }
       }
 
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
         if (fbdo.boolData() == true) {
           isStopped = true;
           playTonePattern(0, 0, 0, true); 
-          
-          isLampOnByAlarm = false; 
-          isManualLampOn = false; 
-          
-          Firebase.RTDB.setBool(&fbdo, devicePath + "/ManualLamp", false);
-          
+
           currentAlarmState = IDLE; 
           Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false); 
           Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");

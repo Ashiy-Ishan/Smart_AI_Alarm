@@ -55,11 +55,8 @@ unsigned long lastMultiPressTime = 0;
 float smoothedLightValue = 0.0; 
 
 // Relay Variables
-bool isRelayEnabled = true;     
-bool isRelayActuallyOn = false; 
+bool isRelayActuallyOn = false;
 bool isManualLampOn = false; 
-unsigned long lampTurnedOnTime = 0;
-bool isLampOnByAlarm = false;
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -150,12 +147,7 @@ else
     syncWithAtlas(currentMillis);
   }
 
-  // 3. 15-MINUTE AUTOMATIC LAMP SHUTOFF
-  if (isLampOnByAlarm) {
-    if (currentMillis - lampTurnedOnTime >= 900000) {
-      isLampOnByAlarm = false; 
-    }
-  }
+  // 3. (REMOVED AUTOMATIC LAMP SHUTOFF)
 
   // 4. BUTTON LOGIC
   int btnState = digitalRead(BUTTON_PIN);
@@ -180,10 +172,7 @@ else
         isMenuMode = true;
         isStopped = true; 
         currentAlarmState = IDLE;
-        
-        isLampOnByAlarm = false;
-        isManualLampOn = false;
-        
+
         isPreviewing = true;
         previewEndTime = currentMillis + 4000; 
       }
@@ -234,9 +223,6 @@ else
                 currentAlarmState = IDLE;
                 playTonePattern(0, 0, 0, true);
 
-                isLampOnByAlarm = false;
-                isManualLampOn = false;
-
                 if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
                 Serial.println("Alarm Stopped by Physical Button");
               }
@@ -279,9 +265,6 @@ else
         if (currentAlarmState != IDLE) {
           currentAlarmState = IDLE;
           playTonePattern(0, 0, 0, true); 
-          
-          isLampOnByAlarm = false;
-          isManualLampOn = false;
         }
         if (motionDetected == HIGH && !wokeUpFlagPushed) wokeUpFlagPushed = true; 
       } 
@@ -289,11 +272,6 @@ else
         if (currentAlarmState == IDLE) {
           currentAlarmState = RINGING;
           stateTimer = currentMillis;
-          
-          if (isRelayEnabled) {
-            isLampOnByAlarm = true; 
-            lampTurnedOnTime = currentMillis;
-          }
         }
 
         if (currentAlarmState == RINGING) {
@@ -304,9 +282,6 @@ else
             isStopped = true;
             currentAlarmState = IDLE;
             playTonePattern(0, 0, 0, true); 
-
-            isLampOnByAlarm = false;
-            isManualLampOn = false;
           }
         } 
       }
@@ -322,19 +297,20 @@ else
     }
   }
 
-  // 7. UNIFIED RELAY CONTROLLER 
+  // 7. UNIFIED RELAY CONTROLLER (Manual Only)
   // ==========================================
-  bool targetRelayState = false;
-
-  if (isLampOnByAlarm) targetRelayState = true;
-  if (isManualLampOn) targetRelayState = true;
-
-  if (targetRelayState) {
-    digitalWrite(RELAY_PIN, HIGH); // Send HIGH to turn ON Active-High Relay
-    isRelayActuallyOn = true;
+  if (isManualLampOn) {
+    if (!isRelayActuallyOn) {
+      digitalWrite(RELAY_PIN, HIGH); // Send HIGH to turn ON Active-High Relay
+      isRelayActuallyOn = true;
+      Serial.println("Relay: ON (Manual)");
+    }
   } else {
-    digitalWrite(RELAY_PIN, LOW); // Send LOW to turn OFF
-    isRelayActuallyOn = false;
+    if (isRelayActuallyOn) {
+      digitalWrite(RELAY_PIN, LOW); // Send LOW to turn OFF
+      isRelayActuallyOn = false;
+      Serial.println("Relay: OFF (Manual)");
+    }
   }
 
   // 8. UPDATE SCREEN
