@@ -18,6 +18,7 @@ import 'package:alarm_frontend/services/background_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription? _alarmSubscription;
   String? _currentMac;
   bool _isAlarmShowing = false;
+  DateTime? _lastDismissedTime;
 
   @override
   void initState() {
@@ -116,11 +118,20 @@ class _MyAppState extends State<MyApp> {
                 .onValue
                 .listen((event) {
                   final status = event.snapshot.value?.toString();
+
                   if (status == 'RINGING' && !_isAlarmShowing) {
+                    final now = DateTime.now();
+                    if (_lastDismissedTime != null &&
+                        now.difference(_lastDismissedTime!).inSeconds < 5) {
+                      debugPrint("Alarm RINGING ignored due to cooldown");
+                      return;
+                    }
+
                     _showAlarmOverlay(hiddenUid, _currentMac!);
                     NotificationService().showInstantNotification(
                       title: "Alarm Ringing!",
                       body: "Your Bedside Hub is ringing. Tap to stop or snooze.",
+                      isAlarm: true,
                     );
                   } else if (status != 'RINGING' && _isAlarmShowing) {
                     _hideAlarmOverlay();
@@ -143,6 +154,7 @@ class _MyAppState extends State<MyApp> {
 
   void _hideAlarmOverlay() {
     _isAlarmShowing = false;
+    _lastDismissedTime = DateTime.now();
     if (_navigatorKey.currentState?.canPop() ?? false) {
       _navigatorKey.currentState?.pop();
     }

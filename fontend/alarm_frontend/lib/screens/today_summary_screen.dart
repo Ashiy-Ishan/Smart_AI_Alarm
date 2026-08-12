@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -97,13 +98,50 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
         throw Exception('User is not logged in');
       }
 
+      final syncService = GoogleSyncService();
+      final isLinked = await syncService.isLinked();
+
+      if (isLinked) {
+        final googleEvents = await syncService.fetchEvents(
+          timeMin: DateTime.now().subtract(const Duration(hours: 12)),
+          maxResults: 20,
+        );
+
+        if (!mounted) return;
+
+        if (googleEvents.isNotEmpty) {
+          final events = googleEvents.map<EventModel>((event) {
+            final start = event.start?.dateTime?.toLocal() ??
+                event.start?.date?.toLocal();
+            final end =
+                event.end?.dateTime?.toLocal() ?? event.end?.date?.toLocal();
+
+            return EventModel(
+              time: start != null ? DateFormat.jm().format(start) : '—',
+              title: event.summary?.trim().isNotEmpty == true
+                  ? event.summary!
+                  : 'Untitled event',
+              extra: event.location,
+              rightTime: end != null ? DateFormat.jm().format(end) : null,
+            );
+          }).toList();
+
+          setState(() {
+            _events = events;
+            _eventsError = null;
+            _isLoadingEvents = false;
+          });
+          return;
+        }
+      }
+
       final status = await ApiService.get('/calendar/status/${user.uid}');
 
       if (!mounted) return;
 
       if (status?['connected'] != true) {
         setState(() {
-          _eventsError = 'not_connected';
+          _eventsError = isLinked ? null : 'not_connected';
 
           _isLoadingEvents = false;
         });
@@ -226,28 +264,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
                   const SizedBox(height: 15),
 
                   _buildEventsSection(theme),
-
-                  const SizedBox(height: 20),
-
-                  Divider(color: theme.dividerColor),
-
-                  const SizedBox(height: 20),
-
-                  // ======================================
-                  // ACTIVITY SUMMARY
-                  // ======================================
-                  const Text(
-                    'Activity Summary',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  _buildSensorCard(theme),
-
-                  const SizedBox(height: 15),
-
-                  _buildMovementCard(theme),
 
                   const SizedBox(height: 20),
 
@@ -390,109 +406,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   }
 
   // =========================================================
-  // SENSOR CARD
-  // =========================================================
-
-  Widget _buildSensorCard(ThemeData theme) {
-    if (_isLoadingSummary) {
-      return _loadingCard(theme);
-    }
-
-    if (_summaryError != null) {
-      return _errorCard(theme, _summaryError!);
-    }
-
-    final activity = _summary?.activity;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.dividerColor),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _activityItem(
-            icon: Icons.thermostat,
-            value: activity?.roomTemperature != null
-                ? '${activity!.roomTemperature!.toStringAsFixed(1)}°C'
-                : '--',
-            label: 'Temperature',
-          ),
-
-          _activityItem(
-            icon: Icons.water_drop_outlined,
-            value: activity?.humidity != null
-                ? '${activity!.humidity!.toStringAsFixed(0)}%'
-                : '--',
-            label: 'Humidity',
-          ),
-
-          _activityItem(
-            icon: Icons.directions_walk,
-            value: activity?.available == true
-                ? activity!.motionDetected
-                      ? 'Detected'
-                      : 'Still'
-                : '--',
-            label: 'Motion',
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =========================================================
-  // MOVEMENT CARD
-  // =========================================================
-
-  Widget _buildMovementCard(ThemeData theme) {
-    if (_isLoadingSummary) {
-      return _loadingCard(theme);
-    }
-
-    if (_summaryError != null) {
-      return _errorCard(theme, _summaryError!);
-    }
-
-    final activity = _summary?.activity;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.dividerColor),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _metricItem(
-            value: activity?.steps != null ? '${activity!.steps}' : '--',
-            label: 'Steps',
-          ),
-
-          _metricItem(
-            value: activity?.available == true
-                ? '${activity!.movementMinutes.toStringAsFixed(0)} min'
-                : '--',
-            label: 'Movement',
-          ),
-
-          _metricItem(
-            value: activity?.calories != null
-                ? activity!.calories!.toStringAsFixed(0)
-                : '--',
-            label: 'Cal',
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =========================================================
   // HEALTH INSIGHT
   // =========================================================
 
@@ -537,59 +450,6 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
   // =========================================================
   // SMALL COMPONENTS
   // =========================================================
-
-  Widget _activityItem({
-    required IconData icon,
-    required String value,
-    required String label,
-  }) {
-    return Expanded(
-      child: Column(
-        children: [
-          Icon(icon, color: AppColors.primary),
-
-          const SizedBox(height: 5),
-
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-
-          const SizedBox(height: 2),
-
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _metricItem({required String value, required String label}) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 5),
-
-          Text(label, style: const TextStyle(color: AppColors.textSecondary)),
-        ],
-      ),
-    );
-  }
 
   Widget _loadingCard(ThemeData theme) {
     return Container(

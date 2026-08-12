@@ -14,8 +14,9 @@ class AlarmRingingScreen extends StatelessWidget {
     required this.hiddenUid,
   });
 
-  void _stopAlarm() {
-    FirebaseDatabase.instance
+  void _stopAlarm(BuildContext context) async {
+    Navigator.pop(context);
+    await FirebaseDatabase.instance
         .ref()
         .child('Users')
         .child(hiddenUid)
@@ -24,7 +25,8 @@ class AlarmRingingScreen extends StatelessWidget {
         .update({'MobileStop': true, 'AlarmStatus': 'IDLE'});
   }
 
-  void _snoozeAlarm() async {
+  void _snoozeAlarm(BuildContext context) async {
+    Navigator.pop(context);
     final ref = FirebaseDatabase.instance
         .ref()
         .child('Users')
@@ -93,7 +95,7 @@ class AlarmRingingScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _snoozeAlarm,
+                        onPressed: () => _snoozeAlarm(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.cardColor,
                           foregroundColor: theme.textTheme.bodyLarge?.color,
@@ -116,7 +118,7 @@ class AlarmRingingScreen extends StatelessWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _stopAlarm,
+                        onPressed: () => _stopAlarm(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.black,

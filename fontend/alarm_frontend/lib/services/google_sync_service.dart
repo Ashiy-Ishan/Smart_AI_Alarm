@@ -150,7 +150,8 @@ class GoogleSyncService {
 
       final events = await calendar.events.list(
         'primary',
-        timeMin: startOfToday,
+        timeMin: timeMin.toUtc(),
+        timeMax: timeMax?.toUtc(),
         maxResults: maxResults,
         orderBy: 'startTime',
         singleEvents: true,

@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:alarm_frontend/components/notification_history_modal.dart';
+import 'package:alarm_frontend/services/google_sync_service.dart';
+import 'package:googleapis/calendar/v3.dart' as google_calendar;
 import 'package:alarm_frontend/models/today_summary_model.dart';
 import 'package:alarm_frontend/providers/user_provider.dart';
 import 'package:alarm_frontend/routes/app_routes.dart';
@@ -139,6 +141,46 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
     try {
+      final syncService = GoogleSyncService();
+      final isLinked = await syncService.isLinked();
+
+      if (isLinked) {
+        final events = await syncService.fetchEvents(
+          timeMin: DateTime.now(),
+          maxResults: 5,
+        );
+
+        if (!mounted) return;
+
+        if (events.isNotEmpty) {
+          // Find first event that isn't finished
+          final now = DateTime.now();
+          final next = events.firstWhere(
+            (e) {
+              final end = e.end?.dateTime?.toLocal() ??
+                  e.end?.date?.toLocal()?.add(const Duration(days: 1));
+              return end == null || end.isAfter(now);
+            },
+            orElse: () => events.first,
+          );
+
+          setState(() {
+            _nextEvent = {
+              'summary': next.summary,
+              'start_time':
+                  (next.start?.dateTime ?? next.start?.date)?.toIso8601String(),
+              'end_time':
+                  (next.end?.dateTime ?? next.end?.date)?.toIso8601String(),
+              'location': next.location,
+            };
+            _eventError = null;
+            _isLoadingEvent = false;
+          });
+          return;
+        }
+      }
+
+      // Fallback to API if not linked or no local events found
       final status = await ApiService.get('/calendar/status/${user.uid}');
 
       if (!mounted) return;
@@ -146,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen>
       if (status['connected'] != true) {
         setState(() {
           _nextEvent = null;
-          _eventError = 'not_connected';
+          _eventError = isLinked ? null : 'not_connected';
           _isLoadingEvent = false;
         });
 

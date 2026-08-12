@@ -30,7 +30,7 @@ class NotificationService {
       await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
       const AndroidInitializationSettings androidInit =
-          AndroidInitializationSettings('ic_launcher');
+          AndroidInitializationSettings('@mipmap/ic_launcher');
       const DarwinInitializationSettings iosInit =
           DarwinInitializationSettings();
       const InitializationSettings initSettings = InitializationSettings(
@@ -72,24 +72,43 @@ class NotificationService {
   Future<void> showInstantNotification({
     required String title,
     required String body,
+    bool isAlarm = false,
   }) async {
     await _addToHistory(title, body);
 
-    const AndroidNotificationDetails androidDetails =
+    final List<AndroidNotificationAction>? actions = isAlarm
+        ? [
+            const AndroidNotificationAction(
+              'snooze_action',
+              'SNOOZE',
+              showsUserInterface: true,
+            ),
+            const AndroidNotificationAction(
+              'stop_action',
+              'STOP',
+              showsUserInterface: true,
+            ),
+          ]
+        : null;
+
+    final AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-          'alarm_high_importance',
-          'Schedule Updates',
-          channelDescription: 'Notifications for meeting changes',
+          _channel.id,
+          _channel.name,
+          channelDescription: _channel.description,
           importance: Importance.max,
           priority: Priority.high,
-          icon: 'ic_launcher', // Explicitly set the small icon
+          fullScreenIntent: isAlarm,
+          category: isAlarm ? AndroidNotificationCategory.alarm : null,
+          icon: '@mipmap/ic_launcher',
+          actions: actions,
         );
 
     await _localNotifications.show(
-      id: DateTime.now().millisecond % 100000,
+      id: isAlarm ? 999 : DateTime.now().millisecond % 100000,
       title: title,
       body: body,
-      notificationDetails: const NotificationDetails(android: androidDetails),
+      notificationDetails: NotificationDetails(android: androidDetails),
     );
   }
 
@@ -205,7 +224,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           showWhen: true,
-          icon: 'ic_launcher', // Explicitly set the small icon
+          icon: '@mipmap/ic_launcher', // Explicitly set the small icon
           actions: androidActions,
         );
 
