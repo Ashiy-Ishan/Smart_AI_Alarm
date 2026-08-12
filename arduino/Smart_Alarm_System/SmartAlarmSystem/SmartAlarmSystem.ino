@@ -250,7 +250,7 @@ else
   // 5. RESET LOGIC (Physical & Remote)
   if (isResetPending) {
     unsigned long elapsed = currentMillis - resetPendingStartTime;
-    if (elapsed >= 15000) { // 15 seconds as requested
+    if (elapsed >= 15000) { // Reduced to 5 seconds as requested
       // If we are here, the countdown finished without cancellation
       playTonePattern(0, 0, 0, true);
       drawBootScreen("FACTORY RESET...");

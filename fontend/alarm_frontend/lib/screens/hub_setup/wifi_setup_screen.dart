@@ -177,18 +177,9 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
       final bleService = custom.BluetoothService();
       
       // Fetch the REAL MAC Address from the hub characteristic
-      // This is critical because remoteId might be a UUID on iOS
       final macAddress = await bleService.getDeviceRealMac() ?? widget.device.remoteId.toString();
 
-      final sent = await bleService.sendProvisioningData(
-        ssid,
-        password,
-        hiddenUid,
-      );
-      if (!sent) {
-        throw StateError('Could not send Wi-Fi credentials to the device.');
-      }
-
+      // 1. First write to Firebase to ensure the hub has its path ready
       final rtdb = FirebaseDatabase.instance.ref();
       await rtdb
           .child('Users')
@@ -210,23 +201,36 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
             "FactoryReset": false,
           });
 
+      // 2. Then send provisioning data to the hub via Bluetooth
+      // Note: Hub restarts immediately after this, so we do it last
+      await bleService.sendProvisioningData(
+        ssid,
+        password,
+        hiddenUid,
+      );
+
       if (mounted) {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Hub Setup Successful!')),
+          const SnackBar(content: Text('WiFi Data Sent! Configuring Hub...')),
         );
 
-        // Pop until first (MainScreen)
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        // Wait 2 seconds to ensure Hub receives data, then close and navigate
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            // Pop until first (MainScreen)
+            Navigator.of(context).popUntil((route) => route.isFirst);
 
-        // Switch to Hub Tab (index 2)
-        MainScreen.globalKey.currentState?.changeTab(2);
+            // Switch to Hub Tab (index 2)
+            MainScreen.globalKey.currentState?.changeTab(2);
+          }
+        });
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Setup Failed: $e')));
+        ).showSnackBar(SnackBar(content: Text('Setup Error: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

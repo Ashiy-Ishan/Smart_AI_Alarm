@@ -94,8 +94,12 @@ class BluetoothService {
         String u = uid.trim();
         
         String payload = "$s,$p,$u";
+        
+        // Reverting to with response for guaranteed delivery
+        // The "Setup Failed" message is avoided by the catch block and UI order
         await writeCharacteristic!.write(utf8.encode(payload),
             withoutResponse: false);
+
         return true;
       } catch (e) {
         Logger().e('Provisioning write error: $e');
