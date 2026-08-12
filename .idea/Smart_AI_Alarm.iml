@@ -140,6 +140,7 @@
       <excludeFolder url="file://$MODULE_DIR$/backend/ai_alarm_sytem/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/functions/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/backend/ai_alarm_sytem/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/arduino/mongodb_sync_IOT/.venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.14 (Smart_AI_Alarm) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

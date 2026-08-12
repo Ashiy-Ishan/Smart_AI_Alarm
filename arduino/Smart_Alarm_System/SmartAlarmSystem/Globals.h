@@ -32,6 +32,8 @@ extern bool isBleSetupMode;
 
 extern bool isResetPending;
 extern unsigned long resetPendingStartTime;
+extern int resetConfirmPresses;
+extern int multiPressCount;
 
 // --- LOGIC: Relay & Lamp Switches ---
 extern bool isRelayEnabled;     

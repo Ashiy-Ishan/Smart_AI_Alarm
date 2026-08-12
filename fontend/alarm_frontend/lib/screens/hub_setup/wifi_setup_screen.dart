@@ -1,3 +1,4 @@
+import 'package:alarm_frontend/screens/main_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -170,11 +171,15 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     setState(() => _isLoading = true);
 
     final email = FirebaseAuth.instance.currentUser?.email ?? "unknown";
-    final macAddress = widget.device.remoteId.toString();
     final hiddenUid = _getHiddenUid(email);
 
     try {
       final bleService = custom.BluetoothService();
+      
+      // Fetch the REAL MAC Address from the hub characteristic
+      // This is critical because remoteId might be a UUID on iOS
+      final macAddress = await bleService.getDeviceRealMac() ?? widget.device.remoteId.toString();
+
       final sent = await bleService.sendProvisioningData(
         ssid,
         password,
@@ -206,7 +211,16 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
           });
 
       if (mounted) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Hub Setup Successful!')),
+        );
+
+        // Pop until first (MainScreen)
         Navigator.of(context).popUntil((route) => route.isFirst);
+
+        // Switch to Hub Tab (index 2)
+        MainScreen.globalKey.currentState?.changeTab(2);
       }
     } catch (e) {
       if (mounted) {

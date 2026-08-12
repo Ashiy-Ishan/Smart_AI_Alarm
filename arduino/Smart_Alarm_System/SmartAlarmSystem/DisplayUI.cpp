@@ -59,11 +59,11 @@ void renderMainScreen() {
     display.setCursor(15, 25);
     display.print("Press 2x to Confirm");
     
-    int timeLeft = 10 - ((millis() - resetPendingStartTime) / 1000);
+    int timeLeft = 15 - ((millis() - resetPendingStartTime) / 1000);
     if (timeLeft < 0) timeLeft = 0; 
     
     display.setCursor(20, 45);
-    display.print("Auto Cancel: ");
+    display.print("Time Left: ");
     display.print(timeLeft);
     display.print("s");
   } 

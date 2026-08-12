@@ -247,12 +247,20 @@ else
     }
   }
 
-  // 5. RESET CANCELLATION
+  // 5. RESET LOGIC (Physical & Remote)
   if (isResetPending) {
-    if (currentMillis - resetPendingStartTime >= 10000) {
-      isResetPending = false; 
-      resetConfirmPresses = 0;
-      multiPressCount = 0;
+    unsigned long elapsed = currentMillis - resetPendingStartTime;
+    if (elapsed >= 15000) { // 15 seconds as requested
+      // If we are here, the countdown finished without cancellation
+      playTonePattern(0, 0, 0, true);
+      drawBootScreen("FACTORY RESET...");
+
+      // Cleanup Firebase if we are still connected before restarting
+      deleteDeviceNode();
+
+      factoryReset();
+      delay(2000);
+      ESP.restart();
     }
   }
 

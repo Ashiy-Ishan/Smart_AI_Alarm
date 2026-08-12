@@ -8,7 +8,8 @@ const char* const SERVER_URL = "https://lurk-scarring-improvise.ngrok-free.dev/a
 // --- 2. Bluetooth Configuration ---
 #define BLE_SERVICE_UUID           "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define BLE_CHARACTERISTIC_UUID_RX "beb5483e-36e1-4688-b7f5-ea07361b26a8" 
-#define BLE_CHARACTERISTIC_UUID_TX "1cceade8-7051-4b5f-8738-144f50cb38f1" 
+// Updated to match the app's MAC_READ_UUID
+#define BLE_CHARACTERISTIC_UUID_TX "beb5483e-36e1-4688-b7f5-ea07361b26a9" 
 
 // --- 3. Hardware Pin Layout ---
 #define BUTTON_PIN 10  

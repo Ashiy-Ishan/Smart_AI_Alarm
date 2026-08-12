@@ -29,7 +29,7 @@ void setupNetworkAndTime() {
   int dotCount = 0;
   int wifiTimeout = 0;
   
-  while (WiFi.status() != WL_CONNECTED && wifiTimeout < 20) { 
+  while (WiFi.status() != WL_CONNECTED && wifiTimeout < 60) {
     String dots = "";
     for(int i = 0; i < dotCount; i++) dots += ".";
     drawBootScreen("Connecting WiFi" + dots);
@@ -111,6 +111,17 @@ void syncWithFirebase(unsigned long currentMillis) {
 
       if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmTime")) alarmTime = fbdo.stringData();
       
+      // READ SENSOR DATA FROM FIREBASE (as requested)
+      if (Firebase.RTDB.getFloat(&fbdo, devicePath + "/Temperature")) {
+        if (fbdo.dataType() != "null") temperature = fbdo.floatData();
+      }
+      if (Firebase.RTDB.getFloat(&fbdo, devicePath + "/Humidity")) {
+        if (fbdo.dataType() != "null") humidity = fbdo.floatData();
+      }
+      if (Firebase.RTDB.getString(&fbdo, devicePath + "/LightStatus")) {
+        if (fbdo.dataType() != "null") lightStatus = fbdo.stringData();
+      }
+
       if (Firebase.RTDB.get(&fbdo, devicePath + "/SoundLevel")) {
         soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData(); 
       }
@@ -154,7 +165,33 @@ void syncWithFirebase(unsigned long currentMillis) {
           Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");
         }
       }
+
+      // REMOTE FACTORY RESET LOGIC
+      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
+        if (fbdo.boolData() == true) {
+          if (!isResetPending) {
+            isResetPending = true;
+            resetPendingStartTime = millis();
+            resetConfirmPresses = 0;
+            multiPressCount = 0;
+            playTonePattern(0, 0, 0, true); // Stop any noise
+            Serial.println("Remote Factory Reset Triggered!");
+          }
+        } else {
+          // If flag is set to false from cloud, cancel pending reset if it was a remote one
+          if (isResetPending) {
+             isResetPending = false;
+             Serial.println("Remote Factory Reset Cancelled!");
+          }
+        }
+      }
     }
+  }
+}
+
+void deleteDeviceNode() {
+  if (WiFi.status() == WL_CONNECTED && devicePath != "") {
+    Firebase.RTDB.deleteNode(&fbdo, devicePath);
   }
 }
 

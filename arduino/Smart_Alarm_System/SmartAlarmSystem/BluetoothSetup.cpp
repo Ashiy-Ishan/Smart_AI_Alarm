@@ -7,7 +7,6 @@
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
-#include <ArduinoJson.h>
 #include <WiFi.h>
 
 BLEServer *pServer = NULL;
@@ -21,18 +20,22 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 class MyCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-      // FIX: Changed std::string to Arduino String for ESP32 Core V3.x
       String rxValue = pCharacteristic->getValue(); 
       
       if (rxValue.length() > 0) {
-        JsonDocument doc; 
-        DeserializationError error = deserializeJson(doc, rxValue);
+        // App sends format: "ssid,password,uid"
+        int firstComma = rxValue.indexOf(',');
+        int secondComma = rxValue.indexOf(',', firstComma + 1);
         
-        if (!error) {
-          String s = doc["ssid"].as<String>();
-          String p = doc["pass"].as<String>();
-          String u = doc["user"].as<String>();
+        if (firstComma > 0 && secondComma > firstComma) {
+          String s = rxValue.substring(0, firstComma);
+          String p = rxValue.substring(firstComma + 1, secondComma);
+          String u = rxValue.substring(secondComma + 1);
           
+          s.trim();
+          p.trim();
+          u.trim();
+
           saveConfigAsJSON(s, p, u);
           
           drawBootScreen("Setup Complete!");
@@ -52,8 +55,11 @@ void startBluetooth() {
 
   pTxCharacteristic = pService->createCharacteristic(
                         BLE_CHARACTERISTIC_UUID_TX,
-                        BLECharacteristic::PROPERTY_NOTIFY
+                        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
                       );
+  
+  WiFi.mode(WIFI_STA);
+  pTxCharacteristic->setValue(WiFi.macAddress().c_str());
                       
   BLECharacteristic *pRxCharacteristic = pService->createCharacteristic(
                                            BLE_CHARACTERISTIC_UUID_RX,
