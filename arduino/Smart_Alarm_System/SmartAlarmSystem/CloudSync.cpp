@@ -171,6 +171,7 @@ void syncWithFirebase(unsigned long currentMillis) {
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
         if (fbdo.boolData() == true) {
           isStopped = true;
+          isPreviewing = false; // Stop preview if active
           playTonePattern(0, 0, 0, true);
 
           currentAlarmState = IDLE;

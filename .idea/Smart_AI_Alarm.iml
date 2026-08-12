@@ -141,6 +141,12 @@
       <excludeFolder url="file://$MODULE_DIR$/functions/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/backend/ai_alarm_sytem/venv" />
       <excludeFolder url="file://$MODULE_DIR$/arduino/mongodb_sync_IOT/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/linux/flutter/ephemeral/.plugin_symlinks/flutter_keyboard_visibility_linux/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/linux/flutter/ephemeral/.plugin_symlinks/flutter_keyboard_visibility_linux/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/linux/flutter/ephemeral/.plugin_symlinks/flutter_keyboard_visibility_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/windows/flutter/ephemeral/.plugin_symlinks/flutter_keyboard_visibility_windows/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/windows/flutter/ephemeral/.plugin_symlinks/flutter_keyboard_visibility_windows/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/fontend/alarm_frontend/windows/flutter/ephemeral/.plugin_symlinks/flutter_keyboard_visibility_windows/build" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.14 (Smart_AI_Alarm) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
