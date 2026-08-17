@@ -67,3 +67,11 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+#editors file
+.idea
+.claude
+.agents
+.idea
+.vscode
+__pycache__

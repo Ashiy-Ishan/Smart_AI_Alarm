@@ -76,7 +76,28 @@ void handleWiFiHealer(unsigned long currentMillis) {
 }
 
 void syncWithFirebase(unsigned long currentMillis) {
-  // Check for FactoryReset more frequently (every 1 second instead of 5)
+  // 1. FAST POLL FOR STOP SIGNAL (every 500ms)
+  static unsigned long lastStopCheck = 0;
+  if (currentMillis - lastStopCheck >= 500) {
+    lastStopCheck = currentMillis;
+    if (Firebase.ready() && devicePath != "") {
+      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
+        if (fbdo.boolData() == true) {
+          isStopped = true;
+          isPreviewing = false;
+          playTonePattern(0, 0, 0, true);
+          currentAlarmState = IDLE;
+
+          // Clear flags immediately
+          Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false);
+          Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");
+          Serial.println("Alarm Stopped via Mobile (Fast Poll)");
+        }
+      }
+    }
+  }
+
+  // 2. CHECK FOR FACTORY RESET (every 1 second)
   static unsigned long lastResetCheck = 0;
   if (currentMillis - lastResetCheck >= 1000) {
     lastResetCheck = currentMillis;
@@ -165,17 +186,6 @@ void syncWithFirebase(unsigned long currentMillis) {
         }
         else if (fbdo.dataType() == "int" || fbdo.dataType() == "float") {
           isManualLampOn = (fbdo.intData() > 0);
-        }
-      }
-
-      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
-        if (fbdo.boolData() == true) {
-          isStopped = true;
-          playTonePattern(0, 0, 0, true);
-
-          currentAlarmState = IDLE;
-          Firebase.RTDB.setBool(&fbdo, devicePath + "/MobileStop", false);
-          Firebase.RTDB.setString(&fbdo, devicePath + "/AlarmStatus", "IDLE");
         }
       }
 

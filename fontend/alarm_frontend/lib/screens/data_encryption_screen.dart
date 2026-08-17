@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/security_overview_card.dart';
 import 'package:alarm_frontend/components/custom_checkbox_tile.dart';
-import 'package:alarm_frontend/components/key_status_card.dart';
 
 class DataEncryptionScreen extends StatefulWidget {
   const DataEncryptionScreen({super.key});
@@ -12,8 +11,6 @@ class DataEncryptionScreen extends StatefulWidget {
 }
 
 class _DataEncryptionScreenState extends State<DataEncryptionScreen> {
-  final TextEditingController _passphraseController = TextEditingController();
-  bool _isUpdating = false;
   final List<String> _encryptedTypes = [
     'Sleep Analytics',
     'Motion Logs',
@@ -26,18 +23,6 @@ class _DataEncryptionScreenState extends State<DataEncryptionScreen> {
   void initState() {
     super.initState();
     _encryptedChecked = List.filled(_encryptedTypes.length, true);
-  }
-
-  Future<void> _onUpdatePassphrase() async {
-    setState(() => _isUpdating = true);
-    await Future.delayed(const Duration(seconds: 1));
-    if (mounted) setState(() => _isUpdating = false);
-  }
-
-  @override
-  void dispose() {
-    _passphraseController.dispose();
-    super.dispose();
   }
 
   @override
@@ -80,18 +65,13 @@ class _DataEncryptionScreenState extends State<DataEncryptionScreen> {
                   return CustomCheckboxTile(
                     label: _encryptedTypes[i],
                     isChecked: _encryptedChecked[i],
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     onChanged: (val) =>
                         setState(() => _encryptedChecked[i] = val),
                   );
                 }),
               ],
             ),
-          ),
-          const SizedBox(height: 16),
-          KeyStatusCard(
-            controller: _passphraseController,
-            isUpdating: _isUpdating,
-            onUpdatePassphrase: _onUpdatePassphrase,
           ),
           const SizedBox(height: 24),
         ],

@@ -18,7 +18,7 @@ class CustomCheckboxTile extends StatelessWidget {
     this.size = 20.0,
     this.borderRadius = 4.0,
     this.fontSize = 14.0,
-    this.padding = const EdgeInsets.only(bottom: 10),
+    this.padding = EdgeInsets.zero,
   });
 
   @override

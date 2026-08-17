@@ -14,29 +14,45 @@ class AlarmRingingScreen extends StatelessWidget {
     required this.hiddenUid,
   });
 
-  void _stopAlarm() {
-    FirebaseDatabase.instance
-        .ref()
-        .child('Users')
-        .child(hiddenUid)
-        .child('Devices')
-        .child(macAddress)
-        .update({'MobileStop': true, 'AlarmStatus': 'IDLE'});
+  void _stopAlarm() async {
+    try {
+      await FirebaseDatabase.instance
+          .ref()
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .child(macAddress)
+          .update({
+            'MobileStop': true, 
+            'AlarmStatus': 'IDLE',
+            'LastStopAt': ServerValue.timestamp,
+          });
+    } catch (e) {
+      debugPrint("Error stopping alarm: $e");
+    }
   }
 
   void _snoozeAlarm() async {
-    final ref = FirebaseDatabase.instance
-        .ref()
-        .child('Users')
-        .child(hiddenUid)
-        .child('Devices')
-        .child(macAddress);
+    try {
+      final ref = FirebaseDatabase.instance
+          .ref()
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .child(macAddress);
 
-    DateTime now = DateTime.now();
-    DateTime snoozeTime = now.add(const Duration(minutes: 5));
-    String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
+      DateTime now = DateTime.now();
+      DateTime snoozeTime = now.add(const Duration(minutes: 5));
+      String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
 
-    await ref.update({'SnoozeUntil': snoozeTimeStr, 'AlarmStatus': 'SNOOZE'});
+      await ref.update({
+        'SnoozeUntil': snoozeTimeStr, 
+        'AlarmStatus': 'SNOOZE',
+        'MobileStop': true, // Also stop the current ringing
+      });
+    } catch (e) {
+      debugPrint("Error snoozing alarm: $e");
+    }
   }
 
   @override

@@ -42,6 +42,9 @@ class _ClearHistoryScreenState extends State<ClearHistoryScreen> {
           _checked[i] = false;
         }
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selected history cleared successfully')),
+      );
     }
   }
 
@@ -60,88 +63,104 @@ class _ClearHistoryScreenState extends State<ClearHistoryScreen> {
         title: const Text('Clear History', style: AppTextStyles.heading),
         titleSpacing: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+      body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 16),
-            const InfoCard(
-              title: 'History Management',
-              description:
-                  'Manage and remove stored activity data\nfrom your account',
-            ),
-            const SizedBox(height: 14),
-            Container(
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: theme.dividerColor),
-              ),
-              child: Column(
-                children: List.generate(_historyItems.length, (i) {
-                  return Column(
-                    children: [
-                      CustomCheckboxTile(
-                        label: _historyItems[i],
-                        isChecked: _checked[i],
-                        onChanged: (val) => setState(() => _checked[i] = val),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    const InfoCard(
+                      title: 'History Management',
+                      description:
+                          'Manage and remove stored activity data from your account',
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: theme.dividerColor),
                       ),
-                      if (i != _historyItems.length - 1)
-                        Divider(
-                          height: 1,
-                          color: theme.dividerColor,
-                          indent: 16,
-                          endIndent: 16,
-                        ),
-                    ],
-                  );
-                }),
+                      child: Column(
+                        children: List.generate(_historyItems.length, (i) {
+                          return Column(
+                            children: [
+                              CustomCheckboxTile(
+                                label: _historyItems[i],
+                                isChecked: _checked[i],
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
+                                onChanged:
+                                    (val) => setState(() => _checked[i] = val),
+                              ),
+                              if (i != _historyItems.length - 1)
+                                Divider(
+                                  height: 1,
+                                  color: theme.dividerColor,
+                                  indent: 16,
+                                  endIndent: 16,
+                                ),
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const WarningCard(
+                      title: 'Warning:',
+                      description:
+                          'Cleaning history will permanently remove selected records from our systems.',
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            const WarningCard(
-              title: 'Warning:',
-              description:
-                  'Cleaning history will permanently remove\nselected records',
-            ),
-            const Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.cardColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          side: BorderSide(color: theme.dividerColor),
+                          elevation: 0,
                         ),
-                        side: BorderSide(color: theme.dividerColor),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: theme.textTheme.bodyLarge?.color,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: theme.textTheme.bodyLarge?.color,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: PrimaryButton(
-                    text: 'Clear Selected',
-                    isLoading: _isClearing,
-                    onPressed: _anySelected ? _onClearSelected : () {},
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: PrimaryButton(
+                      text: 'Clear Selected',
+                      isLoading: _isClearing,
+                      onPressed: _anySelected ? _onClearSelected : () {},
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 24),
           ],
         ),
       ),

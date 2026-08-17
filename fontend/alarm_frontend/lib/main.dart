@@ -18,6 +18,7 @@ import 'package:alarm_frontend/services/background_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription? _alarmSubscription;
   String? _currentMac;
   bool _isAlarmShowing = false;
+  DateTime? _lastDismissedTime;
 
   @override
   void initState() {
@@ -116,11 +118,20 @@ class _MyAppState extends State<MyApp> {
                 .onValue
                 .listen((event) {
                   final status = event.snapshot.value?.toString();
+
                   if (status == 'RINGING' && !_isAlarmShowing) {
+                    final now = DateTime.now();
+                    if (_lastDismissedTime != null &&
+                        now.difference(_lastDismissedTime!).inSeconds < 5) {
+                      debugPrint("Alarm RINGING ignored due to cooldown");
+                      return;
+                    }
+
                     _showAlarmOverlay(hiddenUid, _currentMac!);
                     NotificationService().showInstantNotification(
                       title: "Alarm Ringing!",
                       body: "Your Bedside Hub is ringing. Tap to stop or snooze.",
+                      isAlarm: true,
                     );
                   } else if (status != 'RINGING' && _isAlarmShowing) {
                     _hideAlarmOverlay();
@@ -133,19 +144,32 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _showAlarmOverlay(String uid, String mac) {
+    if (_isAlarmShowing) return;
     _isAlarmShowing = true;
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
+        settings: const RouteSettings(name: 'alarm_ringing'),
         builder: (_) => AlarmRingingScreen(macAddress: mac, hiddenUid: uid),
       ),
-    );
+    ).then((_) {
+      if (mounted) {
+        setState(() => _isAlarmShowing = false);
+      }
+    });
   }
 
   void _hideAlarmOverlay() {
-    _isAlarmShowing = false;
-    if (_navigatorKey.currentState?.canPop() ?? false) {
-      _navigatorKey.currentState?.pop();
-    }
+    if (!_isAlarmShowing) return;
+    
+    _lastDismissedTime = DateTime.now();
+    _navigatorKey.currentState?.popUntil((route) {
+      // Pop until we find a route that is NOT the alarm screen
+      return route.settings.name != 'alarm_ringing';
+    });
+    
+    setState(() {
+      _isAlarmShowing = false;
+    });
   }
 
   @override

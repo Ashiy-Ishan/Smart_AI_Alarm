@@ -18,6 +18,7 @@ extern int selectedTone;
 
 extern bool isMenuMode;
 extern bool isStopped;
+extern bool isPreviewing;
 extern bool wokeUpFlagPushed;
 extern int buttonPressedLog;
 

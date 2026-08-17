@@ -43,7 +43,6 @@ unsigned long stateTimer = 0;
 unsigned long btnPressTime = 0;
 bool btnIsPressed = false;
 bool longPressTriggered = false;
-unsigned long previewEndTime = 0;
 bool isPreviewing = false;
 
 bool isResetPending = false;
@@ -142,10 +141,8 @@ else
   }
 
   // 2. CLOUD SYNCING
-  if (!isMenuMode) {
-    syncWithFirebase(currentMillis);
-    syncWithAtlas(currentMillis);
-  }
+  syncWithFirebase(currentMillis);
+  syncWithAtlas(currentMillis);
 
   // 3. (REMOVED AUTOMATIC LAMP SHUTOFF)
 
@@ -172,9 +169,6 @@ else
         isMenuMode = true;
         isStopped = true; 
         currentAlarmState = IDLE;
-
-        isPreviewing = true;
-        previewEndTime = currentMillis + 4000; 
       }
     }
   } 
@@ -208,10 +202,19 @@ else
           } 
           else if (multiPressCount == 1) { 
             if (isMenuMode) {
-              selectedTone++;
-              if (selectedTone > 2) selectedTone = 0; // Updated for 3 tones (0, 1, 2)
-              isPreviewing = true;
-              previewEndTime = currentMillis + 4000; 
+              if (isPreviewing) {
+                // STOP Preview if it's currently playing
+                isPreviewing = false;
+                playTonePattern(0, 0, 0, true);
+                Serial.println("Sound Preview Stopped by Button");
+              } else {
+                // START Preview with next tone
+                selectedTone++;
+                if (selectedTone > 2) selectedTone = 0;
+                isPreviewing = true;
+                Serial.print("Sound Preview Started: Tone ");
+                Serial.println(selectedTone);
+              }
             } 
             else {
               // ALARM STOP LOGIC
@@ -252,11 +255,10 @@ else
 
   // 6. ALARM TIMING LOGIC
   if (isMenuMode) {
-    if (currentMillis < previewEndTime) {
+    if (isPreviewing) {
        playTonePattern(selectedTone, currentMillis, soundLevel, false); 
-    } else if (isPreviewing) {
+    } else {
        playTonePattern(0, 0, 0, true); 
-       isPreviewing = false;
     }
   } 
   else {
