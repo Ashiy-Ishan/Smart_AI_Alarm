@@ -46,3 +46,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# dotenv environment variables file
+.env
+
+#editors file
+.idea
+.claude
+.agents
+.idea
+.vscode
+__pycache__
