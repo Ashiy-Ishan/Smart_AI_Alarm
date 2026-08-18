@@ -86,7 +86,7 @@ class NotificationService {
       await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
       const AndroidInitializationSettings androidInit =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('@drawable/ic_stat_alarm');
       const DarwinInitializationSettings iosInit =
           DarwinInitializationSettings();
       const InitializationSettings initSettings = InitializationSettings(
@@ -158,7 +158,7 @@ class NotificationService {
           priority: Priority.high,
           fullScreenIntent: isAlarm,
           category: isAlarm ? AndroidNotificationCategory.alarm : null,
-          icon: '@mipmap/ic_launcher',
+          icon: '@drawable/ic_stat_alarm',
           actions: actions,
         );
 
@@ -273,7 +273,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           showWhen: true,
-          icon: '@mipmap/ic_launcher', // Explicitly set the small icon
+          icon: '@drawable/ic_stat_alarm', // Explicitly set the small icon
           actions: androidActions,
         );
 

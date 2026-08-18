@@ -149,7 +149,7 @@ void onStart(ServiceInstance service) async {
                         android: AndroidNotificationDetails(
                           'alarm_background_service',
                           'Alarm Service',
-                          icon: '@mipmap/ic_launcher',
+                          icon: '@drawable/ic_stat_alarm',
                           ongoing: true,
                         ),
                       ),
@@ -163,7 +163,7 @@ void onStart(ServiceInstance service) async {
                         android: AndroidNotificationDetails(
                           'alarm_background_service',
                           'Alarm Service',
-                          icon: '@mipmap/ic_launcher',
+                          icon: '@drawable/ic_stat_alarm',
                           ongoing: true,
                         ),
                       ),
