@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "SoundEngine.h"
 #include "DisplayUI.h"
+#include "DeviceMemory.h"
 
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -30,7 +31,7 @@ void setupNetworkAndTime() {
   int dotCount = 0;
   int wifiTimeout = 0;
 
-  while (WiFi.status() != WL_CONNECTED && wifiTimeout < 60) {
+  while (WiFi.status() != WL_CONNECTED && wifiTimeout < 20) {
     String dots = "";
     for(int i = 0; i < dotCount; i++) dots += ".";
     drawBootScreen("Connecting WiFi" + dots);
@@ -85,8 +86,7 @@ void syncWithFirebase(unsigned long currentMillis) {
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
         if (fbdo.boolData() == true) {
           isStopped = true;
-          isPreviewing = false;
-          playTonePattern(0, 0, 0, true);
+          playTonePattern(0, true);
           currentAlarmState = IDLE;
 
           // Clear flags immediately
@@ -105,19 +105,12 @@ void syncWithFirebase(unsigned long currentMillis) {
     if (Firebase.ready() && devicePath != "") {
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
         if (fbdo.boolData() == true) {
-          if (!isResetPending) {
-            isResetPending = true;
-            resetPendingStartTime = millis();
-            resetConfirmPresses = 0;
-            multiPressCount = 0;
-            playTonePattern(0, 0, 0, true);
-            Serial.println("Remote Factory Reset Triggered!");
-          }
-        } else {
-          if (isResetPending) {
-             isResetPending = false;
-             Serial.println("Remote Factory Reset Cancelled!");
-          }
+          playTonePattern(0, true);
+          drawBootScreen("FACTORY RESET...");
+          deleteDeviceNode();
+          factoryReset();
+          delay(2000);
+          ESP.restart();
         }
       }
     }
@@ -132,8 +125,6 @@ void syncWithFirebase(unsigned long currentMillis) {
           if (fbdo.dataType() == "null") {
             FirebaseJson defaultAppKeys;
             defaultAppKeys.set("AlarmTime", "07:00");     
-            defaultAppKeys.set("SoundLevel", 5);          
-            defaultAppKeys.set("SelectedTone", 1); // Default to Tech Sound Track (Index 1)
             defaultAppKeys.set("ManualLamp", false);
             defaultAppKeys.set("MobileStop", false);      
 
@@ -170,14 +161,6 @@ void syncWithFirebase(unsigned long currentMillis) {
         if (fbdo.dataType() != "null") lightStatus = fbdo.stringData();
       }
 
-      if (Firebase.RTDB.get(&fbdo, devicePath + "/SoundLevel")) {
-        soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData();
-      }
-
-      if (Firebase.RTDB.get(&fbdo, devicePath + "/SelectedTone")) {
-        selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData();
-      }
-
       if (Firebase.RTDB.get(&fbdo, devicePath + "/ManualLamp")) {
         if (fbdo.dataType() == "string") {
           String val = fbdo.stringData();
@@ -196,30 +179,12 @@ void syncWithFirebase(unsigned long currentMillis) {
       if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmStatus")) {
         if (fbdo.stringData() == "IDLE" && currentAlarmState == RINGING) {
            isStopped = true;
-           playTonePattern(0, 0, 0, true);
+           playTonePattern(0, true);
            currentAlarmState = IDLE;
         }
       }
 
-      // REMOTE FACTORY RESET LOGIC
-      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
-        if (fbdo.boolData() == true) {
-          if (!isResetPending) {
-            isResetPending = true;
-            resetPendingStartTime = millis();
-            resetConfirmPresses = 0;
-            multiPressCount = 0;
-            playTonePattern(0, 0, 0, true); // Stop any noise
-            Serial.println("Remote Factory Reset Triggered!");
-          }
-        } else {
-          // If flag is set to false from cloud, cancel pending reset if it was a remote one
-          if (isResetPending) {
-             isResetPending = false;
-             Serial.println("Remote Factory Reset Cancelled!");
-          }
-        }
-      }
+      // Remote Factory Reset logic moved to fast poll above
     }
   }
 }

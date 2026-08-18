@@ -78,24 +78,13 @@ class _MyAppState extends State<MyApp> {
     _setupAlarmListener();
   }
 
-  String _getHiddenUid(String email) {
-    String prefix = email
-        .split('@')
-        .first
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
-        .toLowerCase();
-    String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4
-        ? hash.substring(hash.length - 4)
-        : hash.padLeft(4, '0');
-    return "user_${prefix}_$suffix";
-  }
+
 
   void _setupAlarmListener() {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       _alarmSubscription?.cancel();
-      if (user != null && user.email != null) {
-        final hiddenUid = _getHiddenUid(user.email!);
+      if (user != null) {
+        final hiddenUid = user.uid;
 
         final devicesSnapshot = await FirebaseDatabase.instance
             .ref()

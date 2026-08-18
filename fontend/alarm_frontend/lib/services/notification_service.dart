@@ -4,9 +4,61 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:alarm_frontend/models/notification_history_model.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+@pragma('vm:entry-point')
+void onDidReceiveBackgroundNotificationResponse(NotificationResponse response) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env");
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint("Background Firebase Init failed: $e");
+  }
+
+  final String? actionId = response.actionId;
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+  final hiddenUid = user.uid;
+  final devicesSnapshot = await FirebaseDatabase.instance
+      .ref()
+      .child('Users')
+      .child(hiddenUid)
+      .child('Devices')
+      .get();
+
+  if (devicesSnapshot.exists) {
+    final devices = devicesSnapshot.value as Map<dynamic, dynamic>;
+    if (devices.isEmpty) return;
+    final mac = devices.keys.first.toString();
+    final ref = FirebaseDatabase.instance
+        .ref()
+        .child('Users')
+        .child(hiddenUid)
+        .child('Devices')
+        .child(mac);
+
+    if (actionId == 'stop_action') {
+      await ref.update({
+        'MobileStop': true,
+        'AlarmStatus': 'IDLE',
+        'LastStopAt': ServerValue.timestamp,
+      });
+    } else if (actionId == 'snooze_action') {
+      String snoozeTimeStr = DateFormat("HH:mm").format(DateTime.now().add(const Duration(minutes: 5)));
+      await ref.update({
+        'SnoozeUntil': snoozeTimeStr,
+        'AlarmStatus': 'SNOOZE',
+        'MobileStop': true,
+      });
+    }
+  }
+}
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -30,7 +82,7 @@ class NotificationService {
       await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
       const AndroidInitializationSettings androidInit =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('ic_launcher');
       const DarwinInitializationSettings iosInit =
           DarwinInitializationSettings();
       const InitializationSettings initSettings = InitializationSettings(
@@ -41,6 +93,7 @@ class NotificationService {
       await _localNotifications.initialize(
         settings: initSettings,
         onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
+        onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
       );
 
       await _localNotifications
@@ -100,7 +153,7 @@ class NotificationService {
           priority: Priority.high,
           fullScreenIntent: isAlarm,
           category: isAlarm ? AndroidNotificationCategory.alarm : null,
-          icon: '@mipmap/ic_launcher',
+          icon: 'ic_launcher',
           actions: actions,
         );
 
@@ -154,9 +207,8 @@ class NotificationService {
   void _onDidReceiveNotificationResponse(NotificationResponse response) async {
     final String? actionId = response.actionId;
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.email == null) return;
-
-    final hiddenUid = _getHiddenUid(user.email!);
+    if (user == null) return;
+    final hiddenUid = user.uid;
     final devicesSnapshot = await FirebaseDatabase.instance
         .ref()
         .child('Users')
@@ -194,18 +246,7 @@ class NotificationService {
     }
   }
 
-  String _getHiddenUid(String email) {
-    String prefix = email
-        .split('@')
-        .first
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
-        .toLowerCase();
-    String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4
-        ? hash.substring(hash.length - 4)
-        : hash.padLeft(4, '0');
-    return "user_${prefix}_$suffix";
-  }
+
 
   void _showLocalNotification(RemoteMessage message) async {
     final List<AndroidNotificationAction> androidActions = [
@@ -229,7 +270,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           showWhen: true,
-          icon: '@mipmap/ic_launcher', // Explicitly set the small icon
+          icon: 'ic_launcher', // Explicitly set the small icon
           actions: androidActions,
         );
 

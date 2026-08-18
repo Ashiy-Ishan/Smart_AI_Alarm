@@ -14,9 +14,10 @@ class AlarmRingingScreen extends StatelessWidget {
     required this.hiddenUid,
   });
 
-  void _stopAlarm() async {
+  void _stopAlarm(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.settings.name != 'alarm_ringing');
     try {
-      await FirebaseDatabase.instance
+      FirebaseDatabase.instance
           .ref()
           .child('Users')
           .child(hiddenUid)
@@ -32,7 +33,8 @@ class AlarmRingingScreen extends StatelessWidget {
     }
   }
 
-  void _snoozeAlarm() async {
+  void _snoozeAlarm(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.settings.name != 'alarm_ringing');
     try {
       final ref = FirebaseDatabase.instance
           .ref()
@@ -45,7 +47,7 @@ class AlarmRingingScreen extends StatelessWidget {
       DateTime snoozeTime = now.add(const Duration(minutes: 5));
       String snoozeTimeStr = DateFormat("HH:mm").format(snoozeTime);
 
-      await ref.update({
+      ref.update({
         'SnoozeUntil': snoozeTimeStr, 
         'AlarmStatus': 'SNOOZE',
         'MobileStop': true, // Also stop the current ringing
@@ -109,7 +111,7 @@ class AlarmRingingScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _snoozeAlarm,
+                        onPressed: () => _snoozeAlarm(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.cardColor,
                           foregroundColor: theme.textTheme.bodyLarge?.color,
@@ -132,7 +134,7 @@ class AlarmRingingScreen extends StatelessWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _stopAlarm,
+                        onPressed: () => _stopAlarm(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.black,

@@ -68,29 +68,7 @@ void renderMainScreen() {
     display.print("s");
   } 
   
-  // 2. THE SOUND SELECTION MENU
-  else if (isMenuMode) {
-    display.setTextSize(1);
-    display.setCursor(15, 5);
-    display.print("--- SOUND MENU ---");
-    
-    display.setTextSize(2);
-    String toneName = "";
-    if (selectedTone == 0) toneName = "1: GENTLE";
-    else if (selectedTone == 1) toneName = "2: TECH";
-    else toneName = "3: AGENT";
-    
-    int16_t x1, y1; uint16_t w, h;
-    display.getTextBounds(toneName, 0, 0, &x1, &y1, &w, &h);
-    display.setCursor((128 - w) / 2, 25);
-    display.print(toneName);
-
-    display.setTextSize(1);
-    display.setCursor(20, 50);
-    display.print("Hold 5s to Save");
-  } 
-  
-  // 3. THE NORMAL CLOCK DASHBOARD
+  // 2. THE NORMAL CLOCK DASHBOARD
   else {
     if (currentAlarmState == RINGING) {
       display.setTextSize(2);

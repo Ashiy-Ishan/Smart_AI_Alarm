@@ -87,6 +87,7 @@ void onStart(ServiceInstance service) async {
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         final prefs = await SharedPreferences.getInstance();
+        await prefs.reload();
         final bool monitorMeetings = prefs.getBool('notif_meetings') ?? true;
 
         if (monitorMeetings) {

@@ -207,16 +207,19 @@ class _ScheduleScreenState extends State<ScheduleScreen>
 
   MeetingStatus _detectMeetingStatus(String text) {
     final lowerText = text.toLowerCase();
-    if (lowerText.contains('cancel') || lowerText.contains('postpone'))
+    if (lowerText.contains('cancel') || lowerText.contains('postpone')) {
       return MeetingStatus.canceled;
+    }
     if (lowerText.contains('update') ||
         lowerText.contains('reschedule') ||
-        lowerText.contains('changed'))
+        lowerText.contains('changed')) {
       return MeetingStatus.updated;
+    }
     if (lowerText.contains('schedule') ||
         lowerText.contains('invite') ||
-        lowerText.contains('confirm'))
+        lowerText.contains('confirm')) {
       return MeetingStatus.scheduled;
+    }
     return MeetingStatus.unknown;
   }
 

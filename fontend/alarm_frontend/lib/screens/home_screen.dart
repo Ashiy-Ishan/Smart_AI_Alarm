@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen>
           final next = events.firstWhere(
             (e) {
               final end = e.end?.dateTime?.toLocal() ??
-                  e.end?.date?.toLocal()?.add(const Duration(days: 1));
+                  e.end?.date?.toLocal().add(const Duration(days: 1));
               return end == null || end.isAfter(now);
             },
             orElse: () => events.first,
@@ -352,28 +352,13 @@ class _HomeScreenState extends State<HomeScreen>
   // DEVICE LISTENER
   // =========================================================
 
-  String _getHiddenUid(String email) {
-    final prefix = email
-        .split('@')
-        .first
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
-        .toLowerCase();
 
-    final hash = email.hashCode.abs().toString();
-
-    final suffix = hash.length > 4
-        ? hash.substring(hash.length - 4)
-        : hash.padLeft(4, '0');
-
-    return 'user_${prefix}_$suffix';
-  }
 
   void _setupDeviceListener() {
-    final email = FirebaseAuth.instance.currentUser?.email ?? '';
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-    if (email.isEmpty) return;
-
-    _hiddenUid = _getHiddenUid(email);
+    _hiddenUid = user.uid;
 
     _deviceSubscription = _rtdb
         .ref()
@@ -592,7 +577,7 @@ class _HomeScreenState extends State<HomeScreen>
 
               fit: BoxFit.contain,
 
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return Lottie.asset('assets/lotties/home.json');
               },
             ),

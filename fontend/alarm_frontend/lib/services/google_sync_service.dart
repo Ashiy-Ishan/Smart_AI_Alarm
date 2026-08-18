@@ -4,7 +4,7 @@ import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:alarm_frontend/models/agenda_model.dart';
 import 'package:alarm_frontend/services/notification_service.dart';
@@ -87,10 +87,10 @@ class GoogleSyncService {
       await _googleSignIn.signOut();
       _cachedAccount = null;
       _authenticatedClient = null;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('cached_priority_emails');
-      await prefs.remove('cached_agenda_events');
-      await prefs.remove('cached_unified_agenda');
+      const storage = FlutterSecureStorage();
+      await storage.delete(key: 'cached_priority_emails');
+      await storage.delete(key: 'cached_agenda_events');
+      await storage.delete(key: 'cached_unified_agenda');
     } catch (error, stackTrace) {
       _logger.e(
         'Failed to unlink Google account',
@@ -213,7 +213,7 @@ class GoogleSyncService {
   }
 
   Future<void> saveUnifiedAgenda(List<AgendaModel> agenda) async {
-    final prefs = await SharedPreferences.getInstance();
+    const storage = FlutterSecureStorage();
 
     final List<AgendaModel> oldAgenda = await getCachedUnifiedAgenda();
     for (var newItem in agenda) {
@@ -229,13 +229,14 @@ class GoogleSyncService {
     }
 
     final List<String> data = agenda.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('cached_unified_agenda', data);
+    await storage.write(key: 'cached_unified_agenda', value: jsonEncode(data));
   }
 
   Future<List<AgendaModel>> getCachedUnifiedAgenda() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final list = prefs.getStringList('cached_unified_agenda') ?? [];
+      const storage = FlutterSecureStorage();
+      final jsonStr = await storage.read(key: 'cached_unified_agenda');
+      final list = jsonStr != null ? List<String>.from(jsonDecode(jsonStr)) : <String>[];
       return list.map((s) => AgendaModel.fromJson(jsonDecode(s))).toList();
     } catch (e) {
       return [];
@@ -244,8 +245,9 @@ class GoogleSyncService {
 
   Future<List<Map<String, dynamic>>> getCachedEmails() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final list = prefs.getStringList('cached_priority_emails') ?? [];
+      const storage = FlutterSecureStorage();
+      final jsonStr = await storage.read(key: 'cached_priority_emails');
+      final list = jsonStr != null ? List<String>.from(jsonDecode(jsonStr)) : <String>[];
       return list.map((s) => jsonDecode(s) as Map<String, dynamic>).toList();
     } catch (e) {
       return [];
@@ -255,8 +257,9 @@ class GoogleSyncService {
   // RESTORED: Required by Calendar Screen
   Future<List<Event>> getCachedEvents() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final list = prefs.getStringList('cached_agenda_events') ?? [];
+      const storage = FlutterSecureStorage();
+      final jsonStr = await storage.read(key: 'cached_agenda_events');
+      final list = jsonStr != null ? List<String>.from(jsonDecode(jsonStr)) : <String>[];
       return list.map((s) => Event.fromJson(jsonDecode(s))).toList();
     } catch (e) {
       return [];
@@ -264,15 +267,15 @@ class GoogleSyncService {
   }
 
   Future<void> _cacheAgendaEvents(List<Event> events) async {
-    final prefs = await SharedPreferences.getInstance();
+    const storage = FlutterSecureStorage();
     final List<String> data = events.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('cached_agenda_events', data);
+    await storage.write(key: 'cached_agenda_events', value: jsonEncode(data));
   }
 
   Future<void> _cachePriorityEmails(List<Message> emails) async {
-    final prefs = await SharedPreferences.getInstance();
+    const storage = FlutterSecureStorage();
     final List<String> data = emails.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('cached_priority_emails', data);
+    await storage.write(key: 'cached_priority_emails', value: jsonEncode(data));
   }
 
   Future<void> signOut() async {
