@@ -116,7 +116,7 @@ void syncWithFirebase(unsigned long currentMillis) {
     }
   }
 
-  if (currentMillis - lastFirebaseSync >= 5000) {
+  if (currentMillis - lastFirebaseSync >= 500) {
     lastFirebaseSync = currentMillis;
     
     if (Firebase.ready() && devicePath != "") {
