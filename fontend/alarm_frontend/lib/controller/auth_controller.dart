@@ -11,17 +11,18 @@ class AuthController {
     "https://www.googleapis.com/auth/contacts.readonly",
   ];
 
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: _requiredScopes,
+  );
+
   static Future<User?> signInWithGoogle() async {
     try {
-      final googleSignIn = GoogleSignIn.instance;
-      await googleSignIn.initialize();
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null;
 
-      final googleUser = await googleSignIn.authenticate();
-
-      await googleUser.authorizationClient.authorizeScopes(_requiredScopes);
-
-      final googleAuth = googleUser.authentication;
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -80,7 +81,7 @@ class AuthController {
   static Future<void> signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-      await GoogleSignIn.instance.signOut();
+      await _googleSignIn.signOut();
     } catch (e) {
       Logger().e(e);
     }

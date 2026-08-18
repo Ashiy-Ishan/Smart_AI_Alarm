@@ -20,21 +20,29 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkAuthStatus();
   }
 
+  bool _redirected = false;
+
   // fast redirect if already logged in
-  void _checkAuthStatus() async {
+  void _checkAuthStatus() {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    // Wait until Firebase auth state is fully loaded from disk
-    while (!userProvider.isInitialized) {
-      if (!mounted) return;
-      await Future.delayed(const Duration(milliseconds: 100));
+    void checkAndRedirect() {
+      if (userProvider.isAuthenticated && mounted && !_redirected) {
+        _redirected = true;
+        // Prevent multiple pushes if listener fires again
+        Navigator.pushReplacementNamed(context, AppRoutes.main);
+      }
     }
 
-    if (!mounted) return;
-
-    if (userProvider.isAuthenticated) {
-      Navigator.pushReplacementNamed(context, AppRoutes.main);
+    if (userProvider.isInitialized) {
+      checkAndRedirect();
     }
+    
+    userProvider.addListener(() {
+      if (mounted && userProvider.isInitialized) {
+        checkAndRedirect();
+      }
+    });
   }
 
   @override
@@ -91,34 +99,42 @@ class _SplashScreenState extends State<SplashScreen> {
                         ],
                       ),
 
-                      Column(
-                        children: [
-                          PrimaryButton(
-                            text: 'Get Started',
-                            onPressed: () =>
-                                Navigator.pushNamed(context, AppRoutes.auth),
+                      if (!userProvider.isInitialized)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 64.0),
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                           ),
-                          const SizedBox(height: 32),
-                          Text(
-                            'SUSL POWERED',
-                            style: TextStyle(
-                              color:
-                                  theme.textTheme.bodyMedium?.color?.withValues(
-                                    alpha: 0.5,
-                                  ) ??
-                                  AppColors.textSecondary,
-                              fontSize: 12,
-                              letterSpacing: 2.0,
-                              fontWeight: FontWeight.w600,
+                        )
+                      else
+                        Column(
+                          children: [
+                            PrimaryButton(
+                              text: 'Get Started',
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, AppRoutes.auth),
                             ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).padding.bottom > 0
-                                ? 10
-                                : 20,
-                          ),
-                        ],
-                      ),
+                            const SizedBox(height: 32),
+                            Text(
+                              'SUSL POWERED',
+                              style: TextStyle(
+                                color:
+                                    theme.textTheme.bodyMedium?.color?.withValues(
+                                      alpha: 0.5,
+                                    ) ??
+                                    AppColors.textSecondary,
+                                fontSize: 12,
+                                letterSpacing: 2.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).padding.bottom > 0
+                                  ? 10
+                                  : 20,
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ),

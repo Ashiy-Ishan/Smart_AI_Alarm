@@ -73,6 +73,10 @@ void onStart(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    // Delay initialization to prevent SharedPreferences race conditions with the main isolate
+    // which causes Firebase Auth to fail reading the session and silently log the user out!
+    await Future.delayed(const Duration(seconds: 2));
+    
     await dotenv.load(fileName: ".env");
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

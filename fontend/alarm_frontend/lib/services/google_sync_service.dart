@@ -14,7 +14,13 @@ class GoogleSyncService {
   static final Logger _logger = Logger();
   factory GoogleSyncService() => _instance;
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  static const List<String> _scopes = [
+    CalendarApi.calendarReadonlyScope,
+    GmailApi.gmailReadonlyScope,
+    "https://www.googleapis.com/auth/contacts.readonly",
+  ];
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: _scopes);
   GoogleSignInAccount? _cachedAccount;
   http.Client? _authenticatedClient;
   bool _isInitialized = false;
@@ -24,8 +30,7 @@ class GoogleSyncService {
   Future<void> _ensureInitialized() async {
     if (_isInitialized && _cachedAccount != null) return;
     try {
-      await _googleSignIn.initialize();
-      _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
+      _cachedAccount = await _googleSignIn.signInSilently();
       _isInitialized = true;
     } catch (error, stackTrace) {
       _logger.e(
@@ -36,25 +41,15 @@ class GoogleSyncService {
     }
   }
 
-  final List<String> _scopes = [
-    CalendarApi.calendarReadonlyScope,
-    GmailApi.gmailReadonlyScope,
-    "https://www.googleapis.com/auth/contacts.readonly",
-  ];
-
   Future<bool> isLinked() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return false;
 
       await _ensureInitialized();
-      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
-
       if (_cachedAccount == null) return false;
 
-      // verify that we have the required permissions
-      final authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      return authz?.accessToken != null;
+      return true;
     } catch (e) {
       return false;
     }
@@ -63,13 +58,8 @@ class GoogleSyncService {
   Future<GoogleSignInAccount?> linkAccount() async {
     try {
       await _ensureInitialized();
-      _cachedAccount = await _googleSignIn.attemptLightweightAuthentication();
-
-      // show account picker only if totally necessary
-      _cachedAccount ??= await _googleSignIn.authenticate();
-      if (_cachedAccount != null) {
-        await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
-      }
+      
+      _cachedAccount ??= await _googleSignIn.signIn();
       _authenticatedClient = null;
       return _cachedAccount;
     } catch (error, stackTrace) {
@@ -104,19 +94,11 @@ class GoogleSyncService {
     if (_authenticatedClient != null) return _authenticatedClient;
     try {
       await _ensureInitialized();
-      _cachedAccount ??= await _googleSignIn.attemptLightweightAuthentication();
+      _cachedAccount ??= await _googleSignIn.signInSilently();
       if (_cachedAccount == null) return null;
 
-      var authz = await _cachedAccount!.authorizationClient.authorizationForScopes(_scopes);
-      if (authz?.accessToken == null) {
-        try {
-          authz = await _cachedAccount!.authorizationClient.authorizeScopes(_scopes);
-        } catch (e) {
-          return null;
-        }
-      }
-
-      final token = authz?.accessToken;
+      final auth = await _cachedAccount!.authentication;
+      final token = auth.accessToken;
       if (token == null) return null;
 
       _authenticatedClient = GoogleAuthenticatedClient(token);
