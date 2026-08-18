@@ -41,9 +41,6 @@ unsigned long stateTimer = 0;
 unsigned long btnPressTime = 0;
 bool btnIsPressed = false;
 bool longPressTriggered = false;
-bool isResetPending = false;
-unsigned long resetPendingStartTime = 0;
-int resetConfirmPresses = 0;
 int multiPressCount = 0;
 unsigned long lastMultiPressTime = 0;
 
@@ -148,7 +145,7 @@ void loop() {
 
   // 4. BUTTON LOGIC
   int btnState = digitalRead(BUTTON_PIN);
-  if (btnState == LOW) { 
+  if (btnState == LOW) { // BUTTON PRESSED
     if (!btnIsPressed) {
       btnIsPressed = true;
       btnPressTime = currentMillis; 
@@ -157,20 +154,17 @@ void loop() {
 
     unsigned long holdTime = currentMillis - btnPressTime;
 
-    if (holdTime >= 5000 && !longPressTriggered && !isResetPending) {
+    if (holdTime >= 5000 && !longPressTriggered) {
       longPressTriggered = true;
-      playTonePattern(currentMillis, true); 
-
-      if (WiFi.status() != WL_CONNECTED) {
-        drawBootScreen("FACTORY RESET...");
-        deleteDeviceNode(); // Executed locally
-        factoryReset();
-        delay(2000);
-        ESP.restart(); 
-      }
+      playTonePattern(0, true); 
+      drawBootScreen("FACTORY RESET...");
+      deleteDeviceNode();
+      factoryReset();
+      delay(2000);
+      ESP.restart(); 
     }
   } 
-  else { 
+  else { // BUTTON RELEASED
     if (btnIsPressed) {
       btnIsPressed = false;
       unsigned long pressDuration = currentMillis - btnPressTime;
@@ -187,45 +181,25 @@ void loop() {
     int count = multiPressCount;
     multiPressCount = 0;
 
-    if (isResetPending) {
-      resetConfirmPresses += count;
-      if (resetConfirmPresses >= 2) {
-        playTonePattern(0, true); 
-        drawBootScreen("FACTORY RESET...");
-        deleteDeviceNode(); // Placed here so it executes exactly when confirmed
-        factoryReset();
-        delay(2000);
-        ESP.restart(); 
-      }
-    } 
-    else {
-      if (count >= 5) {
-        isResetPending = true;
-        resetPendingStartTime = currentMillis;
-        resetConfirmPresses = 0;
-        playTonePattern(currentMillis, true); 
-      } 
-      else if (count == 1) { 
-        // ALARM STOP LOGIC
-        if (currentAlarmState == RINGING) {
-          // Signal stop to both local and mobile via Firebase key
-          stopAlarmInCloud();
-          isStopped = true;
-          currentAlarmState = IDLE;
-          playTonePattern(currentMillis, true);
+    if (count == 1) { 
+      // ALARM STOP LOGIC
+      if (currentAlarmState == RINGING) {
+        stopAlarmInCloud();
+        isStopped = true;
+        currentAlarmState = IDLE;
+        playTonePattern(0, true);
 
-          if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
-          Serial.println("Alarm Stopped by Physical Button");
-        }
+        if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
+        Serial.println("Alarm Stopped by Physical Button");
+      } 
+      else {
+        // TOGGLE LAMP LOGIC
+        isManualLampOn = !isManualLampOn;
+        // Optionally update firebase immediately
+        // Firebase.RTDB.setBoolAsync(&fbdo, devicePath + "/ManualLamp", isManualLampOn);
+        Serial.println("Lamp toggled via button");
       }
     }
-  }
-
-  // 5. RESET LOGIC (Timeout Warning)
-  // This gives the screen 15 seconds to safely show the warning before cancelling.
-  if (isResetPending && (currentMillis - resetPendingStartTime >= 15000)) {
-    isResetPending = false;
-    resetConfirmPresses = 0;
   }
 
   // 6. ALARM TIMING LOGIC

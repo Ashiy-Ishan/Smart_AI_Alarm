@@ -11,6 +11,7 @@ import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:alarm_frontend/services/notification_service.dart';
 
 class AppBackgroundService {
   static Future<void> requestOptimizationPermission() async {
@@ -76,6 +77,7 @@ void onStart(ServiceInstance service) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await NotificationService().initialize();
   } catch (e) {
     debugPrint("Background Firebase Init failed: $e");
   }
@@ -102,6 +104,7 @@ void onStart(ServiceInstance service) async {
         if (devices.isNotEmpty) {
           final mac = devices.keys.first.toString();
 
+          bool wasRinging = false;
           FirebaseDatabase.instance
               .ref()
               .child('Users')
@@ -126,6 +129,17 @@ void onStart(ServiceInstance service) async {
                     final hum = data['Humidity']?.toString() ?? '--';
                     final light = data['LightStatus']?.toString() ?? '--';
                     final status = data['AlarmStatus']?.toString() ?? 'IDLE';
+
+                    if (status == 'RINGING' && !wasRinging) {
+                      wasRinging = true;
+                      NotificationService().showInstantNotification(
+                        title: "Alarm Ringing!",
+                        body: "Your Bedside Hub is ringing. Tap to stop or snooze.",
+                        isAlarm: true,
+                      );
+                    } else if (status != 'RINGING') {
+                      wasRinging = false;
+                    }
 
                     flutterLocalNotificationsPlugin.show(
                       id: 888,

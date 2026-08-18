@@ -1,12 +1,12 @@
 #include "SoundEngine.h"
 #include "Config.h"
 
-// --- TONE: Classic Alarm Beep ---
+// --- TONE: Smooth Alarm Beep ---
 const int melody[] = {
-  1000, 0, 1000, 0, 1000, 0
+  800, 0, 800, 0, 800, 0
 };
 const int durations[] = {
-  150, 100, 150, 100, 150, 500
+  200, 100, 200, 100, 200, 600
 };
 const int arrayLength = 6;
 
