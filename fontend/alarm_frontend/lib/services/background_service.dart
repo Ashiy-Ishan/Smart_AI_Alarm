@@ -9,6 +9,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AppBackgroundService {
   static Future<void> requestOptimizationPermission() async {
@@ -80,6 +82,80 @@ void onStart(ServiceInstance service) async {
 
   service.on('stopService').listen((event) {
     service.stopSelf();
+  });
+
+  // Listen to Firebase for Real-time Device Status updates
+  bool isDeviceSubscribed = false;
+  FirebaseAuth.instance.authStateChanges().listen((user) async {
+    if (user != null && !isDeviceSubscribed) {
+      isDeviceSubscribed = true;
+      final hiddenUid = user.uid;
+      final devicesSnapshot = await FirebaseDatabase.instance
+          .ref()
+          .child('Users')
+          .child(hiddenUid)
+          .child('Devices')
+          .get();
+
+      if (devicesSnapshot.exists) {
+        final devices = devicesSnapshot.value as Map<dynamic, dynamic>;
+        if (devices.isNotEmpty) {
+          final mac = devices.keys.first.toString();
+          
+          FirebaseDatabase.instance
+              .ref()
+              .child('Users')
+              .child(hiddenUid)
+              .child('Devices')
+              .child(mac)
+              .onValue
+              .listen((event) async {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.reload();
+            final bool showDeviceStatus = prefs.getBool('notif_device_status') ?? false;
+
+            if (service is AndroidServiceInstance && await service.isForegroundService()) {
+              final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+              if (showDeviceStatus && event.snapshot.value != null) {
+                final data = event.snapshot.value as Map<dynamic, dynamic>;
+                final temp = data['Temperature']?.toString() ?? '--';
+                final hum = data['Humidity']?.toString() ?? '--';
+                final light = data['LightStatus']?.toString() ?? '--';
+                final status = data['AlarmStatus']?.toString() ?? 'IDLE';
+                
+                flutterLocalNotificationsPlugin.show(
+                  id: 888,
+                  title: 'Device Status: $status',
+                  body: 'Temp: $temp°C | Hum: $hum% | Light: $light',
+                  notificationDetails: const NotificationDetails(
+                    android: AndroidNotificationDetails(
+                      'alarm_background_service',
+                      'Alarm Service',
+                      icon: '@mipmap/ic_launcher',
+                      ongoing: true,
+                    ),
+                  ),
+                );
+              } else {
+                flutterLocalNotificationsPlugin.show(
+                  id: 888,
+                  title: 'Smart Alarm Scanner',
+                  body: 'Monitoring for important updates...',
+                  notificationDetails: const NotificationDetails(
+                    android: AndroidNotificationDetails(
+                      'alarm_background_service',
+                      'Alarm Service',
+                      icon: '@mipmap/ic_launcher',
+                      ongoing: true,
+                    ),
+                  ),
+                );
+              }
+            }
+          });
+        }
+      }
+    }
   });
 
   // Background Loop

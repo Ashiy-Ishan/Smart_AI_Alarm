@@ -15,6 +15,7 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
   bool _alarmAdjustments = true;
   bool _hardwareStatus = true;
   bool _healthInsights = false;
+  bool _persistentStatus = false;
   bool _isLoading = true;
 
   @override
@@ -30,6 +31,7 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
       _alarmAdjustments = prefs.getBool('notif_alarms') ?? true;
       _hardwareStatus = prefs.getBool('notif_hardware') ?? true;
       _healthInsights = prefs.getBool('notif_health') ?? false;
+      _persistentStatus = prefs.getBool('notif_device_status') ?? false;
       _isLoading = false;
     });
   }
@@ -106,6 +108,17 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
                 onChanged: (v) {
                   setState(() => _healthInsights = v);
                   _saveSetting('notif_health', v);
+                },
+              ),
+              const SizedBox(height: 16),
+              _buildControlCard(
+                title: "Persistent Device Status",
+                subtitle: "Show real-time Temperature, Humidity, and Light in your notification panel.",
+                icon: Icons.monitor_heart,
+                value: _persistentStatus,
+                onChanged: (v) {
+                  setState(() => _persistentStatus = v);
+                  _saveSetting('notif_device_status', v);
                 },
               ),
               const SizedBox(height: 40),
