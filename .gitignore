@@ -74,4 +74,5 @@ node_modules/
 .agents
 .idea
 .vscode
-__pycache__
+**/__pycache__/
+*.pyc

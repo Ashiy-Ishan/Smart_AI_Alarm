@@ -56,4 +56,3 @@ app.*.map.json
 .agents
 .idea
 .vscode
-__pycache__
