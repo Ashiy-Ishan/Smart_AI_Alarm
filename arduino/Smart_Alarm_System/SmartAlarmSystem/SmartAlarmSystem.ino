@@ -52,6 +52,16 @@ bool isManualLampOn = false;
 
 DHT dht(DHTPIN, DHTTYPE);
 
+volatile bool interruptStopAlarm = false;
+
+void IRAM_ATTR handleButtonInterrupt() {
+  if (currentAlarmState == RINGING) {
+    // Instantly kill buzzer hardware PWM/timer
+    noTone(SPEAKER_PIN);
+    interruptStopAlarm = true;
+  }
+}
+
 // ==========================================
 // SETUP ROUTINE
 // ==========================================
@@ -59,6 +69,8 @@ void setup() {
   Serial.begin(115200);
   
   pinMode(BUTTON_PIN, INPUT_PULLUP); 
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), handleButtonInterrupt, FALLING);
+
   pinMode(SPEAKER_PIN, OUTPUT);
   pinMode(PIR_PIN, INPUT); 
   
@@ -109,6 +121,17 @@ void loop() {
     strftime(dateStr, sizeof(dateStr), "%d/%m/%Y", &timeinfo);
   }
   
+  if (interruptStopAlarm) {
+    interruptStopAlarm = false;
+    if (currentAlarmState == RINGING) {
+      stopAlarmInCloud();
+      isStopped = true;
+      currentAlarmState = IDLE;
+      if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
+      Serial.println("Alarm Stopped instantly by Hardware Interrupt!");
+    }
+  }
+
   // 1. SENSOR READINGS
   motionDetected = digitalRead(PIR_PIN);
 

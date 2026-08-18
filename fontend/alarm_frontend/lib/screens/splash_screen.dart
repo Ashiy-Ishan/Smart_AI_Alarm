@@ -24,10 +24,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkAuthStatus() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    int attempts = 0;
-    while (!userProvider.isInitialized && attempts < 10) {
+    // Wait until Firebase auth state is fully loaded from disk
+    while (!userProvider.isInitialized) {
+      if (!mounted) return;
       await Future.delayed(const Duration(milliseconds: 100));
-      attempts++;
     }
 
     if (!mounted) return;

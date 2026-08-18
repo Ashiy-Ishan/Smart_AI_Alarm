@@ -116,7 +116,7 @@ void onStart(ServiceInstance service) async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.reload();
                 final bool showDeviceStatus =
-                    prefs.getBool('notif_device_status') ?? false;
+                    prefs.getBool('notif_device_status') ?? true;
 
                 if (service is AndroidServiceInstance &&
                     await service.isForegroundService()) {

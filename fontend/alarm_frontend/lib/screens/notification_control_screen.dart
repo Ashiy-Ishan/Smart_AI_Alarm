@@ -30,8 +30,8 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
       _meetingUpdates = prefs.getBool('notif_meetings') ?? true;
       _alarmAdjustments = prefs.getBool('notif_alarms') ?? true;
       _hardwareStatus = prefs.getBool('notif_hardware') ?? true;
-      _healthInsights = prefs.getBool('notif_health') ?? false;
-      _persistentStatus = prefs.getBool('notif_device_status') ?? false;
+      _healthInsights = prefs.getBool('notif_health') ?? true;
+      _persistentStatus = prefs.getBool('notif_device_status') ?? true;
       _isLoading = false;
     });
   }
