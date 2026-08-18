@@ -3,7 +3,7 @@
 
 // --- TONE: Classic Alarm Beep ---
 const int melody[] = {
-  2000, 0, 2000, 0, 2000, 0
+  1000, 0, 1000, 0, 1000, 0
 };
 const int durations[] = {
   150, 100, 150, 100, 150, 500
@@ -34,10 +34,9 @@ void playTonePattern(unsigned long currentMillis, bool stopTone) {
     int pitch = melody[currentNote];
     if (pitch > 0) {
       tone(SPEAKER_PIN, pitch);
+    } else {
+      noTone(SPEAKER_PIN);
     }
     isPlayingNote = true;
-  } 
-  else if (currentMillis - noteStartTime >= (noteDuration - 10)) {
-    noTone(SPEAKER_PIN);
   }
 }
