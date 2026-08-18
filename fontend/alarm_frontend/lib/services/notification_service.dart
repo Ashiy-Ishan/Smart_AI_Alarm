@@ -12,7 +12,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 @pragma('vm:entry-point')
-void onDidReceiveBackgroundNotificationResponse(NotificationResponse response) async {
+void onDidReceiveBackgroundNotificationResponse(
+  NotificationResponse response,
+) async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await dotenv.load(fileName: ".env");
@@ -50,7 +52,9 @@ void onDidReceiveBackgroundNotificationResponse(NotificationResponse response) a
         'LastStopAt': ServerValue.timestamp,
       });
     } else if (actionId == 'snooze_action') {
-      String snoozeTimeStr = DateFormat("HH:mm").format(DateTime.now().add(const Duration(minutes: 5)));
+      String snoozeTimeStr = DateFormat(
+        "HH:mm",
+      ).format(DateTime.now().add(const Duration(minutes: 5)));
       await ref.update({
         'SnoozeUntil': snoozeTimeStr,
         'AlarmStatus': 'SNOOZE',
@@ -93,7 +97,8 @@ class NotificationService {
       await _localNotifications.initialize(
         settings: initSettings,
         onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
-        onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
+        onDidReceiveBackgroundNotificationResponse:
+            onDidReceiveBackgroundNotificationResponse,
       );
 
       await _localNotifications
@@ -245,8 +250,6 @@ class NotificationService {
       }
     }
   }
-
-
 
   void _showLocalNotification(RemoteMessage message) async {
     final List<AndroidNotificationAction> androidActions = [
