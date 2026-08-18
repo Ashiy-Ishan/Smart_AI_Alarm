@@ -1,7 +1,7 @@
 #pragma once
 
 // --- 1. Cloud Database Credentials ---
-const char* const SERVER_URL = "https://lurk-scarring-improvise.ngrok-free.dev/api/data";
+const char* const SERVER_URL = "http://10.198.184.122:2000/api/data";
 #define API_KEY "AIzaSyBQlTD6zBHUBr2_aUHf4yoWkMAubsjxbak"
 #define DATABASE_URL "https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app/"
 

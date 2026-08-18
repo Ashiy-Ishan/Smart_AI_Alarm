@@ -5,6 +5,7 @@
 #include "DisplayUI.h"
 
 #include <WiFi.h>
+#include <WiFiClient.h>
 #include <HTTPClient.h>
 #include <Firebase_ESP_Client.h>
 #include "time.h"
@@ -99,22 +100,24 @@ void syncWithFirebase(unsigned long currentMillis) {
 
   // 2. CHECK FOR FACTORY RESET (every 1 second)
   static unsigned long lastResetCheck = 0;
-  if (currentMillis - lastResetCheck >= 1000) {
+  if (currentMillis - lastResetCheck >= 500) {
     lastResetCheck = currentMillis;
     if (Firebase.ready() && devicePath != "") {
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
         if (fbdo.boolData() == true) {
           if (!isResetPending) {
             isResetPending = true;
-            resetPendingStartTime = currentMillis;
+            resetPendingStartTime = millis();
             resetConfirmPresses = 0;
             multiPressCount = 0;
             playTonePattern(0, 0, 0, true);
             Serial.println("Remote Factory Reset Triggered!");
           }
-        } else if (isResetPending) {
-          isResetPending = false;
-          Serial.println("Remote Factory Reset Cancelled!");
+        } else {
+          if (isResetPending) {
+             isResetPending = false;
+             Serial.println("Remote Factory Reset Cancelled!");
+          }
         }
       }
     }
@@ -238,19 +241,51 @@ void syncWithAtlas(unsigned long currentMillis) {
   if (currentMillis - lastAtlasSync >= atlasSyncInterval) {
     lastAtlasSync = currentMillis;
     if (WiFi.status() == WL_CONNECTED) {
+      WiFiClient client;
       HTTPClient http;
-      http.begin(SERVER_URL);
-      http.setTimeout(2500); 
-      http.addHeader("Content-Type", "application/json");
-      
-      String jsonPayload = "{\"device_id\":\"" + WiFi.macAddress() + "\",\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
-      
-      int httpResponseCode = http.POST(jsonPayload);
-      if (httpResponseCode == 200) { atlasStatus = "SUCCESS"; atlasSyncInterval = 60000; } 
-      else { atlasStatus = "FAILED"; atlasSyncInterval = 5000; }
-      http.end(); 
+
+      Serial.print("Atlas Sync: Connecting to ");
+      Serial.println(SERVER_URL);
+
+      if (http.begin(client, SERVER_URL)) {
+        http.setTimeout(5000);
+        http.addHeader("Content-Type", "application/json");
+
+        String jsonPayload = "{\"device_id\":\"" + WiFi.macAddress() + "\",\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
+
+        Serial.print("Atlas Sync Payload: ");
+        Serial.println(jsonPayload);
+
+        int httpResponseCode = http.POST(jsonPayload);
+
+        if (httpResponseCode > 0) {
+          String response = http.getString();
+          Serial.print("Atlas Sync Response Code: ");
+          Serial.println(httpResponseCode);
+          Serial.println("Server Body: " + response);
+
+          if (httpResponseCode == 200) {
+            atlasStatus = "SUCCESS";
+            atlasSyncInterval = 60000;
+          } else {
+            atlasStatus = "SERVER ERR";
+            atlasSyncInterval = 10000;
+          }
+        } else {
+          Serial.print("Atlas Sync POST failed, error: ");
+          Serial.println(http.errorToString(httpResponseCode).c_str());
+          atlasStatus = "FAILED";
+          atlasSyncInterval = 5000;
+        }
+        http.end();
+      } else {
+        Serial.println("Atlas Sync: http.begin failed");
+        atlasStatus = "CONN ERR";
+        atlasSyncInterval = 5000;
+      }
     } else {
-      atlasStatus = "WIFI LOST"; atlasSyncInterval = 5000; 
+      Serial.println("Atlas Sync skipped: WiFi lost");
+      atlasStatus = "WIFI LOST"; atlasSyncInterval = 5000;
     }
   }
 }

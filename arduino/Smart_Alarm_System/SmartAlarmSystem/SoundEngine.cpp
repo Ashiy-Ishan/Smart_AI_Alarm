@@ -43,6 +43,7 @@ void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool
 
   if (stopTone) {
     lastToneIndex = -1;
+    currentNote = 0; 
     noTone(SPEAKER_PIN);
     return;
   }
@@ -60,7 +61,6 @@ void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool
   const int* melody = melodies[toneIndex];
   const int* durationArray = durations[toneIndex];
   int len = arrayLengths[toneIndex];
-  int totalSteps = len; // Removed the +1 for blank pause as I handled it in durations
   int noteDuration = durationArray[currentNote];
 
   if (currentMillis - noteStartTime >= noteDuration) {
@@ -72,15 +72,10 @@ void playTonePattern(int toneIndex, unsigned long currentMillis, int level, bool
 
   if (!isPlayingNote) {
     int pitch = melody[currentNote];
-    // Scale pitch based on SoundLevel (1-10 range)
-    int shiftedPitch = pitch + ((level - 5) * 50);
-    if (shiftedPitch < 50) shiftedPitch = 50;
-
-    tone(SPEAKER_PIN, shiftedPitch);
+    tone(SPEAKER_PIN, pitch);
     isPlayingNote = true;
   } 
   else if (currentMillis - noteStartTime >= (noteDuration - 10)) {
-    // Small gap between notes for clarity
     noTone(SPEAKER_PIN);
   }
 }

@@ -22,7 +22,7 @@ int motionDetected = 0;
 String atlasStatus = "CONNECTED";
 String alarmTime = "00:00"; 
 int soundLevel = 5; 
-int selectedTone = 0; 
+int selectedTone = 1; 
 
 String wifiSSID = "";
 String wifiPass = "";
@@ -123,14 +123,14 @@ void loop() {
   smoothedLightValue = (smoothedLightValue * 0.95) + (rawLight * 0.05);
   lightValue = (int)smoothedLightValue; 
 
-if (lightValue > 1000)
-    lightStatus = "DARK";
-else if (lightValue > 700)
-    lightStatus = "DIM";
-else if (lightValue > 400)
-    lightStatus = "NORMAL";
-else
-    lightStatus = "BRIGHT";
+  if (lightValue > 1000)
+      lightStatus = "DARK";
+  else if (lightValue > 700)
+      lightStatus = "DIM";
+  else if (lightValue > 400)
+      lightStatus = "NORMAL";
+  else
+      lightStatus = "BRIGHT";
 
   if (currentMillis - lastDHTRead >= 2000) {
     lastDHTRead = currentMillis;
@@ -142,9 +142,10 @@ else
 
   // 2. CLOUD SYNCING
   syncWithFirebase(currentMillis);
-  syncWithAtlas(currentMillis);
+  if (currentAlarmState == IDLE) {
+    syncWithAtlas(currentMillis);
+  }
 
-  // 3. (REMOVED AUTOMATIC LAMP SHUTOFF)
 
   // 4. BUTTON LOGIC
   int btnState = digitalRead(BUTTON_PIN);
@@ -164,11 +165,11 @@ else
       if (isMenuMode) {
         isMenuMode = false;
         isPreviewing = false; 
-        tone(SPEAKER_PIN, 1500, 200); 
       } else {
         isMenuMode = true;
         isStopped = true; 
         currentAlarmState = IDLE;
+        isPreviewing = true; // <-- THIS LINE MAKES IT PLAY INSTANTLY
       }
     }
   } 
@@ -187,6 +188,7 @@ else
           if (resetConfirmPresses >= 2) {
             playTonePattern(0, 0, 0, true); 
             drawBootScreen("FACTORY RESET...");
+            deleteDeviceNode(); // Placed here so it executes exactly when confirmed
             factoryReset();
             delay(2000);
             ESP.restart(); 
@@ -203,7 +205,7 @@ else
           else if (multiPressCount == 1) { 
             if (isMenuMode) {
               if (isPreviewing) {
-                // STOP Preview if it's currently playing
+                // STOP Preview if it is currently playing
                 isPreviewing = false;
                 playTonePattern(0, 0, 0, true);
                 Serial.println("Sound Preview Stopped by Button");
@@ -221,16 +223,12 @@ else
               if (currentAlarmState == RINGING) {
                 // Signal stop to both local and mobile via Firebase key
                 stopAlarmInCloud();
-
                 isStopped = true;
                 currentAlarmState = IDLE;
                 playTonePattern(0, 0, 0, true);
 
                 if (String(currentTimeStr) == alarmTime) buttonPressedLog = 1; 
                 Serial.println("Alarm Stopped by Physical Button");
-              }
-              else if (!isStopped) {
-                isStopped = true;
               }
             }
           }
@@ -239,18 +237,11 @@ else
     }
   }
 
-  // 5. RESET LOGIC (Physical & Remote)
-  if (isResetPending) {
-    // Immediate reset as requested
-    playTonePattern(0, 0, 0, true);
-    drawBootScreen("FACTORY RESET...");
-
-    // Cleanup Firebase if we are still connected before restarting
-    deleteDeviceNode();
-
-    factoryReset();
-    delay(1000);
-    ESP.restart();
+  // 5. RESET LOGIC (Timeout Warning)
+  // This gives the screen 15 seconds to safely show the warning before cancelling.
+  if (isResetPending && (currentMillis - resetPendingStartTime >= 15000)) {
+    isResetPending = false;
+    resetConfirmPresses = 0;
   }
 
   // 6. ALARM TIMING LOGIC
@@ -262,40 +253,31 @@ else
     }
   } 
   else {
-    if (String(currentTimeStr) == alarmTime) {
-      if (isStopped) {
-        if (currentAlarmState != IDLE) {
-          currentAlarmState = IDLE;
-          playTonePattern(0, 0, 0, true); 
-        }
-        if (motionDetected == HIGH && !wokeUpFlagPushed) wokeUpFlagPushed = true; 
-      } 
-      else {
-        if (currentAlarmState == IDLE) {
-          currentAlarmState = RINGING;
-          stateTimer = currentMillis;
-        }
+    // Check if the clock matches the target time to trigger the alarm
+    if (String(currentTimeStr) == alarmTime && !isStopped && currentAlarmState == IDLE) {
+      currentAlarmState = RINGING;
+      stateTimer = currentMillis;
+    }
 
-        if (currentAlarmState == RINGING) {
-          playTonePattern(selectedTone, currentMillis, soundLevel, false);
-          
-          // Auto-stop after 10 minutes of continuous ringing to prevent burning out the buzzer
-          if (currentMillis - stateTimer >= 600000) {
-            isStopped = true;
-            currentAlarmState = IDLE;
-            playTonePattern(0, 0, 0, true); 
-          }
-        } 
-      }
-    } 
-    else {
-      if (currentAlarmState != IDLE) {
+    // Once ringing, rely on the 10-minute timer so it doesn't get cut off early
+    if (currentAlarmState == RINGING) {
+      playTonePattern(selectedTone, currentMillis, soundLevel, false);
+      
+      // Auto-stop after 10 minutes of continuous ringing to prevent burning out the buzzer
+      if (currentMillis - stateTimer >= 600000) {
+        isStopped = true;
         currentAlarmState = IDLE;
-        playTonePattern(0, 0, 0, true);
+        playTonePattern(0, 0, 0, true); 
       }
-      isStopped = false;
-      wokeUpFlagPushed = false;
-      buttonPressedLog = 0; 
+    }
+
+    // Reset the system flags for tomorrow once the alarm minute rolls over
+    if (String(currentTimeStr) != alarmTime) {
+      if (currentAlarmState == IDLE) {
+        isStopped = false;
+        wokeUpFlagPushed = false;
+        buttonPressedLog = 0; 
+      }
     }
   }
 

@@ -1,15 +1,12 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
 import datetime
 
 app = Flask(__name__)
-load_dotenv()
-#need to create env file and add MONGO_URL, HOST
-MONGO_URL = os.getenv("MONGO_URL")
-HOST=os.getenv("HOST","0.0.0.0")
-PORT=int(os.getenv("PORT","5000"))
+
+MONGO_URL = "mongodb+srv://ashinshanaishanuni_db_user:ashiyishan@smartalarmdb.xb7hcvb.mongodb.net/?appName=SmartAlarmDB"
+HOST = "0.0.0.0"
+PORT = 2000
 
 client = MongoClient(MONGO_URL)
 
@@ -19,7 +16,13 @@ collection = db["sensor_history"]
 @app.route('/api/data', methods=['POST'])
 def receive_data():
     try:
+        print(f"\n--- Incoming request from {request.remote_addr} ---")
         data = request.get_json()
+        print(f"Data received: {data}")
+
+        if not data:
+            print("Error: No data in request")
+            return jsonify({"status": "error", "message": "No data received"}), 400
 
         data["timestamp"] = datetime.datetime.now().strftime(
             "%Y-%m-%d %H:%M:%S"
