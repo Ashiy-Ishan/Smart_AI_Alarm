@@ -4,7 +4,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import '../../utils/app_colors.dart';
 
-class AlarmRingingScreen extends StatelessWidget {
+import '../../services/api_service.dart';
+
+class AlarmRingingScreen extends StatefulWidget {
   final String macAddress;
   final String hiddenUid;
 
@@ -14,20 +16,50 @@ class AlarmRingingScreen extends StatelessWidget {
     required this.hiddenUid,
   });
 
-  void _stopAlarm(BuildContext context) {
+  @override
+  State<AlarmRingingScreen> createState() => _AlarmRingingScreenState();
+}
+
+class _AlarmRingingScreenState extends State<AlarmRingingScreen> {
+  static int globalSnoozeCount = 0;
+  late final DateTime _alarmOpenedAt;
+
+  @override
+  void initState() {
+    super.initState();
+    _alarmOpenedAt = DateTime.now();
+  }
+
+  void _stopAlarm(BuildContext context) async {
     Navigator.of(context).popUntil((route) => route.settings.name != 'alarm_ringing');
     try {
       FirebaseDatabase.instance
           .ref()
           .child('Users')
-          .child(hiddenUid)
+          .child(widget.hiddenUid)
           .child('Devices')
-          .child(macAddress)
+          .child(widget.macAddress)
           .update({
             'MobileStop': true, 
             'AlarmStatus': 'IDLE',
             'LastStopAt': ServerValue.timestamp,
           });
+
+      // AI Data Collection
+      final now = DateTime.now();
+      final unlockDelayMinutes = now.difference(_alarmOpenedAt).inSeconds / 60.0;
+
+      await ApiService.post('/alarms/outcome', {
+        'user_id': widget.hiddenUid,
+        'alarm_id': 'alarm_${now.millisecondsSinceEpoch}',
+        'trigger_time': now.toUtc().toIso8601String(),
+        'snooze_count': globalSnoozeCount,
+        'unlock_delay': unlockDelayMinutes,
+        'success': 1,
+      });
+
+      // Reset snooze count for the next day
+      globalSnoozeCount = 0;
     } catch (e) {
       debugPrint("Error stopping alarm: $e");
     }
@@ -36,12 +68,14 @@ class AlarmRingingScreen extends StatelessWidget {
   void _snoozeAlarm(BuildContext context) {
     Navigator.of(context).popUntil((route) => route.settings.name != 'alarm_ringing');
     try {
+      globalSnoozeCount++;
+      
       final ref = FirebaseDatabase.instance
           .ref()
           .child('Users')
-          .child(hiddenUid)
+          .child(widget.hiddenUid)
           .child('Devices')
-          .child(macAddress);
+          .child(widget.macAddress);
 
       DateTime now = DateTime.now();
       DateTime snoozeTime = now.add(const Duration(minutes: 5));
@@ -50,7 +84,7 @@ class AlarmRingingScreen extends StatelessWidget {
       ref.update({
         'SnoozeUntil': snoozeTimeStr, 
         'AlarmStatus': 'SNOOZE',
-        'MobileStop': true, // Also stop the current ringing
+        'MobileStop': true, 
       });
     } catch (e) {
       debugPrint("Error snoozing alarm: $e");

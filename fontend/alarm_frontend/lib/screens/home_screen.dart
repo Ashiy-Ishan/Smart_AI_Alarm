@@ -1359,11 +1359,58 @@ class _HomeScreenState extends State<HomeScreen>
     );
 
     if (picked != null) {
-      final formatted =
-          '${picked.hour.toString().padLeft(2, '0')}:'
-          '${picked.minute.toString().padLeft(2, '0')}';
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Calculating AI Buffer Time...'), 
+          duration: Duration(seconds: 2),
+        ),
+      );
 
-      await _updateDevice('AlarmTime', formatted);
+      try {
+        final now = DateTime.now();
+        DateTime setTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+        if (setTime.isBefore(now)) {
+          setTime = setTime.add(const Duration(days: 1));
+        }
+
+        final response = await ApiService.post('/alarms', {
+          'user_id': _hiddenUid,
+          'set_time': setTime.toUtc().toIso8601String(),
+          'alarm_type': 'smart',
+          'is_active': true,
+          'is_holiday': 0,
+        });
+
+        if (response['adjusted_time'] != null) {
+          final adjustedDateTime = DateTime.parse(response['adjusted_time']).toLocal();
+          final formatted =
+              '${adjustedDateTime.hour.toString().padLeft(2, '0')}:'
+              '${adjustedDateTime.minute.toString().padLeft(2, '0')}';
+          
+          await _updateDevice('AlarmTime', formatted);
+          
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('AI Buffer Applied! Alarm set for $formatted')),
+            );
+          }
+        } else {
+          throw Exception('No adjusted_time received');
+        }
+      } catch (e) {
+        debugPrint('AI Prediction Failed: $e');
+        final formatted =
+            '${picked.hour.toString().padLeft(2, '0')}:'
+            '${picked.minute.toString().padLeft(2, '0')}';
+        await _updateDevice('AlarmTime', formatted);
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Backend offline. Used exact manual time.')),
+          );
+        }
+      }
     }
   }
 
