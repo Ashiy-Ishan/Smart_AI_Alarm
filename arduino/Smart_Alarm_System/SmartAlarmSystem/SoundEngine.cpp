@@ -3,10 +3,10 @@
 
 // --- TONE: Smooth Alarm Beep ---
 const int melody[] = {
-  800, 0, 800, 0, 800, 0
+  500, 0, 500, 0, 500, 0
 };
 const int durations[] = {
-  200, 100, 200, 100, 200, 600
+  10, 10, 10, 10, 10, 100
 };
 const int arrayLength = 6;
 
