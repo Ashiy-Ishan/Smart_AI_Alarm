@@ -102,9 +102,14 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
       final isLinked = await syncService.isLinked();
 
       if (isLinked) {
+        final now = DateTime.now();
+        final startOfDay = DateTime(now.year, now.month, now.day);
+        final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
         final googleEvents = await syncService.fetchEvents(
-          timeMin: DateTime.now().subtract(const Duration(hours: 12)),
-          maxResults: 20,
+          timeMin: startOfDay,
+          timeMax: endOfDay,
+          maxResults: 50,
         );
 
         if (!mounted) return;
@@ -158,12 +163,17 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
 
       final rawEvents = (response?['events'] as List?) ?? [];
 
-      final events = rawEvents.map<EventModel>((event) {
+      final now = DateTime.now();
+      final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
+      final events = rawEvents.map<EventModel?>((event) {
         final map = Map<String, dynamic>.from(event);
 
         final start = DateTime.tryParse(
           map['start_time']?.toString() ?? '',
         )?.toLocal();
+
+        if (start == null || start.isAfter(endOfDay)) return null;
 
         final end = DateTime.tryParse(
           map['end_time']?.toString() ?? '',
@@ -172,17 +182,14 @@ class _TodaySummaryScreenState extends State<TodaySummaryScreen> {
         final rawTitle = map['summary']?.toString().trim();
 
         return EventModel(
-          time: start != null ? DateFormat.jm().format(start) : '—',
-
+          time: DateFormat.jm().format(start),
           title: rawTitle != null && rawTitle.isNotEmpty
               ? rawTitle
               : 'Untitled event',
-
           extra: map['location']?.toString(),
-
           rightTime: end != null ? DateFormat.jm().format(end) : null,
         );
-      }).toList();
+      }).where((e) => e != null).cast<EventModel>().toList();
 
       setState(() {
         _events = events;

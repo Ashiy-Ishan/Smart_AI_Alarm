@@ -155,6 +155,7 @@ void onStart(ServiceInstance service) async {
                           'Alarm Service',
                           icon: '@drawable/ic_stat_alarm',
                           ongoing: true,
+                          autoCancel: false,
                         ),
                       ),
                     );
@@ -169,6 +170,7 @@ void onStart(ServiceInstance service) async {
                           'Alarm Service',
                           icon: '@drawable/ic_stat_alarm',
                           ongoing: true,
+                          autoCancel: false,
                         ),
                       ),
                     );

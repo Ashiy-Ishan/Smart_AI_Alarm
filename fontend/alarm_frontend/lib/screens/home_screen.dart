@@ -17,6 +17,7 @@ import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/services/api_service.dart';
 import 'package:alarm_frontend/services/background_service.dart';
 import 'package:alarm_frontend/services/location_service.dart';
+import 'package:alarm_frontend/services/notification_service.dart';
 import 'package:alarm_frontend/services/weather_service.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -79,6 +80,37 @@ class _HomeScreenState extends State<HomeScreen>
 
   String? _summaryError;
 
+  bool _isSmartPredictionEnabled = true;
+  static const String _smartPredictionKey = 'is_smart_prediction_enabled';
+
+  Future<void> _loadSmartPredictionState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isSmartPredictionEnabled = prefs.getBool(_smartPredictionKey) ?? true;
+    });
+  }
+
+  Future<void> _toggleSmartPrediction() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isSmartPredictionEnabled = !_isSmartPredictionEnabled;
+    });
+    await prefs.setBool(_smartPredictionKey, _isSmartPredictionEnabled);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _isSmartPredictionEnabled
+                ? 'Smart AI Prediction ON'
+                : 'Smart AI Prediction OFF (Manual Alarm)',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -93,6 +125,8 @@ class _HomeScreenState extends State<HomeScreen>
     _loadSavedDestination();
 
     _loadHomeBackendData();
+
+    _loadSmartPredictionState();
 
     AppBackgroundService.requestOptimizationPermission();
   }
@@ -155,22 +189,20 @@ class _HomeScreenState extends State<HomeScreen>
         if (events.isNotEmpty) {
           // Find first event that isn't finished
           final now = DateTime.now();
-          final next = events.firstWhere(
-            (e) {
-              final end = e.end?.dateTime?.toLocal() ??
-                  e.end?.date?.toLocal().add(const Duration(days: 1));
-              return end == null || end.isAfter(now);
-            },
-            orElse: () => events.first,
-          );
+          final next = events.firstWhere((e) {
+            final end =
+                e.end?.dateTime?.toLocal() ??
+                e.end?.date?.toLocal().add(const Duration(days: 1));
+            return end == null || end.isAfter(now);
+          }, orElse: () => events.first);
 
           setState(() {
             _nextEvent = {
               'summary': next.summary,
-              'start_time':
-                  (next.start?.dateTime ?? next.start?.date)?.toIso8601String(),
-              'end_time':
-                  (next.end?.dateTime ?? next.end?.date)?.toIso8601String(),
+              'start_time': (next.start?.dateTime ?? next.start?.date)
+                  ?.toIso8601String(),
+              'end_time': (next.end?.dateTime ?? next.end?.date)
+                  ?.toIso8601String(),
               'location': next.location,
             };
             _eventError = null;
@@ -352,8 +384,6 @@ class _HomeScreenState extends State<HomeScreen>
   // DEVICE LISTENER
   // =========================================================
 
-
-
   void _setupDeviceListener() {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -510,6 +540,16 @@ class _HomeScreenState extends State<HomeScreen>
 
                     Row(
                       children: [
+                        IconButton(
+                          onPressed: _toggleSmartPrediction,
+                          icon: Icon(
+                            Icons.auto_awesome,
+                            color: _isSmartPredictionEnabled
+                                ? AppColors.primary
+                                : Colors.grey.withValues(alpha: 0.5),
+                          ),
+                        ),
+
                         IconButton(
                           onPressed: _refreshHome,
 
@@ -1307,51 +1347,66 @@ class _HomeScreenState extends State<HomeScreen>
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             timePickerTheme: TimePickerThemeData(
               backgroundColor: isDarkMode ? AppColors.card : Colors.white,
-              hourMinuteColor: WidgetStateColor.resolveWith((states) =>
-                  states.contains(WidgetState.selected)
-                      ? AppColors.primary.withValues(alpha: 0.2)
-                      : (isDarkMode ? AppColors.background : const Color(0xFFF3F4F6))),
-              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
-                  states.contains(WidgetState.selected)
-                      ? (isDarkMode ? AppColors.primary : AppColors.primaryDark)
-                      : (isDarkMode ? AppColors.textPrimary : const Color(0xFF111827))),
-              dialHandColor: AppColors.primary,
-              dialBackgroundColor: isDarkMode ? AppColors.background : const Color(0xFFF3F4F6),
-              dialTextColor: WidgetStateColor.resolveWith((states) =>
-                  states.contains(WidgetState.selected)
-                      ? Colors.white
-                      : (isDarkMode ? AppColors.textPrimary : const Color(0xFF111827))),
-              entryModeIconColor: AppColors.primary,
-              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
-                  states.contains(WidgetState.selected)
-                      ? AppColors.primary.withValues(alpha: 0.2)
-                      : Colors.transparent),
-              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
-                  states.contains(WidgetState.selected)
-                      ? (isDarkMode ? AppColors.primary : AppColors.primaryDark)
-                      : (isDarkMode ? AppColors.textSecondary : const Color(0xFF6B7280))),
-            ),
-            colorScheme: isDarkMode 
-              ? const ColorScheme.dark(
-                  primary: AppColors.primary,
-                  onPrimary: AppColors.background,
-                  surface: AppColors.card,
-                  onSurface: AppColors.textPrimary,
-                )
-              : const ColorScheme.light(
-                  primary: AppColors.primary,
-                  onPrimary: Colors.white,
-                  surface: Colors.white,
-                  onSurface: Color(0xFF111827),
-                ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.primary,
+              hourMinuteColor: WidgetStateColor.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? AppColors.primary.withValues(alpha: 0.2)
+                    : (isDarkMode
+                          ? AppColors.background
+                          : const Color(0xFFF3F4F6)),
               ),
+              hourMinuteTextColor: WidgetStateColor.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? (isDarkMode ? AppColors.primary : AppColors.primaryDark)
+                    : (isDarkMode
+                          ? AppColors.textPrimary
+                          : const Color(0xFF111827)),
+              ),
+              dialHandColor: AppColors.primary,
+              dialBackgroundColor: isDarkMode
+                  ? AppColors.background
+                  : const Color(0xFFF3F4F6),
+              dialTextColor: WidgetStateColor.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? Colors.white
+                    : (isDarkMode
+                          ? AppColors.textPrimary
+                          : const Color(0xFF111827)),
+              ),
+              entryModeIconColor: AppColors.primary,
+              dayPeriodColor: WidgetStateColor.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? AppColors.primary.withValues(alpha: 0.2)
+                    : Colors.transparent,
+              ),
+              dayPeriodTextColor: WidgetStateColor.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? (isDarkMode ? AppColors.primary : AppColors.primaryDark)
+                    : (isDarkMode
+                          ? AppColors.textSecondary
+                          : const Color(0xFF6B7280)),
+              ),
+            ),
+            colorScheme: isDarkMode
+                ? const ColorScheme.dark(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.background,
+                    surface: AppColors.card,
+                    onSurface: AppColors.textPrimary,
+                  )
+                : const ColorScheme.light(
+                    primary: AppColors.primary,
+                    onPrimary: Colors.white,
+                    surface: Colors.white,
+                    onSurface: Color(0xFF111827),
+                  ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: AppColors.primary),
             ),
           ),
           child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.noScaling),
             child: child!,
           ),
         );
@@ -1360,16 +1415,36 @@ class _HomeScreenState extends State<HomeScreen>
 
     if (picked != null) {
       if (!mounted) return;
+
+      if (!_isSmartPredictionEnabled) {
+        // Fallback to manual exact time without AI Prediction
+        final formatted =
+            '${picked.hour.toString().padLeft(2, '0')}:'
+            '${picked.minute.toString().padLeft(2, '0')}';
+        await _updateDevice('AlarmTime', formatted);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Manual Alarm set for $formatted')),
+        );
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Calculating AI Buffer Time...'), 
+          content: Text('Calculating AI Buffer Time...'),
           duration: Duration(seconds: 2),
         ),
       );
 
       try {
         final now = DateTime.now();
-        DateTime setTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+        DateTime setTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          picked.hour,
+          picked.minute,
+        );
         if (setTime.isBefore(now)) {
           setTime = setTime.add(const Duration(days: 1));
         }
@@ -1383,18 +1458,27 @@ class _HomeScreenState extends State<HomeScreen>
         });
 
         if (response['adjusted_time'] != null) {
-          final adjustedDateTime = DateTime.parse(response['adjusted_time']).toLocal();
+          final adjustedDateTime = DateTime.parse(
+            response['adjusted_time'],
+          ).toLocal();
           final formatted =
               '${adjustedDateTime.hour.toString().padLeft(2, '0')}:'
               '${adjustedDateTime.minute.toString().padLeft(2, '0')}';
-          
+
           await _updateDevice('AlarmTime', formatted);
-          
+
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('AI Buffer Applied! Alarm set for $formatted')),
+              SnackBar(
+                content: Text('AI Buffer Applied! Alarm set for $formatted'),
+              ),
             );
           }
+          
+          NotificationService().showInstantNotification(
+            title: 'Smart AI Alarm Active',
+            body: 'AI applied buffer! Wake up adjusted to $formatted based on current conditions.',
+          );
         } else {
           throw Exception('No adjusted_time received');
         }
@@ -1404,10 +1488,12 @@ class _HomeScreenState extends State<HomeScreen>
             '${picked.hour.toString().padLeft(2, '0')}:'
             '${picked.minute.toString().padLeft(2, '0')}';
         await _updateDevice('AlarmTime', formatted);
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Backend offline. Used exact manual time.')),
+            const SnackBar(
+              content: Text('Backend offline. Used exact manual time.'),
+            ),
           );
         }
       }
