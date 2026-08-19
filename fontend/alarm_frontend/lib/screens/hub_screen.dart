@@ -25,7 +25,7 @@ class _HubScreenState extends State<HubScreen>
   String? _hiddenUid;
   bool _isInitialized = false;
   Timer? _resetTimer;
-  int _countdown = 15;
+  final int _countdown = 15;
 
   @override
   bool get wantKeepAlive => true;
@@ -42,27 +42,14 @@ class _HubScreenState extends State<HubScreen>
     super.dispose();
   }
 
-  String _getHiddenUid(String email) {
-    String prefix = email
-        .split('@')
-        .first
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
-        .toLowerCase();
-    String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4
-        ? hash.substring(hash.length - 4)
-        : hash.padLeft(4, '0');
-    return "user_${prefix}_$suffix";
-  }
-
   Future<void> _findUserDevice() async {
     try {
-      final email = FirebaseAuth.instance.currentUser?.email ?? "";
-      if (email.isEmpty) {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
         if (mounted) setState(() => _isInitialized = true);
         return;
       }
-      _hiddenUid = _getHiddenUid(email);
+      _hiddenUid = user.uid;
       final snapshot = await _rtdb
           .ref()
           .child('Users')
@@ -407,7 +394,10 @@ class _HubScreenState extends State<HubScreen>
             },
             child: const Text(
               "RESET NOW",
-              style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

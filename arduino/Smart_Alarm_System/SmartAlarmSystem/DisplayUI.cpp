@@ -48,51 +48,8 @@ void renderMainScreen() {
   display.clearDisplay();
   display.setTextColor(WHITE);
 
-  // 1. THE RESET WARNING SCREEN
-  if (isResetPending) {
-    display.drawRect(0, 0, 128, 64, WHITE);
-    display.setTextSize(2);
-    display.setCursor(30, 5);
-    display.print("RESET?");
-    
-    display.setTextSize(1);
-    display.setCursor(15, 25);
-    display.print("Press 2x to Confirm");
-    
-    int timeLeft = 15 - ((millis() - resetPendingStartTime) / 1000);
-    if (timeLeft < 0) timeLeft = 0; 
-    
-    display.setCursor(20, 45);
-    display.print("Time Left: ");
-    display.print(timeLeft);
-    display.print("s");
-  } 
-  
-  // 2. THE SOUND SELECTION MENU
-  else if (isMenuMode) {
-    display.setTextSize(1);
-    display.setCursor(15, 5);
-    display.print("--- SOUND MENU ---");
-    
-    display.setTextSize(2);
-    String toneName = "";
-    if (selectedTone == 0) toneName = "1: GENTLE";
-    else if (selectedTone == 1) toneName = "2: TECH";
-    else toneName = "3: AGENT";
-    
-    int16_t x1, y1; uint16_t w, h;
-    display.getTextBounds(toneName, 0, 0, &x1, &y1, &w, &h);
-    display.setCursor((128 - w) / 2, 25);
-    display.print(toneName);
-
-    display.setTextSize(1);
-    display.setCursor(20, 50);
-    display.print("Hold 5s to Save");
-  } 
-  
-  // 3. THE NORMAL CLOCK DASHBOARD
-  else {
-    if (currentAlarmState == RINGING) {
+  // THE NORMAL CLOCK DASHBOARD
+  if (currentAlarmState == RINGING) {
       display.setTextSize(2);
       display.setCursor(16, 10);
       display.print("WAKE UP!");
@@ -129,6 +86,5 @@ void renderMainScreen() {
       if (atlasStatus == "WIFI LOST") display.print("NO WIFI");
       else display.print("SYNC OK");
     }
-  }
   display.display();
 }

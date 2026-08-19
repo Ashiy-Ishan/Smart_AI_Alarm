@@ -72,7 +72,7 @@ class HubDeviceControlCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
           if (trailing == null) ...[

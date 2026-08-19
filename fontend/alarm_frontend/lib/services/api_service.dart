@@ -1,17 +1,17 @@
 import 'dart:convert';
-
+import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:alarm_frontend/models/model_accuracy.dart';
 import 'package:alarm_frontend/models/insight_data_model.dart';
 import 'package:alarm_frontend/models/today_summary_model.dart';
 
 class ApiService {
-  static const String baseUrl =
-  //update here new ngrok link
-      'https://lagoon-roundworm-hastily.ngrok-free.dev/smart-ai-alarm-2f71d/us-central1/api'; // <--
+  static String get baseUrl => 
+      dotenv.env['API_BASE_URL'] ?? 'https://lagoon-roundworm-hastily.ngrok-free.dev/smart-ai-alarm-2f71d/us-central1/api';
 
   static Future<Map<String, dynamic>> checkHealth() async {
-    final response = await http.get(Uri.parse('$baseUrl/health'));
+    final response = await http.get(Uri.parse('$baseUrl/health')).timeout(const Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -24,7 +24,7 @@ class ApiService {
     final response = await http.get(
       Uri.parse('$baseUrl$endpoint'),
       headers: {'Content-Type': 'application/json'},
-    );
+    ).timeout(const Duration(seconds: 10));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body);
@@ -41,7 +41,7 @@ class ApiService {
       Uri.parse('$baseUrl$endpoint'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
-    );
+    ).timeout(const Duration(seconds: 10));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body);

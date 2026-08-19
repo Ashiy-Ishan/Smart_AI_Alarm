@@ -21,8 +21,8 @@ def decrypt_data(data: str) -> str:
         return data
 
     cypher = _get_cypher()
-    data = cypher.decrypt(data.encode())
-    return data.decode()  # Return as string
+    decrypted_bytes = cypher.decrypt(data.encode())
+    return decrypted_bytes.decode()  # Return as string
 
 
 

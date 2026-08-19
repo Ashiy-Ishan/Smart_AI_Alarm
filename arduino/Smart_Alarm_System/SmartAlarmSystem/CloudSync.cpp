@@ -3,8 +3,10 @@
 #include "Globals.h"
 #include "SoundEngine.h"
 #include "DisplayUI.h"
+#include "DeviceMemory.h"
 
 #include <WiFi.h>
+#include <WiFiClient.h>
 #include <HTTPClient.h>
 #include <Firebase_ESP_Client.h>
 #include "time.h"
@@ -29,7 +31,7 @@ void setupNetworkAndTime() {
   int dotCount = 0;
   int wifiTimeout = 0;
 
-  while (WiFi.status() != WL_CONNECTED && wifiTimeout < 60) {
+  while (WiFi.status() != WL_CONNECTED && wifiTimeout < 20) {
     String dots = "";
     for(int i = 0; i < dotCount; i++) dots += ".";
     drawBootScreen("Connecting WiFi" + dots);
@@ -84,8 +86,7 @@ void syncWithFirebase(unsigned long currentMillis) {
       if (Firebase.RTDB.getBool(&fbdo, devicePath + "/MobileStop")) {
         if (fbdo.boolData() == true) {
           isStopped = true;
-          isPreviewing = false;
-          playTonePattern(0, 0, 0, true);
+          playTonePattern(0, true);
           currentAlarmState = IDLE;
 
           // Clear flags immediately
@@ -102,25 +103,32 @@ void syncWithFirebase(unsigned long currentMillis) {
   if (currentMillis - lastResetCheck >= 1000) {
     lastResetCheck = currentMillis;
     if (Firebase.ready() && devicePath != "") {
-      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
-        if (fbdo.boolData() == true) {
-          if (!isResetPending) {
-            isResetPending = true;
-            resetPendingStartTime = currentMillis;
-            resetConfirmPresses = 0;
-            multiPressCount = 0;
-            playTonePattern(0, 0, 0, true);
-            Serial.println("Remote Factory Reset Triggered!");
-          }
-        } else if (isResetPending) {
-          isResetPending = false;
-          Serial.println("Remote Factory Reset Cancelled!");
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/FactoryReset")) {
+        bool shouldReset = false;
+        
+        if (fbdo.dataType() == "boolean") {
+          shouldReset = fbdo.boolData();
+        } else if (fbdo.dataType() == "string") {
+          String val = fbdo.stringData();
+          val.toLowerCase();
+          shouldReset = (val == "true" || val == "1" || val == "on");
+        } else if (fbdo.dataType() == "int" || fbdo.dataType() == "float") {
+          shouldReset = (fbdo.intData() > 0);
+        }
+
+        if (shouldReset) {
+          playTonePattern(0, true);
+          drawBootScreen("FACTORY RESET...");
+          deleteDeviceNode();
+          factoryReset();
+          delay(2000);
+          ESP.restart();
         }
       }
     }
   }
 
-  if (currentMillis - lastFirebaseSync >= 5000) {
+  if (currentMillis - lastFirebaseSync >= 500) {
     lastFirebaseSync = currentMillis;
     
     if (Firebase.ready() && devicePath != "") {
@@ -129,8 +137,6 @@ void syncWithFirebase(unsigned long currentMillis) {
           if (fbdo.dataType() == "null") {
             FirebaseJson defaultAppKeys;
             defaultAppKeys.set("AlarmTime", "07:00");     
-            defaultAppKeys.set("SoundLevel", 5);          
-            defaultAppKeys.set("SelectedTone", 1); // Default to Tech Sound Track (Index 1)
             defaultAppKeys.set("ManualLamp", false);
             defaultAppKeys.set("MobileStop", false);      
 
@@ -167,14 +173,6 @@ void syncWithFirebase(unsigned long currentMillis) {
         if (fbdo.dataType() != "null") lightStatus = fbdo.stringData();
       }
 
-      if (Firebase.RTDB.get(&fbdo, devicePath + "/SoundLevel")) {
-        soundLevel = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData();
-      }
-
-      if (Firebase.RTDB.get(&fbdo, devicePath + "/SelectedTone")) {
-        selectedTone = (fbdo.dataType() == "string") ? fbdo.stringData().toInt() : fbdo.intData();
-      }
-
       if (Firebase.RTDB.get(&fbdo, devicePath + "/ManualLamp")) {
         if (fbdo.dataType() == "string") {
           String val = fbdo.stringData();
@@ -193,30 +191,12 @@ void syncWithFirebase(unsigned long currentMillis) {
       if (Firebase.RTDB.getString(&fbdo, devicePath + "/AlarmStatus")) {
         if (fbdo.stringData() == "IDLE" && currentAlarmState == RINGING) {
            isStopped = true;
-           playTonePattern(0, 0, 0, true);
+           playTonePattern(0, true);
            currentAlarmState = IDLE;
         }
       }
 
-      // REMOTE FACTORY RESET LOGIC
-      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
-        if (fbdo.boolData() == true) {
-          if (!isResetPending) {
-            isResetPending = true;
-            resetPendingStartTime = millis();
-            resetConfirmPresses = 0;
-            multiPressCount = 0;
-            playTonePattern(0, 0, 0, true); // Stop any noise
-            Serial.println("Remote Factory Reset Triggered!");
-          }
-        } else {
-          // If flag is set to false from cloud, cancel pending reset if it was a remote one
-          if (isResetPending) {
-             isResetPending = false;
-             Serial.println("Remote Factory Reset Cancelled!");
-          }
-        }
-      }
+      // Remote Factory Reset logic moved to fast poll above
     }
   }
 }
@@ -238,19 +218,51 @@ void syncWithAtlas(unsigned long currentMillis) {
   if (currentMillis - lastAtlasSync >= atlasSyncInterval) {
     lastAtlasSync = currentMillis;
     if (WiFi.status() == WL_CONNECTED) {
+      WiFiClient client;
       HTTPClient http;
-      http.begin(SERVER_URL);
-      http.setTimeout(2500); 
-      http.addHeader("Content-Type", "application/json");
-      
-      String jsonPayload = "{\"device_id\":\"" + WiFi.macAddress() + "\",\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
-      
-      int httpResponseCode = http.POST(jsonPayload);
-      if (httpResponseCode == 200) { atlasStatus = "SUCCESS"; atlasSyncInterval = 60000; } 
-      else { atlasStatus = "FAILED"; atlasSyncInterval = 5000; }
-      http.end(); 
+
+      Serial.print("Atlas Sync: Connecting to ");
+      Serial.println(SERVER_URL);
+
+      if (http.begin(client, SERVER_URL)) {
+        http.setTimeout(5000);
+        http.addHeader("Content-Type", "application/json");
+
+        String jsonPayload = "{\"device_id\":\"" + WiFi.macAddress() + "\",\"temperature\":" + String(temperature, 1) + ",\"humidity\":" + String(humidity, 1) + ",\"light\":\"" + lightStatus + "\",\"light_value\":" + String(lightValue) + ",\"motion\":" + String(motionDetected) + ",\"alarm_time\":\"" + alarmTime + "\",\"button_pressed\":" + String(buttonPressedLog) + "}";
+
+        Serial.print("Atlas Sync Payload: ");
+        Serial.println(jsonPayload);
+
+        int httpResponseCode = http.POST(jsonPayload);
+
+        if (httpResponseCode > 0) {
+          String response = http.getString();
+          Serial.print("Atlas Sync Response Code: ");
+          Serial.println(httpResponseCode);
+          Serial.println("Server Body: " + response);
+
+          if (httpResponseCode == 200) {
+            atlasStatus = "SUCCESS";
+            atlasSyncInterval = 60000;
+          } else {
+            atlasStatus = "SERVER ERR";
+            atlasSyncInterval = 10000;
+          }
+        } else {
+          Serial.print("Atlas Sync POST failed, error: ");
+          Serial.println(http.errorToString(httpResponseCode).c_str());
+          atlasStatus = "FAILED";
+          atlasSyncInterval = 5000;
+        }
+        http.end();
+      } else {
+        Serial.println("Atlas Sync: http.begin failed");
+        atlasStatus = "CONN ERR";
+        atlasSyncInterval = 5000;
+      }
     } else {
-      atlasStatus = "WIFI LOST"; atlasSyncInterval = 5000; 
+      Serial.println("Atlas Sync skipped: WiFi lost");
+      atlasStatus = "WIFI LOST"; atlasSyncInterval = 5000;
     }
   }
 }

@@ -15,6 +15,7 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
   bool _alarmAdjustments = true;
   bool _hardwareStatus = true;
   bool _healthInsights = false;
+  bool _persistentStatus = false;
   bool _isLoading = true;
 
   @override
@@ -29,7 +30,8 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
       _meetingUpdates = prefs.getBool('notif_meetings') ?? true;
       _alarmAdjustments = prefs.getBool('notif_alarms') ?? true;
       _hardwareStatus = prefs.getBool('notif_hardware') ?? true;
-      _healthInsights = prefs.getBool('notif_health') ?? false;
+      _healthInsights = prefs.getBool('notif_health') ?? true;
+      _persistentStatus = prefs.getBool('notif_device_status') ?? true;
       _isLoading = false;
     });
   }
@@ -108,6 +110,17 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
                   _saveSetting('notif_health', v);
                 },
               ),
+              const SizedBox(height: 16),
+              _buildControlCard(
+                title: "Persistent Device Status",
+                subtitle: "Show real-time Temperature, Humidity, and Light in your notification panel.",
+                icon: Icons.monitor_heart,
+                value: _persistentStatus,
+                onChanged: (v) {
+                  setState(() => _persistentStatus = v);
+                  _saveSetting('notif_device_status', v);
+                },
+              ),
               const SizedBox(height: 40),
               Center(
                 child: Text(
@@ -170,7 +183,7 @@ class _NotificationControlScreenState extends State<NotificationControlScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.primary,
+            activeThumbColor: AppColors.primary,
           ),
         ],
       ),

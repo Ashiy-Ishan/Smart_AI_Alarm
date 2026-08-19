@@ -54,18 +54,7 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
     }
   }
 
-  String _getHiddenUid(String email) {
-    String prefix = email
-        .split('@')
-        .first
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
-        .toLowerCase();
-    String hash = email.hashCode.abs().toString();
-    String suffix = hash.length > 4
-        ? hash.substring(hash.length - 4)
-        : hash.padLeft(4, '0');
-    return "user_${prefix}_$suffix";
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +159,9 @@ class _WifiSetupScreenState extends State<WifiSetupScreen> {
 
     setState(() => _isLoading = true);
 
-    final email = FirebaseAuth.instance.currentUser?.email ?? "unknown";
-    final hiddenUid = _getHiddenUid(email);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final hiddenUid = user.uid;
 
     try {
       final bleService = custom.BluetoothService();
