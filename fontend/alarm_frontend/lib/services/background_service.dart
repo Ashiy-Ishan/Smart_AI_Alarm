@@ -76,7 +76,7 @@ void onStart(ServiceInstance service) async {
     // Delay initialization to prevent SharedPreferences race conditions with the main isolate
     // which causes Firebase Auth to fail reading the session and silently log the user out!
     await Future.delayed(const Duration(seconds: 2));
-    
+
     await dotenv.load(fileName: ".env");
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -138,7 +138,8 @@ void onStart(ServiceInstance service) async {
                       wasRinging = true;
                       NotificationService().showInstantNotification(
                         title: "Alarm Ringing!",
-                        body: "Your Bedside Hub is ringing. Tap to stop or snooze.",
+                        body:
+                            "Your Bedside Hub is ringing. Tap to stop or snooze.",
                         isAlarm: true,
                       );
                     } else if (status != 'RINGING') {
@@ -155,7 +156,6 @@ void onStart(ServiceInstance service) async {
                           'Alarm Service',
                           icon: '@drawable/ic_stat_alarm',
                           ongoing: true,
-                          autoCancel: false,
                         ),
                       ),
                     );
@@ -170,7 +170,6 @@ void onStart(ServiceInstance service) async {
                           'Alarm Service',
                           icon: '@drawable/ic_stat_alarm',
                           ongoing: true,
-                          autoCancel: false,
                         ),
                       ),
                     );

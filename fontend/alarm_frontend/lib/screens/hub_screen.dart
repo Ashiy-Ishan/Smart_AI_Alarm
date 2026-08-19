@@ -42,8 +42,6 @@ class _HubScreenState extends State<HubScreen>
     super.dispose();
   }
 
-
-
   Future<void> _findUserDevice() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -396,7 +394,10 @@ class _HubScreenState extends State<HubScreen>
             },
             child: const Text(
               "RESET NOW",
-              style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

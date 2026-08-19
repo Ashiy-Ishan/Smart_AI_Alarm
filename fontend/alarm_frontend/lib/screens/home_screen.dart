@@ -17,7 +17,6 @@ import 'package:alarm_frontend/routes/app_routes.dart';
 import 'package:alarm_frontend/services/api_service.dart';
 import 'package:alarm_frontend/services/background_service.dart';
 import 'package:alarm_frontend/services/location_service.dart';
-import 'package:alarm_frontend/services/notification_service.dart';
 import 'package:alarm_frontend/services/weather_service.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 
@@ -1474,11 +1473,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             );
           }
-          
-          NotificationService().showInstantNotification(
-            title: 'Smart AI Alarm Active',
-            body: 'AI applied buffer! Wake up adjusted to $formatted based on current conditions.',
-          );
         } else {
           throw Exception('No adjusted_time received');
         }
