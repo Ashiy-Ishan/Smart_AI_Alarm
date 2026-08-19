@@ -136,14 +136,14 @@ void loop() {
   motionDetected = digitalRead(PIR_PIN);
 
   int rawLight = analogRead(LDR_PIN);
-  smoothedLightValue = (smoothedLightValue * 0.95) + (rawLight * 0.05);
+  smoothedLightValue = (smoothedLightValue * 0.50) + (rawLight * 0.50);
   lightValue = (int)smoothedLightValue; 
 
-  if (lightValue > 200)
+  if (lightValue > 350)
       lightStatus = "DARK";
-  else if (lightValue > 150)
+  else if (lightValue > 250)
       lightStatus = "DIM";
-  else if (lightValue > 50)
+  else if (lightValue > 150)
       lightStatus = "NORMAL";
   else
       lightStatus = "BRIGHT";

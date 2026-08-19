@@ -100,11 +100,23 @@ void syncWithFirebase(unsigned long currentMillis) {
 
   // 2. CHECK FOR FACTORY RESET (every 1 second)
   static unsigned long lastResetCheck = 0;
-  if (currentMillis - lastResetCheck >= 500) {
+  if (currentMillis - lastResetCheck >= 1000) {
     lastResetCheck = currentMillis;
     if (Firebase.ready() && devicePath != "") {
-      if (Firebase.RTDB.getBool(&fbdo, devicePath + "/FactoryReset")) {
-        if (fbdo.boolData() == true) {
+      if (Firebase.RTDB.get(&fbdo, devicePath + "/FactoryReset")) {
+        bool shouldReset = false;
+        
+        if (fbdo.dataType() == "boolean") {
+          shouldReset = fbdo.boolData();
+        } else if (fbdo.dataType() == "string") {
+          String val = fbdo.stringData();
+          val.toLowerCase();
+          shouldReset = (val == "true" || val == "1" || val == "on");
+        } else if (fbdo.dataType() == "int" || fbdo.dataType() == "float") {
+          shouldReset = (fbdo.intData() > 0);
+        }
+
+        if (shouldReset) {
           playTonePattern(0, true);
           drawBootScreen("FACTORY RESET...");
           deleteDeviceNode();
