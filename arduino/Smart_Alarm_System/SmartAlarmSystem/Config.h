@@ -2,8 +2,8 @@
 
 // --- 1. Cloud Database Credentials ---
 const char* const SERVER_URL = "http://192.168.8.101:2000/api/data";
-#define API_KEY "AIzaSyBQlTD6zBHUBr2_aUHf4yoWkMAubsjxbak"
-#define DATABASE_URL "https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app/"
+#define API_KEY "YOUR_FIREBASE_API_KEY_HERE"
+#define DATABASE_URL "YOUR_FIREBASE_RTDB_URL_HERE"
 
 // --- 2. Bluetooth Configuration ---
 #define BLE_SERVICE_UUID           "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
