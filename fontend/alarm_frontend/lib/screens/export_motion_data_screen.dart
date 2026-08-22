@@ -33,13 +33,14 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text('Export Motion Data', style: AppTextStyles.heading),
@@ -50,25 +51,23 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
         children: [
           const SizedBox(height: 16),
 
-          // Main Export Card
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.card,
+              color: theme.cardColor,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: theme.dividerColor),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header row
                 Row(
                   children: [
                     Container(
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
@@ -82,18 +81,22 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
                       child: Text(
                         'Today',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: const Text(
                         'Last 7 Days',
@@ -108,37 +111,28 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
                 ),
 
                 const SizedBox(height: 20),
-                Divider(height: 1, color: AppColors.border),
+                Divider(height: 1, color: theme.dividerColor),
                 const SizedBox(height: 16),
 
-                // Format section
                 const Text(
                   'Format',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 10),
                 ExportFormatSelector(
                   formats: const ['CSV', 'JSON'],
                   selectedFormat: _selectedFormat,
-                  onFormatChanged: (format) => setState(() => _selectedFormat = format),
+                  onFormatChanged: (format) =>
+                      setState(() => _selectedFormat = format),
                 ),
 
                 const SizedBox(height: 20),
-                Divider(height: 1, color: AppColors.border),
+                Divider(height: 1, color: theme.dividerColor),
                 const SizedBox(height: 16),
 
-                // Options section
                 const Text(
                   'Options',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 10),
                 OptionToggleRow(
@@ -155,7 +149,6 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
 
                 const SizedBox(height: 20),
 
-                // Export Data Button
                 PrimaryButton(
                   text: 'Export Data',
                   isLoading: _isExporting,
@@ -164,7 +157,6 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
 
                 const SizedBox(height: 12),
 
-                // Share Button (outlined)
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -172,25 +164,29 @@ class _ExportMotionDataScreenState extends State<ExportMotionDataScreen> {
                     onPressed: _isSharing ? null : _onShare,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
-                      side: const BorderSide(color: AppColors.border),
+                      side: BorderSide(color: theme.dividerColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                       elevation: 0,
                     ),
                     child: _isSharing
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: AppColors.textSecondary,
+                              color:
+                                  theme.textTheme.bodyMedium?.color?.withValues(
+                                    alpha: 0.5,
+                                  ) ??
+                                  AppColors.textSecondary,
                             ),
                           )
-                        : const Text(
+                        : Text(
                             'Share',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: theme.textTheme.bodyLarge?.color,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),

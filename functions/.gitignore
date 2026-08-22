@@ -1,0 +1,8 @@
+# Python bytecode
+__pycache__/
+
+# Python virtual environment
+venv/
+*.local
+# dotenv environment variables file
+.env

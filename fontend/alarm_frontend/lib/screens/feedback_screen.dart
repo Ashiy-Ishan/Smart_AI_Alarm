@@ -11,7 +11,6 @@ class FeedbackScreen extends StatefulWidget {
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
   int rating = 5;
-
   final TextEditingController feedbackController = TextEditingController();
 
   void submitFeedback() {
@@ -22,18 +21,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       );
       return;
     }
-
-    // Here you would typically send the feedback to your backend or API
-    debugPrint("Rating: $rating, Message: ${feedbackController.text}");
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Thank you for your feedback!")),
     );
-
     feedbackController.clear();
-    setState(() {
-      rating = 5; // Reset rating after submission
-    });
+    setState(() => rating = 5);
   }
 
   @override
@@ -44,57 +36,44 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: theme.textTheme.bodyLarge?.color),
         title: const Text(
           "Feedback",
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Divider(color: AppColors.border),
+            Divider(color: theme.dividerColor),
             const SizedBox(height: 20),
-
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.card,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: theme.dividerColor),
               ),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     "Give app rating",
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 12),
-
                   Row(
                     children: List.generate(5, (index) {
                       return IconButton(
-                        onPressed: () {
-                          setState(() {
-                            rating = index + 1;
-                          });
-                        },
+                        onPressed: () => setState(() => rating = index + 1),
                         icon: Icon(
                           Icons.star,
                           color: index < rating
@@ -109,44 +88,29 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
             const Text(
               "Write feedback message",
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 15),
-
             Container(
               decoration: BoxDecoration(
-                color: AppColors.card,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.primary),
               ),
               child: TextField(
                 controller: feedbackController,
                 maxLines: 10,
-                style: const TextStyle(color: AppColors.textPrimary),
                 decoration: const InputDecoration(
                   hintText: "Enter your feedback here...",
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16),
                 ),
               ),
             ),
-            const SizedBox(height: 125),
-
-            PrimaryButton(
-              text: "Submit Feedback",
-              onPressed: () {
-                if (feedbackController.text.trim().isEmpty) return;
-                submitFeedback();
-              },
-            ),
+            const SizedBox(height: 40),
+            PrimaryButton(text: "Submit Feedback", onPressed: submitFeedback),
           ],
         ),
       ),

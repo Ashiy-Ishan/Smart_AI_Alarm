@@ -34,23 +34,30 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text('Motion log', style: AppTextStyles.heading),
+          children: [
+            const Text('Motion log', style: AppTextStyles.heading),
             Text(
               'Mon, Nov 12',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              style: TextStyle(
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+                fontSize: 12,
+              ),
             ),
           ],
         ),
@@ -58,11 +65,7 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.wifi,
-              color: AppColors.primary,
-              size: 24,
-            ),
+            child: Icon(Icons.wifi, color: AppColors.primary, size: 24),
           ),
         ],
       ),
@@ -71,7 +74,6 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
         children: [
           const SizedBox(height: 16),
 
-          // Activity Chart Card
           ActivityBarChartCard(
             dateText: 'Mon, Nov 12',
             startTime: '07:15 AM',
@@ -81,7 +83,6 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
 
           const SizedBox(height: 14),
 
-          // Sleep Card
           const SleepProgressCard(
             title: 'Sleep',
             sleepTime: '10:04 PM',
@@ -92,7 +93,6 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
 
           const SizedBox(height: 14),
 
-          // Activity Records nav card
           MotionNavCard(
             title: 'Activity Records',
             stats: const [
@@ -107,18 +107,18 @@ class _MotionLogScreenState extends State<MotionLogScreen> {
 
           const SizedBox(height: 14),
 
-          // Weekly Motion Report nav tile
           ChevronNavTile(
             title: 'Weekly Motion Report',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const WeeklyMotionReportScreen()),
+              MaterialPageRoute(
+                builder: (_) => const WeeklyMotionReportScreen(),
+              ),
             ),
           ),
 
           const SizedBox(height: 14),
 
-          // Export Motion Data nav tile
           ChevronNavTile(
             title: 'Export Motion Data',
             onTap: () => Navigator.push(

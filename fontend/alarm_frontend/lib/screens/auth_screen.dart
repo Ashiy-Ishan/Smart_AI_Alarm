@@ -48,10 +48,10 @@ class _AuthScreenState extends State<AuthScreen> {
   void showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: AppColors.card,
+        backgroundColor: Theme.of(context).cardColor,
         content: Text(
           message,
-          style: const TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
       ),
     );
@@ -71,7 +71,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     setState(() => isLoading = true);
     try {
-      await Provider.of<UserProvider>(context, listen: false).signInWithEmailAndPassword(
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).signInWithEmailAndPassword(
         email: user.email,
         password: user.password,
         context: context,
@@ -79,10 +82,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (!mounted) return;
 
-      Navigator.of(context, rootNavigator: true)
-          .pushReplacementNamed(AppRoutes.main);
-    } catch (e) {
-      // Errors are handled and shown via SnackBar in UserProvider
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushReplacementNamed(AppRoutes.main);
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -116,7 +119,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     setState(() => isLoading = true);
     try {
-      await Provider.of<UserProvider>(context, listen: false).signUpWithEmailAndPassword(
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).signUpWithEmailAndPassword(
         email: user.email,
         password: user.password,
         fullName: user.fullName,
@@ -125,10 +131,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (!mounted) return;
 
-      Navigator.of(context, rootNavigator: true)
-          .pushReplacementNamed(AppRoutes.verifyAccount);
-    } catch (e) {
-      // Errors are handled and shown via SnackBar in UserProvider
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushReplacementNamed(AppRoutes.verifyAccount);
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -145,12 +151,14 @@ class _AuthScreenState extends State<AuthScreen> {
 
     setState(() => isLoading = true);
     try {
-      await Provider.of<UserProvider>(context, listen: false).sendPasswordResetEmail(
-        email: user.email,
-        context: context,
-      );
-    } catch (e) {
-      // Errors are handled and shown via SnackBar in UserProvider
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).sendPasswordResetEmail(email: user.email, context: context);
+
+      if (mounted) {
+        switchPage(AuthPageModel.login());
+      }
     } finally {
       if (mounted) {
         setState(() => isLoading = false);
@@ -161,7 +169,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -191,6 +199,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildLoginView() {
+    final theme = Theme.of(context);
     return Form(
       key: formData.loginFormKey,
       child: Column(
@@ -205,7 +214,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 18),
           AuthTextField(
@@ -234,9 +243,12 @@ class _AuthScreenState extends State<AuthScreen> {
             alignment: Alignment.centerRight,
             child: GestureDetector(
               onTap: () => switchPage(AuthPageModel.resetPassword()),
-              child: const Text(
+              child: Text(
                 'Forgot Password ?',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 15),
+                style: TextStyle(
+                  color: theme.textTheme.bodyLarge?.color,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
@@ -265,9 +277,12 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Don't have an account ? ",
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                  style: TextStyle(
+                    color: theme.textTheme.bodyLarge?.color,
+                    fontSize: 16,
+                  ),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.signup()),
@@ -282,6 +297,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildSignupView() {
+    final theme = Theme.of(context);
     return Form(
       key: formData.signupFormKey,
       child: Column(
@@ -304,7 +320,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email Address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
           AuthTextField(
@@ -372,11 +388,17 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
+              Text(
                 'I agree to ',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                style: TextStyle(
+                  color: theme.textTheme.bodyLarge?.color,
+                  fontSize: 16,
+                ),
               ),
-              const Text('terms', style: AppTextStyles.link),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, AppRoutes.termsAndConditions),
+                child: const Text('terms and condition', style: AppTextStyles.link),
+              ),
             ],
           ),
           const SizedBox(height: 28),
@@ -390,9 +412,12 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Already have an account? ',
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                  style: TextStyle(
+                    color: theme.textTheme.bodyLarge?.color,
+                    fontSize: 16,
+                  ),
                 ),
                 GestureDetector(
                   onTap: () => switchPage(AuthPageModel.login()),
@@ -429,7 +454,7 @@ class _AuthScreenState extends State<AuthScreen> {
             hintText: 'Email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: Validators.validateGmail,
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 28),
           PrimaryButton(

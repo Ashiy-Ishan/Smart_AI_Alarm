@@ -15,6 +15,7 @@ class ExportFormatSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: formats.map((format) {
         final isSelected = selectedFormat == format;
@@ -27,17 +28,24 @@ class ExportFormatSelector extends StatelessWidget {
                 duration: const Duration(milliseconds: 180),
                 height: 42,
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : AppColors.background,
+                  color: isSelected
+                      ? AppColors.primary
+                      : theme.scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: isSelected ? AppColors.primary : AppColors.border,
+                    color: isSelected ? AppColors.primary : theme.dividerColor,
                   ),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   format,
                   style: TextStyle(
-                    color: isSelected ? Colors.black : AppColors.textSecondary,
+                    color: isSelected
+                        ? Colors.black
+                        : theme.textTheme.bodyMedium?.color?.withValues(
+                                alpha: 0.7,
+                              ) ??
+                              AppColors.textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),

@@ -17,19 +17,25 @@ class ActivityBarChartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             dateText,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+            style: TextStyle(
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
+              fontSize: 13,
+            ),
           ),
           const SizedBox(height: 12),
           SizedBox(
@@ -55,11 +61,25 @@ class ActivityBarChartCard extends StatelessWidget {
             children: [
               Text(
                 startTime,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: TextStyle(
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 12,
+                ),
               ),
               Text(
                 endTime,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: TextStyle(
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),

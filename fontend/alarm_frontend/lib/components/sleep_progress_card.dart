@@ -19,12 +19,13 @@ class SleepProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,21 +36,32 @@ class SleepProgressCard extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
                 ),
               ),
               Text(
                 sleepTime,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                style: TextStyle(
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 13,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
             wakeTime,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+            style: TextStyle(
+              color:
+                  theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                  AppColors.textSecondary,
+              fontSize: 12,
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -59,8 +71,10 @@ class SleepProgressCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
                     value: progressValue,
-                    backgroundColor: AppColors.border,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                    backgroundColor: theme.dividerColor,
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.primary,
+                    ),
                     minHeight: 6,
                   ),
                 ),
@@ -68,7 +82,14 @@ class SleepProgressCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 durationLabel,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: TextStyle(
+                  color:
+                      theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ) ??
+                      AppColors.textSecondary,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),

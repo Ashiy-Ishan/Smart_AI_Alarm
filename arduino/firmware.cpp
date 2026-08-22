@@ -10,7 +10,7 @@
 #include <DHT.h>
 
 // --- I2C Communication (OLED Display) ---
-#define OLED_SDA          19    
+#define OLED_SDA          19
 #define OLED_SCL          18    
 
 // --- Input Sensors (Context Data) ---

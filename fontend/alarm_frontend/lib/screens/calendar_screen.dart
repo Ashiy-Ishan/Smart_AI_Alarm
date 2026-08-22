@@ -1,8 +1,11 @@
+import 'package:alarm_frontend/services/google_sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:alarm_frontend/utils/app_colors.dart';
 import 'package:alarm_frontend/utils/app_text_styles.dart';
 import 'package:alarm_frontend/components/calendar_grid.dart';
 import 'package:alarm_frontend/components/upcoming_event_item.dart';
+import 'package:googleapis/calendar/v3.dart' as google_calendar;
+import 'package:intl/intl.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -12,275 +15,224 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  int _selectedDay = 2;
-  final DateTime _currentMonth = DateTime(2026, 3);
+  int _selectedDay = DateTime.now().day;
+  late DateTime _selectedDate;
+  late DateTime _currentMonth;
+  final GoogleSyncService _syncService = GoogleSyncService();
+  List<google_calendar.Event> _events = [];
+  bool _isLoading = true;
 
-  final List<Map<String, dynamic>> _upcomingEvents = [
-    {
-      'icon': Icons.directions_walk_outlined,
-      'title': 'Workout',
-      'time': '',
-    },
-    {
-      'icon': Icons.sync_outlined,
-      'title': 'Team Sync',
-      'time': 'Tomorrow',
-    },
-    {
-      'icon': Icons.call_outlined,
-      'title': 'Client call',
-      'time': 'Tomorrow',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _selectedDate = DateTime(now.year, now.month, now.day);
+    _currentMonth = DateTime(now.year, now.month);
+    _fetchEvents();
+  }
+
+  Future<void> _fetchEvents() async {
+    setState(() => _isLoading = true);
+    try {
+      final monthStart = DateTime(_currentMonth.year, _currentMonth.month);
+      final nextMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
+      final events = await _syncService.fetchEvents(
+        timeMin: monthStart,
+        timeMax: nextMonth,
+      );
+      if (!mounted ||
+          _currentMonth.year != monthStart.year ||
+          _currentMonth.month != monthStart.month) {
+        return;
+      }
+      setState(() {
+        _events = events;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _changeMonth(int offset) {
+    final nextMonth = DateTime(
+      _currentMonth.year,
+      _currentMonth.month + offset,
+    );
+    final now = DateTime.now();
+    setState(() {
+      _currentMonth = nextMonth;
+      _selectedDate = nextMonth.year == now.year && nextMonth.month == now.month
+          ? DateTime(now.year, now.month, now.day)
+          : nextMonth;
+      _selectedDay = _selectedDate.day;
+      _events = [];
+    });
+    _fetchEvents();
+  }
+
+  bool _eventOccursOn(google_calendar.Event event, DateTime date) {
+    final isAllDay = event.start?.dateTime == null;
+    final start = isAllDay
+        ? event.start?.date
+        : event.start?.dateTime?.toLocal();
+    final end = isAllDay ? event.end?.date : event.end?.dateTime?.toLocal();
+    if (start == null) return false;
+
+    final dayStart = DateTime(date.year, date.month, date.day);
+    final dayEnd = dayStart.add(const Duration(days: 1));
+    final eventEnd =
+        end ??
+        start.add(
+          isAllDay ? const Duration(days: 1) : const Duration(microseconds: 1),
+        );
+    return start.isBefore(dayEnd) && eventEnd.isAfter(dayStart);
+  }
+
+  List<google_calendar.Event> get _selectedEvents {
+    return _events
+        .where((event) => _eventOccursOn(event, _selectedDate))
+        .toList();
+  }
+
+  String _eventTime(google_calendar.Event event) {
+    final start = event.start?.dateTime?.toLocal();
+    final end = event.end?.dateTime?.toLocal();
+    if (start == null) return 'All day';
+    if (end == null) return DateFormat.jm().format(start);
+    return '${DateFormat.jm().format(start)} – ${DateFormat.jm().format(end)}';
+  }
+
+  Widget _monthHeader() {
+    return Row(
+      children: [
+        IconButton(
+          tooltip: 'Previous month',
+          onPressed: () => _changeMonth(-1),
+          icon: const Icon(Icons.chevron_left),
+        ),
+        Expanded(
+          child: Text(
+            DateFormat('MMMM yyyy').format(_currentMonth),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+        IconButton(
+          tooltip: 'Next month',
+          onPressed: () => _changeMonth(1),
+          icon: const Icon(Icons.chevron_right),
+        ),
+      ],
+    );
+  }
+
+  Widget _eventsContent() {
+    if (_isLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
+    if (_selectedEvents.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Center(
+          child: Text(
+            'No events for this day.',
+            style: TextStyle(color: AppColors.textSecondary),
+          ),
+        ),
+      );
+    }
+    return Column(children: _selectedEvents.map(_buildEventItem).toList());
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text('Calendar', style: AppTextStyles.heading),
         titleSpacing: 0,
-        actions: const [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.calendar_month_outlined,
-              color: AppColors.primary,
-              size: 26,
-            ),
+        actions: [
+          IconButton(
+            onPressed: _fetchEvents,
+            icon: const Icon(Icons.refresh, color: AppColors.primary, size: 26),
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        children: [
-          const SizedBox(height: 4),
-
-          // Month Label
-          const Text(
-            'March 2026',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Calendar Card (Grid)
-          CalendarGrid(
-            month: _currentMonth,
-            selectedDay: _selectedDay,
-            onDaySelected: (day) => setState(() => _selectedDay = day),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Upcoming Events Card
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Upcoming Events',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                ..._upcomingEvents.map((event) {
-                  return UpcomingEventItem(
-                    icon: event['icon'] as IconData,
-                    title: event['title'] as String,
-                    time: event['time'] as String,
+      body: RefreshIndicator(
+        onRefresh: _fetchEvents,
+        color: AppColors.primary,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            const SizedBox(height: 4),
+            _monthHeader(),
+            const SizedBox(height: 8),
+            CalendarGrid(
+              month: _currentMonth,
+              selectedDay: _selectedDay,
+              onDaySelected: (day) {
+                setState(() {
+                  _selectedDay = day;
+                  _selectedDate = DateTime(
+                    _currentMonth.year,
+                    _currentMonth.month,
+                    day,
                   );
-                }),
-              ],
+                });
+              },
             ),
-          ),
-
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-}
-Upcoming_event_item.dart-com
-import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
-
-class UpcomingEventItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String time;
-
-  const UpcomingEventItem({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.time = '',
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Row(
-        children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Icon(icon, color: AppColors.primary, size: 18),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.dividerColor),
               ),
-            ),
-          ),
-          if (time.isNotEmpty)
-            Text(
-              time,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-Calendar_grid.dart-com
-import 'package:flutter/material.dart';
-import 'package:alarm_frontend/utils/app_colors.dart';
-
-class CalendarGrid extends StatelessWidget {
-  final DateTime month;
-  final int selectedDay;
-  final ValueChanged<int> onDaySelected;
-
-  const CalendarGrid({
-    super.key,
-    required this.month,
-    required this.selectedDay,
-    required this.onDaySelected,
-  });
-
-  int _daysInMonth(DateTime date) =>
-      DateTime(date.year, date.month + 1, 0).day;
-
-  int _firstWeekdayOfMonth(DateTime date) =>
-      DateTime(date.year, date.month, 1).weekday % 7;
-
-  @override
-  Widget build(BuildContext context) {
-    final daysInMonth = _daysInMonth(month);
-    final firstWeekday = _firstWeekdayOfMonth(month);
-    final totalCells = firstWeekday + daysInMonth;
-    final rows = (totalCells / 7).ceil();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        children: [
-          // Weekday headers
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-                .map((d) => SizedBox(
-                      width: 36,
-                      child: Center(
-                        child: Text(
-                          d,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 10),
-
-          // Calendar grid
-          ...List.generate(rows, (rowIdx) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(7, (colIdx) {
-                  final cellIdx = rowIdx * 7 + colIdx;
-                  final day = cellIdx - firstWeekday + 1;
-                  if (day < 1 || day > daysInMonth) {
-                    return const SizedBox(width: 36, height: 36);
-                  }
-                  final isSelected = day == selectedDay;
-                  return GestureDetector(
-                    onTap: () => onDaySelected(day),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? AppColors.primary
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '$day',
-                        style: TextStyle(
-                          color: isSelected ? Colors.black : AppColors.textPrimary,
-                          fontSize: 14,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Events on ${DateFormat('EEE, MMM d').format(_selectedDate)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
-                  );
-                }),
+                  ),
+                  const SizedBox(height: 14),
+
+                  _eventsContent(),
+                ],
               ),
-            );
-          }),
-        ],
+            ),
+            const SizedBox(height: 100),
+          ],
+        ),
       ),
     );
   }
+
+  Widget _buildEventItem(google_calendar.Event event) {
+    return UpcomingEventItem(
+      icon: Icons.calendar_today,
+      title: event.summary?.trim().isNotEmpty == true
+          ? event.summary!
+          : 'Untitled event',
+      time: _eventTime(event),
+    );
+  }
 }
-
-

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "667577209576",
+    "firebase_url": "https://smart-ai-alarm-2f71d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smart-ai-alarm-2f71d",
+    "storage_bucket": "smart-ai-alarm-2f71d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667577209576:android:0424e40e91c749770fef5d",
+        "android_client_info": {
+          "package_name": "com.smartalarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667577209576-hdghjntnf9ij6i7dfdjtinel64lqmdbe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrn1a41XN6WUomdpoSouLUy0FktdUgBuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667577209576-hdghjntnf9ij6i7dfdjtinel64lqmdbe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

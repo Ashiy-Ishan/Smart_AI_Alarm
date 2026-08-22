@@ -9,29 +9,28 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Row(
         children: [
-          /// Left Highlight Bar
           Container(
             width: 5,
             height: 70,
             decoration: BoxDecoration(
-              color: event.highlight ? AppColors.primary : AppColors.border,
+              color: event.highlight ? AppColors.primary : theme.dividerColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
 
           const SizedBox(width: 15),
 
-          /// Content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +38,6 @@ class EventCard extends StatelessWidget {
                 Text(
                   "${event.time} • ${event.title}",
                   style: const TextStyle(
-                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -53,13 +51,17 @@ class EventCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0x33222222),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       event.extra!,
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
+                      style: TextStyle(
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withValues(
+                              alpha: 0.7,
+                            ) ??
+                            AppColors.textSecondary,
                         fontSize: 14,
                       ),
                     ),
@@ -71,7 +73,11 @@ class EventCard extends StatelessWidget {
           if (event.rightTime != null)
             Text(
               event.rightTime!,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                    AppColors.textSecondary,
+              ),
             ),
         ],
       ),

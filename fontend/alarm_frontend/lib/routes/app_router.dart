@@ -11,35 +11,22 @@ import 'package:alarm_frontend/screens/export_motion_data_screen.dart';
 import 'package:alarm_frontend/screens/feedback_screen.dart';
 import 'package:alarm_frontend/screens/gmail_screen.dart';
 import 'package:alarm_frontend/screens/main_screen.dart';
-import 'package:alarm_frontend/screens/message_screen.dart';
 import 'package:alarm_frontend/screens/motion_log_screen.dart';
 import 'package:alarm_frontend/screens/set_alarm_screen.dart';
 import 'package:alarm_frontend/screens/splash_screen.dart';
+import 'package:alarm_frontend/screens/terms_conditions_screen.dart';
+import 'package:alarm_frontend/screens/notification_control_screen.dart';
 import 'package:alarm_frontend/screens/today_summary_screen.dart';
 import 'package:alarm_frontend/screens/verify_account_screen.dart';
 import 'package:alarm_frontend/screens/weekly_motion_report_screen.dart';
 import 'package:flutter/material.dart';
 import 'app_routes.dart';
 
-/// Single source of truth for route generation.
-///
-/// Register this in MaterialApp:
-/// ```dart
-/// MaterialApp(
-///   initialRoute: AppRoutes.splash,
-///   onGenerateRoute: AppRouter.onGenerateRoute,
-/// )
-/// ```
-///
-/// IMPORTANT: Auth-flow screens (splash, auth, main) must always use
-/// [rootNavigator: true] so they escape the nested tab navigators.
-/// Screens inside a tab can use plain Navigator.of(context).push() / named routes.
 class AppRouter {
   AppRouter._();
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // ── Auth flow ────────────────────────────────────────────────────────
       case AppRoutes.splash:
         return _fade(const SplashScreen());
 
@@ -52,26 +39,23 @@ class AppRouter {
       case AppRoutes.accountVerified:
         return _fade(const AccountVerifiedScreen());
 
-      // ── Main shell ───────────────────────────────────────────────────────
       case AppRoutes.main:
         return _fade(const MainScreen());
 
-      // ── Home tab sub-screens ─────────────────────────────────────────────
       case AppRoutes.todaySummary:
         return _slide(const TodaySummaryScreen());
 
       case AppRoutes.setAlarm:
-        return _slide(const StopAlarmScreen());
+        final alarmId = settings.arguments is String
+            ? settings.arguments! as String
+            : 'manual-alarm';
+        return _slide(StopAlarmScreen(alarmId: alarmId));
 
-      // ── Profile tab sub-screens ──────────────────────────────────────────
       case AppRoutes.calendar:
         return _slide(const CalendarScreen());
 
       case AppRoutes.gmail:
         return _slide(const GmailScreen());
-
-      case AppRoutes.message:
-        return _slide(const MessageScreen());
 
       case AppRoutes.dataEncryption:
         return _slide(const DataEncryptionScreen());
@@ -85,7 +69,6 @@ class AppRouter {
       case AppRoutes.feedback:
         return _slide(const FeedbackScreen());
 
-      // ── Insight tab sub-screens ──────────────────────────────────────────
       case AppRoutes.accuracyScore:
         return _slide(const AccuracyScoreScreen());
 
@@ -101,15 +84,17 @@ class AppRouter {
       case AppRoutes.exportMotionData:
         return _slide(const ExportMotionDataScreen());
 
-      // ── Fallback ─────────────────────────────────────────────────────────
+      case AppRoutes.termsAndConditions:
+        return _slide(const TermsConditionsScreen());
+
+      case AppRoutes.notificationControl:
+        return _slide(const NotificationControlScreen());
+
       default:
         return _fade(const SplashScreen());
     }
   }
 
-  // ── Transition helpers ────────────────────────────────────────────────────
-
-  /// Fade transition — used for root-level screens (splash, main).
   static PageRouteBuilder<void> _fade(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (_, _, _) => page,
@@ -119,7 +104,6 @@ class AppRouter {
     );
   }
 
-  /// Slide-up transition — used for sub-screens and auth steps.
   static PageRouteBuilder<void> _slide(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (_, _, _) => page,

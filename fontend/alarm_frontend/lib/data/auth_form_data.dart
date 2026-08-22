@@ -11,7 +11,8 @@ class AuthFormData {
 
   final TextEditingController signupNameController = TextEditingController();
   final TextEditingController signupEmailController = TextEditingController();
-  final TextEditingController signupPasswordController = TextEditingController();
+  final TextEditingController signupPasswordController =
+      TextEditingController();
   final TextEditingController signupConfirmPasswordController =
       TextEditingController();
 
@@ -23,20 +24,19 @@ class AuthFormData {
   bool agreeToTerms = false;
 
   AuthUserModel get loginUser => AuthUserModel(
-        email: loginEmailController.text.trim(),
-        password: loginPasswordController.text,
-      );
+    email: loginEmailController.text.trim(),
+    password: loginPasswordController.text,
+  );
 
   AuthUserModel get signupUser => AuthUserModel(
-        fullName: signupNameController.text.trim(),
-        email: signupEmailController.text.trim(),
-        password: signupPasswordController.text,
-        confirmPassword: signupConfirmPasswordController.text,
-      );
+    fullName: signupNameController.text.trim(),
+    email: signupEmailController.text.trim(),
+    password: signupPasswordController.text,
+    confirmPassword: signupConfirmPasswordController.text,
+  );
 
-  AuthUserModel get resetUser => AuthUserModel(
-        email: resetEmailController.text.trim(),
-      );
+  AuthUserModel get resetUser =>
+      AuthUserModel(email: resetEmailController.text.trim());
 
   void dispose() {
     loginEmailController.dispose();
